@@ -7,7 +7,7 @@
         <div class="collapsible-content active">
           <div class="flex-container flex-row flex-gap">
             <!-- TODO: improve portrait and editing -->
-            <img class="flex-static large-image" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.webp"/>
+            <img class="flex-static large-image" width="266" height="400" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.webp"/>
             <div class="flex-dynamic align-left">
               This is the personal page for Paul Sanderson. He is a software developer in Bozeman, Montana, USA.
               Paul enjoys photography, DIY projects, mountain biking, guitar, chess, and a variety of studies like economics, linguistics, and history.
@@ -19,9 +19,9 @@
         <div class="collapsible-content">
           <div class="overlay-buttons">
             <!-- TODO: add support for download -->
-            <img class="button-small" title="Download as PDF" @click="onClickDownload" alt="Download" src="../assets/download.png">
+            <img class="button-small" title="Download as PDF" @click="onClickDownload" alt="Download" src="../assets/download.png"/>
             <a target="_blank" href="https://www.linkedin.com/in/paulsandersonyup/">
-              <img class="button-small" title="LinkedIn" alt="LinkedIn" src="../assets/linkedin.png">
+              <img class="button-small" title="LinkedIn" alt="LinkedIn" src="../assets/linkedin.png"/>
             </a>
           </div>
           <h3>Education</h3>
@@ -180,7 +180,6 @@ h5 {
 .large-image {
   border-radius: 10px;
   min-width: 266px;
-  height: 400px;
   transition: 0.5s;
   &:hover {
     opacity: 0.5;

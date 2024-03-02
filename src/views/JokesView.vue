@@ -199,7 +199,7 @@ export default defineComponent({
       text-align: left;
       &:first-child {
         flex: 1 1 auto;
-        padding: 9px 0 7px 5px;
+        padding: 9px 5px 5px 5px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -212,7 +212,7 @@ export default defineComponent({
           z-index: 999;
           top: 0;
           left: 0;
-          max-width: calc(100% - 60px);
+          max-width: calc(100% - 65px);
           height: auto;
           background-color: $header-footer-background-color;
           border-bottom: solid 1px $font-color;
