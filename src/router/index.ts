@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import JokesView from '../views/JokesView.vue'
 import ProjectsView from '../views/ProjectsView.vue'
@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
