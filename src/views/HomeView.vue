@@ -7,7 +7,7 @@
         <div class="collapsible-content active">
           <div class="flex-container flex-row flex-gap">
             <!-- TODO: improve portrait and editing -->
-            <img class="flex-static large-image" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.jpg"/>
+            <img class="flex-static large-image" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.webp"/>
             <div class="flex-dynamic align-left">
               This is the personal page for Paul Sanderson. He is a software developer in Bozeman, Montana, USA.
               Paul enjoys photography, DIY projects, mountain biking, guitar, chess, and a variety of studies like economics, linguistics, and history.
@@ -179,6 +179,7 @@ h5 {
 }
 .large-image {
   border-radius: 10px;
+  min-width: 266px;
   height: 400px;
   transition: 0.5s;
   &:hover {
