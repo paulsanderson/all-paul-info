@@ -12,11 +12,11 @@
     <div class="row" v-for="result in response.results" :key="result.id">
       <div class="cell">{{ result.joke }}</div>
       <div class="cell">
-        <img class="button-small" @click="(event) => onClickFavorite(result, event)" v-show="result.isFavorite" title="Remove from favorites" alt="Unfavorite" src="../assets/favorite.png">
-        <img class="button-small" @click="(event) => onClickFavorite(result, event)" v-show="!result.isFavorite" title="Add to favorites" alt="Favorite" src="../assets/unfavorite.png">
+        <img class="button-small" @click="(event) => onClickFavorite(result, event)" v-show="result.isFavorite" title="Remove from favorites" alt="Unfavorite" loading="lazy" src="../assets/favorite.png"/>
+        <img class="button-small" @click="(event) => onClickFavorite(result, event)" v-show="!result.isFavorite" title="Add to favorites" alt="Favorite" loading="lazy" src="../assets/unfavorite.png"/>
       </div>
       <div class="cell">
-        <img class="button-small" @click="(event) => onClickCopy(result.joke, event)" title="Copy to clipboard" alt="Copy" src="../assets/clipboard.png"/>
+        <img class="button-small" @click="(event) => onClickCopy(result.joke, event)" title="Copy to clipboard" alt="Copy" loading="lazy" src="../assets/clipboard.png"/>
       </div>
     </div>
   </div>

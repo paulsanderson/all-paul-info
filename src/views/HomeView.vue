@@ -19,9 +19,9 @@
         <div class="collapsible-content">
           <div class="overlay-buttons">
             <!-- TODO: add support for download -->
-            <img class="button-small" title="Download as PDF" @click="onClickDownload" alt="Download" src="../assets/download.png"/>
+            <img class="button-small" title="Download as PDF" @click="onClickDownload" alt="Download" loading="lazy" src="../assets/download.png"/>
             <a target="_blank" href="https://www.linkedin.com/in/paulsandersonyup/">
-              <img class="button-small" title="LinkedIn" alt="LinkedIn" src="../assets/linkedin.png"/>
+              <img class="button-small" title="LinkedIn" alt="LinkedIn" loading="lazy" src="../assets/linkedin.png"/>
             </a>
           </div>
           <h3>Education</h3>
