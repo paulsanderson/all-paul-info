@@ -5,7 +5,7 @@
       <!-- TODO: create photo tile element and click to fullscreen function -->
       <!-- TODO: dynamically downscale images to save bandwidth -->
       <!-- TODO: dynamically add watermarks? -->
-      <img v-for="photo in photos" :key="photo.url" class="flex-static image-loaded" height="400" width="400" onload="this.style.opacity=1" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url"/>
+      <img v-for="photo in photos" :key="photo.url" class="flex-dynamic image-loaded" onload="this.style.opacity=1" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url"/>
     </div>
   </div>
   <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
@@ -50,8 +50,11 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .image-loaded {
+  max-width: 400px;
+  min-width: 150px;
   opacity: 0;
   transition: 1.5s;
-  min-width: 200px;
+  object-fit: contain;
+  aspect-ratio: 1;
 }
 </style>
