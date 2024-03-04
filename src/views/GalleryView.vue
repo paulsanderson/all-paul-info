@@ -1,14 +1,14 @@
 <template>
   <div class="flex-dynamic flex-container flex-column width-full">
     <h1 class="flex-static">Gallery</h1>
-    <!-- TODO: add lazy-loading using intersectionObserver -->
     <div class="flex-container flex-row flex-wrap flex-gap">
       <!-- TODO: create photo tile element and click to fullscreen function -->
       <!-- TODO: dynamically downscale images to save bandwidth -->
       <!-- TODO: dynamically add watermarks? -->
-      <img v-for="photo in photos" :key="photo.url" class="flex-static image-loaded" height="400" width="400" onload="this.style.opacity=1" :title="photo.name" :alt="photo.name" :src="photo.url"/>
+      <img v-for="photo in photos" :key="photo.url" class="flex-static image-loaded" height="400" width="400" onload="this.style.opacity=1" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url"/>
     </div>
   </div>
+  <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
 </template>
 
 <script lang="ts">
@@ -52,6 +52,6 @@ export default defineComponent({
 .image-loaded {
   opacity: 0;
   transition: 1.5s;
-  min-width: 400px;
+  min-width: 200px;
 }
 </style>

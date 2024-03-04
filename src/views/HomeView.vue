@@ -6,8 +6,7 @@
         <h2 class="collapsible-header active" @click="(event) => onClickCollapse(event)">About</h2>
         <div class="collapsible-content active">
           <div class="flex-container flex-row flex-gap">
-            <!-- TODO: improve portrait and editing -->
-            <img class="flex-static large-image" width="266" height="400" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.webp"/>
+            <img class="flex-dynamic large-image" width="266" height="400" style="object-fit: cover; aspect-ratio: 0.665" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.webp"/>
             <div class="flex-dynamic align-left">
               This is the personal page for Paul Sanderson. He is a software developer in Bozeman, Montana, USA.
               Paul enjoys photography, DIY projects, mountain biking, guitar, chess, and a variety of studies like economics, linguistics, and history.
@@ -179,8 +178,12 @@ h5 {
 }
 .large-image {
   border-radius: 10px;
-  min-width: 266px;
   transition: 0.5s;
+  min-width: 266px;
+  @media screen and (max-width: $small) {
+    min-width: 100px;
+    max-height: 150px;
+  }
   &:hover {
     opacity: 0.5;
   }

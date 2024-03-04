@@ -41,6 +41,9 @@ html {
       ::selection {
         color: $selected-font-color;
       }
+      > .flex-container {
+        overflow-y: auto;
+      }
       .width-full {
         width: 80%;
         padding-left: 10%;
@@ -94,6 +97,9 @@ html {
         transition: 0.5s;
         &:hover, &:focus {
           border: 2px solid $hover-link-font-color;
+        }
+        @media screen and (max-width: $small) {
+          font-size: 14px;
         }
       }
       .button-small {
