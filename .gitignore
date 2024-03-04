@@ -2,7 +2,7 @@
 node_modules
 /dist
 .firebaserc
-.firebase
+.firebase/
 firebase.json
 .npmrc
 
