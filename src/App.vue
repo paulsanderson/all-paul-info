@@ -133,12 +133,6 @@ html {
     .flex-wrap {
       flex-wrap: wrap;
     }
-    .flex-align-start {
-      align-items: start;
-    }
-    .flex-justify-space-between {
-      justify-content: space-between
-    }
     .flex-gap {
       gap: 10px;
     }
