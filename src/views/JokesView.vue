@@ -1,6 +1,6 @@
 <template>
-<div class="flex-dynamic flex-container flex-column width-full">
-  <h1 class="flex-static">Jokes</h1>
+<h1 class="flex-static">Jokes</h1>
+<div class="flex-dynamic flex-container flex-column width-80">
   <div class="flex-static flex-container flex-row">
     <input class="button-large text-indent-med flex-dynamic" title="Search for a joke" type="search" placeholder="Search..." name="term" v-model="term" @input="onInput">
     <button class="button-large flex-static" title="See favorite jokes" @click="onClickFavorites">Favorites</button>

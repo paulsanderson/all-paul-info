@@ -27,7 +27,6 @@
 
 <style lang="scss">
 @import "@/utilities/constants";
-/* TODO: add support for small browsers at ~650px wide */
 html {
   height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -44,10 +43,28 @@ html {
       > .flex-container {
         overflow-y: auto;
       }
-      .width-full {
+      .width-100 {
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .width-95 {
+        width: 95%;
+        padding-left: 2.5%;
+        padding-right: 2.5%;
+      }
+      .width-90 {
+        width: 90%;
+        padding-left: 5%;
+        padding-right: 5%;
+      }
+      .width-80 {
         width: 80%;
         padding-left: 10%;
         padding-right: 10%;
+      }
+      .overflow-y {
+        overflow-y: auto;
       }
       header, footer {
         background-color: $header-footer-background-color;
@@ -56,9 +73,6 @@ html {
             color: $hover-link-font-color;
           }
         }
-      }
-      footer {
-        margin-top: 10px;
       }
       button {
         cursor: pointer;

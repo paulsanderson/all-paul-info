@@ -1,12 +1,9 @@
 <template>
-  <div class="flex-dynamic flex-container flex-column width-full">
-    <h1 class="flex-static">Gallery</h1>
-    <div class="flex-container flex-row flex-wrap flex-gap">
-      <!-- TODO: create photo tile element and click to fullscreen function -->
-      <!-- TODO: dynamically downscale images to save bandwidth -->
-      <!-- TODO: dynamically add watermarks? -->
-      <img v-for="photo in photos" :key="photo.url" class="flex-dynamic image-loaded" onload="this.style.opacity=1" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url"/>
-    </div>
+  <h1 class="flex-static">Gallery</h1>
+  <div class="flex-dynamic flex-container flex-row flex-wrap flex-gap flex-justify-center width-95 overflow-y">
+    <!-- TODO: dynamically downscale images to save bandwidth -->
+    <!-- TODO: dynamically add watermarks? -->
+    <img v-for="photo in photos" :key="photo.url" class="flex-dynamic image-loaded" onload="this.style.opacity=1" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url"/>
   </div>
   <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
 </template>
