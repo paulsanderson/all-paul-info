@@ -138,11 +138,7 @@ export default defineComponent({
     },
     toggleToast (event: MouseEvent, message: string) {
       const targetOffsetY: number = (event.target as Element).getBoundingClientRect().y
-      const tableElement: HTMLElement | null | undefined = (event.target as Element).parentElement?.parentElement?.parentElement
-      // eslint-disable-next-line
-      const tableOffsetY: number = tableElement!.getBoundingClientRect().y
       this.toastOffsetY = targetOffsetY + 5
-      console.log(`targetOffsetY: ${targetOffsetY}, tableOffsetY: ${tableOffsetY}`)
       this.toastMessage = message
       this.showToast = true
       setTimeout(() => {
