@@ -46,7 +46,7 @@ export default defineComponent({
       const url: string = await getDownloadURL(item)
       const metadata: FullMetadata = await getMetadata(item)
       this.photos.push({ url: url, name: metadata.name, description: metadata.timeCreated })
-    });
+    })
   },
   methods: {
     onClickPhoto (event: MouseEvent) {

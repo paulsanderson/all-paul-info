@@ -139,7 +139,7 @@ export default defineComponent({
       targetElement.nextElementSibling?.classList.toggle('active')
       targetElement.classList.toggle('active')
     },
-    async onClickDownload (event: MouseEvent) {
+    async onClickDownload () {
       return false
     }
   }
