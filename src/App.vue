@@ -156,10 +156,8 @@ html {
     .flex-gap {
       gap: 10px;
     }
-    .width-full {
-      width: 90%;
-      margin-left: auto;
-      margin-right: auto;
+    .flex-justify-center {
+      justify-content: center;
     }
   }
 }

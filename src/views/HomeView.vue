@@ -1,6 +1,6 @@
 <template>
-  <div class="flex-dynamic flex-container flex-column width-full" style="overflow-y: auto">
-    <h1 class="flex-static">Paul Sanderson</h1>
+  <h1 class="flex-static">Paul Sanderson</h1>
+  <div class="flex-dynamic flex-container flex-column width-95 overflow-y">
     <div class="flex-container flex-row">
       <div class="flex-dynamic">
         <h2 class="collapsible-header active" @click="(event) => onClickCollapse(event)">About</h2>
@@ -15,8 +15,8 @@
           </div>
         </div>
         <h2 class="collapsible-header" @click="(event) => onClickCollapse(event)">Career</h2>
-        <div class="collapsible-content">
-          <div class="overlay-buttons">
+        <div class="collapsible-content relative-parent">
+          <div class="absolute-container">
             <!-- TODO: add support for download -->
             <img class="button-small" title="Download as PDF" @click="onClickDownload" alt="Download" loading="lazy" src="../assets/download.png"/>
             <a target="_blank" href="https://www.linkedin.com/in/paulsandersonyup/">
@@ -169,11 +169,14 @@ h5 {
     display: block;
   }
 }
-.overlay-buttons {
-  position: absolute;
-  right: 25px;
-  .button-small {
-    margin-right: 5px;
+.relative-parent {
+  position: relative;
+  .absolute-container {
+    position: absolute;
+    right: 0;
+    .button-small {
+      margin-left: 5px;
+    }
   }
 }
 .large-image {
