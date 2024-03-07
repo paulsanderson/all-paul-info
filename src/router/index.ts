@@ -40,7 +40,7 @@ const router = createRouter({
 
 const DEFAULT_TITLE = 'Paul'
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-  document.title = to.name?.toString() || DEFAULT_TITLE
+  document.title = to.name?.toString() ?? DEFAULT_TITLE
   next()
 })
 

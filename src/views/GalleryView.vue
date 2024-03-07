@@ -3,12 +3,17 @@
   <div class="flex-dynamic flex-container flex-row flex-wrap flex-gap flex-justify-center width-95 overflow-y">
     <!-- TODO: dynamically downscale images to save bandwidth -->
     <!-- TODO: dynamically add watermarks? -->
-    <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-loaded" onload="this.style.opacity=1" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)"/>
+    <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
     <button class="close-button" @click="onCloseDialog()">x</button>
-    <img class="flex-dynamic photo-loaded photo-expanded" onload="this.style.opacity=1" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
-    <!-- TODO: add photo details here -->
+    <!-- TODO: add swipe for mobile and L+R support for desktop -->
+    <button class="previous-button" @click="onClickPrevious()" v-show="currentIndex > 0">&lt;</button>
+    <button class="next-button" @click="onClickNext()" v-show="currentIndex < photos.length - 1">&gt;</button>
+    <div class="flex-container flex-row flex-nowrap flex-gap">
+      <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+      <!-- TODO: add collapsible Details header, default to expanded, row/column depending on aspect ratio -->
+    </div>
   </dialog>
   <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
 </template>
@@ -17,14 +22,15 @@
 import { defineComponent } from 'vue'
 import { initializeApp, FirebaseOptions, FirebaseApp } from 'firebase/app'
 import { ref, listAll, getStorage, getDownloadURL, FirebaseStorage, StorageReference, ListResult, getMetadata, FullMetadata } from 'firebase/storage'
+import { Photo } from '@/models/photo'
 
 export default defineComponent({
   name: 'GalleryView',
   data () {
     return {
-      // TODO: create photo object for photo properties like metadata, description, time, location, etc.
-      photos: new Array<{ url: string, name: string, description: string }>(),
-      currentPhoto: { url: '', name: '', description: '' }
+      photos: new Array<Photo>(),
+      currentPhoto: new Photo(),
+      currentIndex: 0
     }
   },
   async beforeMount () {
@@ -40,31 +46,43 @@ export default defineComponent({
     const app: FirebaseApp = initializeApp(firebaseConfig)
     const storage: FirebaseStorage = getStorage(app)
     const photographyRef: StorageReference = ref(storage, 'photography')
-    // TODO: use list instead of listAll for its pagination
     const listResult: ListResult = await listAll(photographyRef)
     listResult.items.forEach(async (item: StorageReference) => {
       const url: string = await getDownloadURL(item)
       const metadata: FullMetadata = await getMetadata(item)
-      this.photos.push({ url: url, name: metadata.name, description: metadata.timeCreated })
+      this.photos.push(new Photo(metadata.name, url, metadata.timeCreated))
     })
   },
   methods: {
+    onPhotoLoad (event: Event) {
+      const currentImage = event.target as HTMLImageElement
+      currentImage.style.opacity = '1'
+      const index: number = Array.from(currentImage.parentNode?.children ?? []).indexOf(currentImage)
+      const imageRect: DOMRect = currentImage.getBoundingClientRect()
+      const aspectRatio: string = (imageRect.x / imageRect.y).toString()
+      currentImage.style.aspectRatio = aspectRatio
+      this.photos[index].aspectRatio = aspectRatio
+    },
     onClickPhoto (event: MouseEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
-      this.currentPhoto.url = selectedImage.getAttribute('src') || ''
-      this.currentPhoto.name = selectedImage.getAttribute('title') || ''
-      this.currentPhoto.description = selectedImage.getAttribute('alt') || ''
+      this.currentIndex = Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
+      this.currentPhoto = new Photo(selectedImage.getAttribute('title') ?? '', selectedImage.getAttribute('src') ?? '', selectedImage.getAttribute('alt') ?? '', selectedImage.getAttribute('aspectRatio') ?? '')
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
       dialog.showModal()
       return false
     },
     onCloseDialog () {
-      this.currentPhoto.url = ''
-      this.currentPhoto.name = ''
-      this.currentPhoto.description = ''
+      this.currentPhoto = new Photo()
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
       dialog.close()
       return false
+    },
+    onClickPrevious () {
+      // TODO: add animation or transition?
+      this.currentPhoto = this.photos[--this.currentIndex]
+    },
+    onClickNext () {
+      this.currentPhoto = this.photos[++this.currentIndex]
     }
   }
 })
@@ -72,33 +90,28 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import "@/utilities/constants";
-.photo-loaded {
-  object-fit: contain;
+.photo-tile {
+  object-fit: cover;
   cursor: pointer;
-  max-width: 400px;
-  min-width: 150px;
-  opacity: 0;
   transition: 1.5s;
+  opacity: 0;
+  max-width: 500px;
+  min-width: 350px;
+  max-height: 350px;
+  min-height: 350px;
   //TODO: add a more intricate transition?
   // transition: transform var(--ease-elastic-4);
-  //TODO: dynamically determine aspect ratio?
-  // aspect-ratio: 1;
 }
-.photo-expanded {
-  object-fit: scale-down;
-  cursor: auto;
-  min-height: 80%;
-  min-width: 80%;
-  max-height: 80%;
-  max-width: 80%;
-  @media screen and (max-width: $small) {
-    min-height: 100%;
-    min-width: 100%;
+.photo-dialog {
+  height: 90%;
+  width: 90%;
+  .photo-expanded {
+    object-fit: scale-down;
+    cursor: auto;
+    transition: 1.5s;
     max-height: 100%;
     max-width: 100%;
   }
-}
-.photo-dialog {
   .close-button {
     position: absolute;
     top: 4px;
@@ -107,6 +120,20 @@ export default defineComponent({
     &:hover, &:focus {
       border: 2px solid $hover-link-font-color;
     }
+  }
+  .previous-button, .next-button {
+    position: absolute;
+    top: 50%;
+    color: $selected-font-color;
+    &:hover, &:focus {
+      border: 2px solid $hover-link-font-color;
+    }
+  }
+  .previous-button {
+    left: 0;
+  }
+  .next-button {
+    right: 0;
   }
 }
 #dialog::backdrop {
