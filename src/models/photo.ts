@@ -1,13 +1,15 @@
+import { FullMetadata } from 'firebase/storage'
+
 export class Photo {
   public name: string
   public url: string
-  public description: string
+  public metadata: FullMetadata
   public aspectRatio: string
 
-  constructor (name = '', url = '', description = '', aspectRatio = '') {
-    this.url = url
+  constructor (name = '', url = '', metadata: FullMetadata = {} as FullMetadata) {
     this.name = name
-    this.description = description
-    this.aspectRatio = aspectRatio
+    this.url = url
+    this.metadata = metadata
+    this.aspectRatio = ''
   }
 }

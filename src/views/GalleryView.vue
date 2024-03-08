@@ -12,7 +12,14 @@
     <button class="next-button" @click="onClickNext()" v-show="currentIndex < photos.length - 1">&gt;</button>
     <div class="flex-container flex-row flex-nowrap flex-gap">
       <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
-      <!-- TODO: add collapsible Details header, default to expanded, row/column depending on aspect ratio -->
+      <div>
+        <h3>Details</h3>
+        <div>{{ 'Date:' + currentPhoto.metadata.customMetadata?.dateCreated }}</div>
+        <div>{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
+        currentPhoto.metadata.customMetadata?.aperture + ' ' +
+        currentPhoto.metadata.customMetadata?.focalLength + ' ' +
+        currentPhoto.metadata.customMetadata?.iso }}</div>
+      </div>
     </div>
   </dialog>
   <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
@@ -23,6 +30,7 @@ import { defineComponent } from 'vue'
 import { initializeApp, FirebaseOptions, FirebaseApp } from 'firebase/app'
 import { ref, listAll, getStorage, getDownloadURL, FirebaseStorage, StorageReference, ListResult, getMetadata, FullMetadata } from 'firebase/storage'
 import { Photo } from '@/models/photo'
+// import { MetadataManager } from '@/utilities/metadataManager'
 
 export default defineComponent({
   name: 'GalleryView',
@@ -50,7 +58,8 @@ export default defineComponent({
     listResult.items.forEach(async (item: StorageReference) => {
       const url: string = await getDownloadURL(item)
       const metadata: FullMetadata = await getMetadata(item)
-      this.photos.push(new Photo(metadata.name, url, metadata.timeCreated))
+      // MetadataManager.setMetadata(item)
+      this.photos.push(new Photo(metadata.name, url, metadata))
     })
   },
   methods: {
@@ -66,7 +75,8 @@ export default defineComponent({
     onClickPhoto (event: MouseEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
       this.currentIndex = Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
-      this.currentPhoto = new Photo(selectedImage.getAttribute('title') ?? '', selectedImage.getAttribute('src') ?? '', selectedImage.getAttribute('alt') ?? '', selectedImage.getAttribute('aspectRatio') ?? '')
+      const selectedPhoto: Photo = this.photos[this.currentIndex]
+      this.currentPhoto = new Photo(selectedPhoto.name, selectedPhoto.url, selectedPhoto.metadata)
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
       dialog.showModal()
       return false
