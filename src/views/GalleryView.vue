@@ -1,28 +1,30 @@
 <template>
   <h1 class="flex-static">Gallery</h1>
+  <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
   <div class="flex-dynamic flex-container flex-row flex-wrap flex-gap flex-justify-center width-95 overflow-y">
     <!-- TODO: dynamically downscale images to save bandwidth -->
     <!-- TODO: dynamically add watermarks? -->
     <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
-    <button class="close-button" @click="onCloseDialog()">x</button>
+    <img class="close-button" title="Close" alt="Close" loading="lazy" @click="onCloseDialog" src="../assets/close.png"/>
     <!-- TODO: add swipe for mobile and L+R support for desktop -->
-    <button class="previous-button" @click="onClickPrevious()" v-show="currentIndex > 0">&lt;</button>
-    <button class="next-button" @click="onClickNext()" v-show="currentIndex < photos.length - 1">&gt;</button>
-    <div class="flex-container flex-nowrap flex-gap" :class="getViewportAspectRatio() > currentPhoto.aspectRatio ? 'flex-row' : 'flex-column'">
-      <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
-      <div class="flex-static">
-        <h3>Details</h3>
-        <div>{{ 'Date:' + currentPhoto.metadata.customMetadata?.dateCreated }}</div>
-        <div>{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
+    <div class="flex-container flex-nowrap flex-gap flex-justify-center flex-align-center" :class="getViewportAspectRatio() > currentPhoto.aspectRatio ? 'flex-row' : 'flex-column'">
+      <div class="flex-bypass">
+        <img class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0" src="../assets/previous.png"/>
+        <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+        <img class="next-button" title="Next" alt="Next" loading="lazy" @click="onClickNext" v-show="currentIndex < photos.length - 1" src="../assets/next.png"/>
+      </div>
+      <div class="flex-static flex-container flex-column">
+        <h3 class="flex-static">Details</h3>
+        <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
+        <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
         currentPhoto.metadata.customMetadata?.aperture + ' ' +
         currentPhoto.metadata.customMetadata?.focalLength + ' ' +
         currentPhoto.metadata.customMetadata?.iso }}</div>
       </div>
     </div>
   </dialog>
-  <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
 </template>
 
 <script lang="ts">
@@ -99,6 +101,7 @@ export default defineComponent({
     onClickNext () {
       this.currentPhoto = this.photos[++this.currentIndex]
     },
+    // eslint-disable-next-line
     setViewportAspectRatio: _.debounce(function (this: any) {
       console.log('1')
       this.viewportAspectRatio = window.innerWidth / window.innerHeight
@@ -127,37 +130,74 @@ export default defineComponent({
 .photo-dialog {
   height: 90%;
   width: 90%;
-  .photo-expanded {
-    object-fit: scale-down;
-    cursor: auto;
-    transition: 1.5s;
-    max-height: 100%;
-    max-width: 100%;
-    min-height: 0;
-    min-width: 0;
-  }
-  .close-button {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    color: $selected-font-color;
-    &:hover, &:focus {
-      border: 2px solid $hover-link-font-color;
+  position: relative;
+  .flex-container {
+    &.flex-column {
+      .flex-bypass {
+        width: fit-content;
+      }
     }
   }
-  .previous-button, .next-button {
+  .flex-bypass {
+    position: relative;
+    min-height: 0;
+    min-width: 0;
+    .photo-expanded {
+      object-fit: scale-down;
+      cursor: auto;
+      transition: 1.5s;
+      max-height: 100%;
+      max-width: 100%;
+      min-height: 0;
+      min-width: 0;
+    }
+  }
+  .previous-button, .next-button, .close-button {
     position: absolute;
-    top: 50%;
-    color: $selected-font-color;
+    cursor: pointer;
+    transition: 0.15s ease-in-out;
+  }
+  .previous-button, .next-button {
+    top: calc(50% - 20px);
+    transform: scale(0.5, 1);
     &:hover, &:focus {
-      border: 2px solid $hover-link-font-color;
+      transform: scale(0.75, 1.5);
+    }
+    &:active {
+      transform: scale(0.5, 1);
     }
   }
   .previous-button {
-    left: 0;
+    left: -25px;
+    &:hover, &:focus {
+      left: -28px;
+    }
+    &:active {
+      left: -25px;
+    }
   }
   .next-button {
-    right: 0;
+    right: -25px;
+    &:hover, &:focus {
+      right: -28px;
+    }
+    &:active {
+      right: -25px;
+    }
+  }
+  .close-button {
+    top: -5px;
+    right: -5px;
+    transform: scale(0.25, 0.25);
+    &:hover, &:focus {
+      top: -4px;
+      right: -4px;
+      transform: scale(0.5, 0.5);
+    }
+    &:active {
+      top: -5px;
+      right: -5px;
+    }
   }
 }
 #dialog::backdrop {

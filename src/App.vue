@@ -159,6 +159,12 @@ html {
     .flex-justify-center {
       justify-content: center;
     }
+    .flex-align-center {
+      align-items: center;
+    }
+    .text-no-wrap {
+      text-wrap: nowrap;
+    }
   }
 }
 </style>
