@@ -10,9 +10,9 @@
     <!-- TODO: add swipe for mobile and L+R support for desktop -->
     <button class="previous-button" @click="onClickPrevious()" v-show="currentIndex > 0">&lt;</button>
     <button class="next-button" @click="onClickNext()" v-show="currentIndex < photos.length - 1">&gt;</button>
-    <div class="flex-container flex-row flex-nowrap flex-gap">
+    <div class="flex-container flex-nowrap flex-gap" :class="getViewportAspectRatio() > currentPhoto.aspectRatio ? 'flex-row' : 'flex-column'">
       <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
-      <div>
+      <div class="flex-static">
         <h3>Details</h3>
         <div>{{ 'Date:' + currentPhoto.metadata.customMetadata?.dateCreated }}</div>
         <div>{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import _ from 'lodash'
 import { initializeApp, FirebaseOptions, FirebaseApp } from 'firebase/app'
 import { ref, listAll, getStorage, getDownloadURL, FirebaseStorage, StorageReference, ListResult, getMetadata, FullMetadata } from 'firebase/storage'
 import { Photo } from '@/models/photo'
@@ -38,7 +39,8 @@ export default defineComponent({
     return {
       photos: new Array<Photo>(),
       currentPhoto: new Photo(),
-      currentIndex: 0
+      currentIndex: 0,
+      viewportAspectRatio: 0
     }
   },
   async beforeMount () {
@@ -61,22 +63,25 @@ export default defineComponent({
       // MetadataManager.setMetadata(item)
       this.photos.push(new Photo(metadata.name, url, metadata))
     })
+    window.addEventListener('resize', this.setViewportAspectRatio)
+    this.setViewportAspectRatio()
+  },
+  unmounted () {
+    window.removeEventListener('resize', this.setViewportAspectRatio)
   },
   methods: {
     onPhotoLoad (event: Event) {
       const currentImage = event.target as HTMLImageElement
       currentImage.style.opacity = '1'
       const index: number = Array.from(currentImage.parentNode?.children ?? []).indexOf(currentImage)
-      const imageRect: DOMRect = currentImage.getBoundingClientRect()
-      const aspectRatio: string = (imageRect.x / imageRect.y).toString()
-      currentImage.style.aspectRatio = aspectRatio
+      const aspectRatio: number = currentImage.naturalWidth / currentImage.naturalHeight
+      currentImage.style.aspectRatio = aspectRatio.toString()
       this.photos[index].aspectRatio = aspectRatio
     },
     onClickPhoto (event: MouseEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
       this.currentIndex = Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
-      const selectedPhoto: Photo = this.photos[this.currentIndex]
-      this.currentPhoto = new Photo(selectedPhoto.name, selectedPhoto.url, selectedPhoto.metadata)
+      this.currentPhoto = this.photos[this.currentIndex]
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
       dialog.showModal()
       return false
@@ -93,6 +98,13 @@ export default defineComponent({
     },
     onClickNext () {
       this.currentPhoto = this.photos[++this.currentIndex]
+    },
+    setViewportAspectRatio: _.debounce(function (this: any) {
+      console.log('1')
+      this.viewportAspectRatio = window.innerWidth / window.innerHeight
+    }, 20),
+    getViewportAspectRatio (): number {
+      return this.viewportAspectRatio * 1.1
     }
   }
 })
@@ -121,6 +133,8 @@ export default defineComponent({
     transition: 1.5s;
     max-height: 100%;
     max-width: 100%;
+    min-height: 0;
+    min-width: 0;
   }
   .close-button {
     position: absolute;
