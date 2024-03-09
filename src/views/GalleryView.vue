@@ -9,7 +9,7 @@
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" loading="lazy" @click="onCloseDialog" src="../assets/close.png"/>
     <!-- TODO: add swipe for mobile and L+R support for desktop -->
-    <div class="flex-container flex-nowrap flex-gap flex-justify-center flex-align-center" :class="getViewportAspectRatio() > currentPhoto.aspectRatio ? 'flex-row' : 'flex-column'">
+    <div class="flex-container flex-nowrap flex-gap flex-justify-center" :class="getViewportAspectRatio() > currentPhoto.aspectRatio ? 'flex-row' : 'flex-column'">
       <div class="flex-bypass">
         <img class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0" src="../assets/previous.png"/>
         <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
@@ -103,11 +103,10 @@ export default defineComponent({
     },
     // eslint-disable-next-line
     setViewportAspectRatio: _.debounce(function (this: any) {
-      console.log('1')
       this.viewportAspectRatio = window.innerWidth / window.innerHeight
     }, 20),
     getViewportAspectRatio (): number {
-      return this.viewportAspectRatio * 1.1
+      return this.viewportAspectRatio * 0.9
     }
   }
 })
@@ -133,6 +132,7 @@ export default defineComponent({
   position: relative;
   .flex-container {
     &.flex-column {
+      align-items: center;
       .flex-bypass {
         width: fit-content;
       }
