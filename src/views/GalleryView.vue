@@ -9,7 +9,7 @@
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" loading="lazy" @click="onCloseDialog" src="../assets/close.png"/>
     <!-- TODO: add swipe for mobile and L+R support for desktop -->
-    <div class="flex-container flex-nowrap flex-gap flex-justify-center" :class="getViewportAspectRatio() > currentPhoto.aspectRatio ? 'flex-row' : 'flex-column'">
+    <div class="flex-container flex-nowrap flex-gap flex-justify-center" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
       <div class="flex-bypass">
         <img class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0" src="../assets/previous.png"/>
         <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
@@ -42,7 +42,8 @@ export default defineComponent({
       photos: new Array<Photo>(),
       currentPhoto: new Photo(),
       currentIndex: 0,
-      viewportAspectRatio: 0
+      viewportAspectRatio: 0,
+      touchStartX: 0
     }
   },
   async beforeMount () {
@@ -85,12 +86,18 @@ export default defineComponent({
       this.currentIndex = Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
       this.currentPhoto = this.photos[this.currentIndex]
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
+      dialog.addEventListener('keyup', this.dialogKeyHandler)
+      dialog.addEventListener('touchstart', this.touchStartHandler)
+      dialog.addEventListener('touchend', this.touchEndHandler)
       dialog.showModal()
       return false
     },
     onCloseDialog () {
       this.currentPhoto = new Photo()
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
+      dialog.removeEventListener('keyup', this.dialogKeyHandler)
+      dialog.removeEventListener('touchstart', this.touchStartHandler)
+      dialog.removeEventListener('touchend', this.touchEndHandler)
       dialog.close()
       return false
     },
@@ -105,8 +112,26 @@ export default defineComponent({
     setViewportAspectRatio: _.debounce(function (this: any) {
       this.viewportAspectRatio = window.innerWidth / window.innerHeight
     }, 20),
-    getViewportAspectRatio (): number {
-      return this.viewportAspectRatio * 0.9
+    getViewportHorizontal (): boolean {
+      return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
+    },
+    dialogKeyHandler (event: KeyboardEvent) {
+      if (this.currentIndex > 0 && event.key === 'ArrowLeft') {
+        this.onClickPrevious()
+      } else if (this.currentIndex < this.photos.length - 1 && event.key === 'ArrowRight') {
+        this.onClickNext()
+      }
+    },
+    touchStartHandler (event: TouchEvent) {
+      this.touchStartX = event.changedTouches[0].screenX
+    },
+    touchEndHandler (event: TouchEvent) {
+      const touchEndX: number = event.changedTouches[0].screenX
+      if (this.currentIndex > 0 && touchEndX > this.touchStartX + 25) {
+        this.onClickPrevious()
+      } else if (this.currentIndex < this.photos.length - 1 && touchEndX < this.touchStartX - 25) {
+        this.onClickNext()
+      }
     }
   }
 })
