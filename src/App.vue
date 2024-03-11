@@ -159,6 +159,9 @@ html {
     .flex-justify-center {
       justify-content: center;
     }
+    .flex-justify-space-between {
+      justify-content: space-between;
+    }
     .text-no-wrap {
       text-wrap: nowrap;
     }
