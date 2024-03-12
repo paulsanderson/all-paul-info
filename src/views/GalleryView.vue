@@ -8,7 +8,7 @@
   </div>
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" loading="lazy" @click="onCloseDialog" src="../assets/close.png"/>
-    <div class="flex-container flex-nowrap flex-gap flex-justify-space-between" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
+    <div class="flex-container flex-nowrap flex-gap" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'"><!-- needs justify-content: center, align-items: center -->
       <div class="flex-bypass">
         <img class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
         <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
@@ -17,8 +17,8 @@
         </div>
         <img class="next-button" title="Next" alt="Next" loading="lazy" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
       </div>
-      <div class="flex-static flex-container flex-column">
-        <h3 class="flex-static">Details</h3>
+      <div class="flex-static flex-container flex-column details-panel">
+        <div class="flex-static"><b>Details</b></div>
         <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
         <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
         currentPhoto.metadata.customMetadata?.aperture + ' ' +
@@ -115,8 +115,8 @@ export default defineComponent({
       const nextPhotoWrapper: HTMLDivElement = document.getElementById('nextPhotoWrapper') as HTMLDivElement
       const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
       const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
-      const resizeString = '0.25s'
-      const resizeTime = 250
+      const resizeString = '0.2s'
+      const resizeTime = 200
       nextPhoto.setAttribute('src', this.photos[isPrevious ? this.currentIndex - 1 : this.currentIndex + 1].url)
       // Set nextPhoto and wrapper size to that of currentPhoto, hide overflow, and start sliding it into view
       nextPhotoWrapper.style.left = '0'
@@ -124,7 +124,7 @@ export default defineComponent({
       nextPhoto.style.width = currentPhotoRect.width + 'px'
       nextPhoto.style.visibility = 'visible'
       isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
-      nextPhoto.style.transition = `${isPrevious ? 'right' : 'left'} 0.5s ease-in-out`
+      nextPhoto.style.transition = `${isPrevious ? 'right' : 'left'} 0.4s ease-in-out`
       requestAnimationFrame(() => {
         nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
         nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
@@ -148,10 +148,20 @@ export default defineComponent({
               nextPhotoWrapper.style.width = Math.max(updatedPhotoRect.width, currentPhotoRect.width) + 'px'
               if (this.photos[isPrevious ? this.currentIndex + 1 : this.currentIndex - 1].aspectRatio < this.photos[this.currentIndex].aspectRatio) {
                 // if nextPhoto is taller, transition width first
-                this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
+                // if width transition not needed, do height immediately
+                if (currentPhotoRect.width === updatedPhotoRect.width) {
+                  this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
+                } else {
+                  this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
+                }
               } else {
                 // if nextPhoto is wider, transition height first
-                this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
+                // if height transition not needed, do width immediately
+                if (currentPhotoRect.height === updatedPhotoRect.height) {
+                  this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
+                } else {
+                  this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
+                }
               }
               setTimeout(() => {
                 if (this.photos[isPrevious ? this.currentIndex + 1 : this.currentIndex - 1].aspectRatio > this.photos[this.currentIndex].aspectRatio) {
@@ -179,7 +189,7 @@ export default defineComponent({
             isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
             this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
           }
-        }, 500)
+        }, 400)
       })
     },
     doHeightTransition (nextPhoto: HTMLImageElement, currentHeight: number, updatedHeight: number, resizeString: string) {
@@ -244,7 +254,6 @@ export default defineComponent({
   overflow: hidden;
   .flex-container {
     &.flex-column {
-      align-items: normal;
       .flex-bypass {
         width: fit-content;
       }
@@ -274,6 +283,13 @@ export default defineComponent({
       }
     }
   }
+  .details-panel {
+    align-self: center;
+    max-width: 200px;
+    min-width: 200px;
+    max-height: 100px;
+    min-height: 100px;
+  }
   .previous-button, .next-button, .close-button {
     position: absolute;
     cursor: pointer;
@@ -281,12 +297,14 @@ export default defineComponent({
   }
   .previous-button, .next-button {
     top: calc(50% - 20px);
-    transform: scale(0.5, 1);
+    opacity: 0.75;
+    transform: scale(0.5, 2);
     &:hover, &:focus {
-      transform: scale(0.75, 1.5);
+      opacity: 1;
+      transform: scale(1, 2);
     }
     &:active {
-      transform: scale(0.5, 1);
+      transform: scale(0.5, 2);
     }
   }
   .previous-button {
