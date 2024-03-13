@@ -60,7 +60,8 @@ export default defineComponent({
       currentIndex: 0,
       viewportAspectRatio: 0,
       touchStartX: 0,
-      showButtons: true
+      showButtons: true,
+      pauseButtonUpdates: false
     }
   },
   async beforeMount () {
@@ -123,7 +124,20 @@ export default defineComponent({
     },
     onClickFullscreen () {
       const currentPhoto: HTMLDivElement = document.getElementById('currentPhotoWrapper') as HTMLDivElement
+      currentPhoto.addEventListener('fullscreenchange', this.onChangeFullscreen)
       currentPhoto.requestFullscreen()
+    },
+    onChangeFullscreen () {
+      if (document.fullscreenElement) {
+        this.pauseButtonUpdates = true
+        this.updateButtonPosition()
+      } else {
+        setTimeout(() => {
+          this.pauseButtonUpdates = false
+          const currentPhoto: HTMLDivElement = document.getElementById('currentPhotoWrapper') as HTMLDivElement
+          currentPhoto.removeEventListener('fullscreenchange', this.onChangeFullscreen)
+        }, 100)
+      }
     },
     onClickPrevious () {
       this.turnPage(true)
@@ -243,12 +257,15 @@ export default defineComponent({
       return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
     },
     updateButtonPosition () {
-      const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
-      const nextButton: HTMLImageElement = document.getElementById('nextButton') as HTMLImageElement
-      const previousButton: HTMLImageElement = document.getElementById('previousButton') as HTMLImageElement
-      const currentPhotoHeight: number = currentPhoto.getBoundingClientRect().height
-      nextButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
-      previousButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
+      if (!this.pauseButtonUpdates) {
+        const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
+        const nextButton: HTMLImageElement = document.getElementById('nextButton') as HTMLImageElement
+        const previousButton: HTMLImageElement = document.getElementById('previousButton') as HTMLImageElement
+        const currentPhotoHeight: number = currentPhoto.getBoundingClientRect().height
+        console.log(`currentPhotoHeight: ${currentPhotoHeight}, top: ${currentPhotoHeight / 2 - 40}`)
+        nextButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
+        previousButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
+      }
     },
     dialogKeyHandler (event: KeyboardEvent) {
       if (event.key === 'ArrowLeft' && this.currentIndex > 0) {
@@ -357,7 +374,6 @@ export default defineComponent({
     transition: 0.15s ease-in-out;
   }
   .previous-button, .next-button {
-    top: calc(50% - 20px);
     opacity: 0.75;
     transform: scale(0.5, 2);
     &:hover, &:focus {

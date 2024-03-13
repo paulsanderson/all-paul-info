@@ -5,7 +5,7 @@
     <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">March 2024 Website Updates</h3>
     <div class="collapsible-content active">
       <ul>
-        <li>March 13&ensp;Added fullscreen button to photo dialog</li>
+        <li>March 13&ensp;Added fullscreen button to photo dialog, add details to overlay</li>
         <li>March 12&ensp;Added slide and resize transitions when using next/previous buttons</li>
         <li>March 9 &ensp;Added keyboard and swipe support for next/previous buttons</li>
         <li>March 8 &ensp;Determined photo and details position in dialog dynamically depending on photo aspect ratio</li>
