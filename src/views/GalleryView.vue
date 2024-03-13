@@ -1,10 +1,10 @@
 <template>
   <h1 class="flex-static">Gallery</h1>
   <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
-  <div class="flex-dynamic flex-container flex-row flex-wrap flex-gap flex-justify-center width-95 overflow-y">
+  <div class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center width-95 overflow-y">
     <!-- TODO: dynamically downscale images to save bandwidth? -->
     <!-- TODO: dynamically add watermarks? -->
-    <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)"/>
+    <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" loading="lazy" @click="onCloseDialog" src="../assets/close.png"/>
@@ -101,7 +101,7 @@ export default defineComponent({
     onDialogPhotoLoad () {
       this.updateButtonPosition()
     },
-    onClickPhoto (event: MouseEvent) {
+    onClickPhoto (event: MouseEvent | KeyboardEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
       this.currentIndex = Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
       this.currentPhoto = this.photos[this.currentIndex]
@@ -251,10 +251,12 @@ export default defineComponent({
       previousButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
     },
     dialogKeyHandler (event: KeyboardEvent) {
-      if (this.currentIndex > 0 && event.key === 'ArrowLeft') {
+      if (event.key === 'ArrowLeft' && this.currentIndex > 0) {
         this.onClickPrevious()
-      } else if (this.currentIndex < this.photos.length - 1 && event.key === 'ArrowRight') {
+      } else if (event.key === 'ArrowRight' && this.currentIndex < this.photos.length - 1) {
         this.onClickNext()
+      } else if (event.key === 'Enter') {
+        this.onClickFullscreen()
       }
     },
     touchStartHandler (event: TouchEvent) {
@@ -278,12 +280,22 @@ export default defineComponent({
 .photo-tile {
   object-fit: cover;
   cursor: pointer;
-  transition: 1.5s;
+  transition: opacity 1.5s ease-in-out;
   opacity: 0;
   max-width: 500px;
   min-width: 350px;
   max-height: 350px;
   min-height: 350px;
+  outline: none;
+  margin: 4px;
+  &:hover, &:focus {
+    margin: 2px;
+    border: 2px solid $link-font-color;
+  }
+  &:active {
+    margin: 0;
+    border: 4px solid $link-font-color;
+  }
   //TODO: add a more intricate transition?
   // transition: transform var(--ease-elastic-4);
 }
