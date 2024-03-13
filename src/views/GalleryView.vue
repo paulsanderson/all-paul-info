@@ -9,13 +9,23 @@
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" loading="lazy" @click="onCloseDialog" src="../assets/close.png"/>
     <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" loading="lazy" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
-    <div class="flex-container flex-nowrap flex-gap" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'"><!-- needs justify-content: center, align-items: center -->
+    <div class="flex-container flex-nowrap flex-gap" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
       <div class="flex-bypass">
         <img id="previousButton" class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
         <div id="previousPhotoWrapper" class="previous-photo-wrapper">
           <img id="previousPhoto" class="previous-photo"/>
         </div>
-        <img id="currentPhoto" class="flex-dynamic photo-expanded" :onload="onDialogPhotoLoad" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+        <div id="currentPhotoWrapper" class="current-photo-wrapper" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
+          <img id="currentPhoto" class="flex-dynamic current-photo" :onload="onDialogPhotoLoad" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+          <div class="fullscreen-overlay details-panel">
+            <div class="flex-static"><b>Details</b></div>
+            <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
+            <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
+            currentPhoto.metadata.customMetadata?.aperture + ' ' +
+            currentPhoto.metadata.customMetadata?.focalLength + ' ' +
+            currentPhoto.metadata.customMetadata?.iso }}</div>
+          </div>
+        </div>
         <div id="nextPhotoWrapper" class="next-photo-wrapper">
           <img id="nextPhoto" class="next-photo"/>
         </div>
@@ -112,7 +122,7 @@ export default defineComponent({
       return false
     },
     onClickFullscreen () {
-      const currentPhoto: HTMLDialogElement = document.getElementById('currentPhoto') as HTMLDialogElement
+      const currentPhoto: HTMLDivElement = document.getElementById('currentPhotoWrapper') as HTMLDivElement
       currentPhoto.requestFullscreen()
     },
     onClickPrevious () {
@@ -289,7 +299,7 @@ export default defineComponent({
     min-width: 0;
     height: 100%;
     width: fit-content;
-    .photo-expanded {
+    .current-photo {
       object-fit: scale-down;
       cursor: auto;
       max-height: 100%;
@@ -384,17 +394,23 @@ export default defineComponent({
     right: -5px;
   }
   .current-photo-wrapper {
+    height: 100%;
+    width: 100%;
     &:fullscreen {
+      display: flex;
+      .current-photo {
+        flex: 1 1 auto;
+      }
       .fullscreen-overlay {
-      visibility: visible;
+        visibility: visible;
       }
     }
     .fullscreen-overlay {
-      background: blue;
+      flex: 0 0 auto;
+      background: $body-background-color;
+      color: $hover-link-font-color;
       visibility: hidden;
-      position: fixed;
-      top: 10px;
-      left: 10px;
+      margin: 20px;
     }
   }
 }

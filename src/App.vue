@@ -156,6 +156,9 @@ html {
     .flex-gap {
       gap: 10px;
     }
+    .flex-sm-gap {
+      gap: 6px;
+    }
     .flex-justify-center {
       justify-content: center;
     }
