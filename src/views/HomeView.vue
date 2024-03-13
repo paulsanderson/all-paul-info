@@ -157,18 +157,6 @@ h4 {
 h5 {
   margin: 1px;
 }
-.collapsible-header {
-  cursor: pointer;
-  &:not(.active) {
-    color: $selected-font-color;
-  }
-}
-.collapsible-content {
-  display: none;
-  &.active {
-    display: block;
-  }
-}
 .relative-parent {
   position: relative;
   .absolute-container {

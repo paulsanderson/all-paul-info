@@ -68,9 +68,17 @@ html {
       }
       header, footer {
         background-color: $header-footer-background-color;
-        a {
-          &.router-link-exact-active, &:hover {
-            color: $hover-link-font-color;
+        ul {
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
+          li {
+            margin: 0 5px;
+            a {
+              &.router-link-exact-active, &:hover {
+                color: $hover-link-font-color;
+              }
+            }
           }
         }
       }
@@ -92,14 +100,6 @@ html {
         transition: 0.5s;
         &:hover {
           color: $hover-link-font-color;
-        }
-      }
-      ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        li {
-          margin: 0 5px;
         }
       }
       .button-large {
@@ -164,6 +164,18 @@ html {
     }
     .text-no-wrap {
       text-wrap: nowrap;
+    }
+    .collapsible-header {
+      cursor: pointer;
+      &:not(.active) {
+        color: $selected-font-color;
+      }
+    }
+    .collapsible-content {
+      display: none;
+      &.active {
+        display: block;
+      }
     }
   }
 }

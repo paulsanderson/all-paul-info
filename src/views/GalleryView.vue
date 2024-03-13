@@ -74,7 +74,7 @@ export default defineComponent({
       this.photos.push(new Photo(metadata.name, url, metadata))
     })
     window.addEventListener('resize', this.onWindowResize)
-    this.setViewportAspectRatio()
+    this.onWindowResize()
   },
   unmounted () {
     window.removeEventListener('resize', this.onWindowResize)
