@@ -11,15 +11,15 @@
     <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" loading="lazy" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
     <div class="flex-container flex-nowrap flex-gap" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'"><!-- needs justify-content: center, align-items: center -->
       <div class="flex-bypass">
-        <img class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
+        <img id="previousButton" class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
         <div id="previousPhotoWrapper" class="previous-photo-wrapper">
           <img id="previousPhoto" class="previous-photo"/>
         </div>
-        <img id="currentPhoto" class="flex-dynamic photo-expanded" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+        <img id="currentPhoto" class="flex-dynamic photo-expanded" :onload="onDialogPhotoLoad" :alt="currentPhoto.name" :src="currentPhoto.url"/>
         <div id="nextPhotoWrapper" class="next-photo-wrapper">
           <img id="nextPhoto" class="next-photo"/>
         </div>
-        <img class="next-button" title="Next" alt="Next" loading="lazy" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
+        <img id="nextButton" class="next-button" title="Next" alt="Next" loading="lazy" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
       </div>
       <div class="flex-static flex-container flex-column details-panel">
         <div class="flex-static"><b>Details</b></div>
@@ -73,11 +73,11 @@ export default defineComponent({
       // MetadataManager.setMetadata(item)
       this.photos.push(new Photo(metadata.name, url, metadata))
     })
-    window.addEventListener('resize', this.setViewportAspectRatio)
+    window.addEventListener('resize', this.onWindowResize)
     this.setViewportAspectRatio()
   },
   unmounted () {
-    window.removeEventListener('resize', this.setViewportAspectRatio)
+    window.removeEventListener('resize', this.onWindowResize)
   },
   methods: {
     onPhotoLoad (event: Event) {
@@ -87,6 +87,9 @@ export default defineComponent({
       const aspectRatio: number = currentImage.naturalWidth / currentImage.naturalHeight
       currentImage.style.aspectRatio = aspectRatio.toString()
       this.photos[index].aspectRatio = aspectRatio
+    },
+    onDialogPhotoLoad () {
+      this.updateButtonPosition()
     },
     onClickPhoto (event: MouseEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
@@ -182,6 +185,7 @@ export default defineComponent({
                 setTimeout(() => {
                   // Once resize transitions are done, display currentPhoto and hide nextPhoto
                   this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
+                  this.updateButtonPosition()
                   this.showButtons = true
                 }, resizeTime)
               }, resizeTime)
@@ -221,11 +225,20 @@ export default defineComponent({
       nextPhoto.style.width = updatedWidth + 'px'
     },
     // eslint-disable-next-line
-    setViewportAspectRatio: _.debounce(function (this: any) {
+    onWindowResize: _.debounce(function (this: any) {
       this.viewportAspectRatio = window.innerWidth / window.innerHeight
+      this.updateButtonPosition()
     }, 20),
     getViewportHorizontal (): boolean {
       return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
+    },
+    updateButtonPosition () {
+      const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
+      const nextButton: HTMLImageElement = document.getElementById('nextButton') as HTMLImageElement
+      const previousButton: HTMLImageElement = document.getElementById('previousButton') as HTMLImageElement
+      const currentPhotoHeight: number = currentPhoto.getBoundingClientRect().height
+      nextButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
+      previousButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
     },
     dialogKeyHandler (event: KeyboardEvent) {
       if (this.currentIndex > 0 && event.key === 'ArrowLeft') {
@@ -267,6 +280,7 @@ export default defineComponent({
 .photo-dialog {
   height: 90%;
   width: 90%;
+  padding: 20px;
   position: relative;
   overflow: hidden;
   .flex-bypass {
@@ -368,6 +382,20 @@ export default defineComponent({
   }
   .close-button {
     right: -5px;
+  }
+  .current-photo-wrapper {
+    &:fullscreen {
+      .fullscreen-overlay {
+      visibility: visible;
+      }
+    }
+    .fullscreen-overlay {
+      background: blue;
+      visibility: hidden;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+    }
   }
 }
 #dialog::backdrop {
