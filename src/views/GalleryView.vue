@@ -11,6 +11,9 @@
     <div class="flex-container flex-nowrap flex-gap" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'"><!-- needs justify-content: center, align-items: center -->
       <div class="flex-bypass">
         <img class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
+        <div id="previousPhotoWrapper" class="previous-photo-wrapper">
+          <img id="previousPhoto" class="previous-photo"/>
+        </div>
         <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
         <div id="nextPhotoWrapper" class="next-photo-wrapper">
           <img id="nextPhoto" class="next-photo"/>
@@ -111,8 +114,8 @@ export default defineComponent({
       this.turnPage(false)
     },
     turnPage (isPrevious: boolean) {
-      const nextPhoto: HTMLImageElement = document.getElementById('nextPhoto') as HTMLImageElement
-      const nextPhotoWrapper: HTMLDivElement = document.getElementById('nextPhotoWrapper') as HTMLDivElement
+      const nextPhoto: HTMLImageElement = document.getElementById(isPrevious ? 'previousPhoto' : 'nextPhoto') as HTMLImageElement
+      const nextPhotoWrapper: HTMLDivElement = document.getElementById(isPrevious ? 'previousPhotoWrapper' : 'nextPhotoWrapper') as HTMLDivElement
       const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
       const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
       const resizeString = '0.2s'
@@ -173,24 +176,32 @@ export default defineComponent({
                 }
                 setTimeout(() => {
                   // Once resize transitions are done, display currentPhoto and hide nextPhoto
-                  currentPhoto.style.opacity = '1'
-                  nextPhoto.style.visibility = 'hidden'
-                  isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
-                  isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
+                  this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
                   this.showButtons = true
                 }, resizeTime)
               }, resizeTime)
             })
           } else {
             // If no resize transition is needed, display currentPhoto and hide nextPhoto
-            currentPhoto.style.opacity = '1'
-            nextPhoto.style.visibility = 'hidden'
-            isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
-            isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
+            this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
             this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
           }
         }, 400)
       })
+    },
+    resetTransitions (currentPhoto: HTMLImageElement, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, isPrevious: boolean) {
+      currentPhoto.style.opacity = '1'
+      nextPhotoWrapper.style.height = ''
+      nextPhotoWrapper.style.width = ''
+      nextPhotoWrapper.style.left = '0'
+      nextPhotoWrapper.style.right = '0'
+      nextPhoto.style.transition = ''
+      isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
+      isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
+      nextPhoto.style.height = ''
+      nextPhoto.style.width = ''
+      nextPhoto.style.visibility = 'hidden'
+      nextPhoto.removeAttribute('src')
     },
     doHeightTransition (nextPhoto: HTMLImageElement, currentHeight: number, updatedHeight: number, resizeString: string) {
       // Set height to currentPhoto, add transition, update height to nextPhoto
@@ -252,17 +263,12 @@ export default defineComponent({
   width: 90%;
   position: relative;
   overflow: hidden;
-  .flex-container {
-    &.flex-column {
-      .flex-bypass {
-        width: fit-content;
-      }
-    }
-  }
   .flex-bypass {
     position: relative;
     min-height: 0;
     min-width: 0;
+    height: 100%;
+    width: fit-content;
     .photo-expanded {
       object-fit: scale-down;
       cursor: auto;
@@ -280,6 +286,19 @@ export default defineComponent({
         visibility: hidden;
         position: absolute;
         top: 0;
+      }
+    }
+    .previous-photo-wrapper {
+      left: 0;
+      right: 0;
+      img {
+        right: 100%;
+      }
+    }
+    .next-photo-wrapper {
+      left: 0;
+      img {
+        left: 100%;
       }
     }
   }
