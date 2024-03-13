@@ -345,17 +345,18 @@ export default defineComponent({
     }
   }
   .close-button {
-    top: -5px;
-    right: -5px;
-    transform: scale(0.25, 0.25);
+    top: 0;
+    right: 0;
+    transform: scale(0.5, 0.5);
     &:hover, &:focus {
-      top: -4px;
-      right: -4px;
-      transform: scale(0.5, 0.5);
+      top: -2x;
+      right: -2px;
+      transform: scale(1, 1);
     }
     &:active {
-      top: -5px;
-      right: -5px;
+      top: 0;
+      right: 0;
+      transform: scale(0.5, 0.5);
     }
   }
 }
