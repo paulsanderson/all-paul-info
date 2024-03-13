@@ -2,19 +2,20 @@
   <h1 class="flex-static">Gallery</h1>
   <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
   <div class="flex-dynamic flex-container flex-row flex-wrap flex-gap flex-justify-center width-95 overflow-y">
-    <!-- TODO: dynamically downscale images to save bandwidth -->
+    <!-- TODO: dynamically downscale images to save bandwidth? -->
     <!-- TODO: dynamically add watermarks? -->
-    <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" :title="photo.name" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)"/>
+    <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" loading="lazy" @click="onCloseDialog" src="../assets/close.png"/>
+    <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" loading="lazy" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
     <div class="flex-container flex-nowrap flex-gap" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'"><!-- needs justify-content: center, align-items: center -->
       <div class="flex-bypass">
         <img class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
         <div id="previousPhotoWrapper" class="previous-photo-wrapper">
           <img id="previousPhoto" class="previous-photo"/>
         </div>
-        <img id="currentPhoto" class="flex-dynamic photo-expanded" :title="currentPhoto.name" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+        <img id="currentPhoto" class="flex-dynamic photo-expanded" :alt="currentPhoto.name" :src="currentPhoto.url"/>
         <div id="nextPhotoWrapper" class="next-photo-wrapper">
           <img id="nextPhoto" class="next-photo"/>
         </div>
@@ -106,6 +107,10 @@ export default defineComponent({
       dialog.removeEventListener('touchend', this.touchEndHandler)
       dialog.close()
       return false
+    },
+    onClickFullscreen () {
+      const currentPhoto: HTMLDialogElement = document.getElementById('currentPhoto') as HTMLDialogElement
+      currentPhoto.requestFullscreen()
     },
     onClickPrevious () {
       this.turnPage(true)
@@ -233,6 +238,7 @@ export default defineComponent({
       this.touchStartX = event.changedTouches[0].screenX
     },
     touchEndHandler (event: TouchEvent) {
+      // TODO: prevent pinch gesture from changing pages
       const touchEndX: number = event.changedTouches[0].screenX
       if (this.currentIndex > 0 && touchEndX > this.touchStartX + 25) {
         this.onClickPrevious()
@@ -309,7 +315,7 @@ export default defineComponent({
     max-height: 100px;
     min-height: 100px;
   }
-  .previous-button, .next-button, .close-button {
+  .previous-button, .next-button, .close-button, .fullscreen-button {
     position: absolute;
     cursor: pointer;
     transition: 0.15s ease-in-out;
@@ -344,20 +350,24 @@ export default defineComponent({
       right: -25px;
     }
   }
-  .close-button {
-    top: 0;
-    right: 0;
+  .fullscreen-button, .close-button {
+    z-index: 1;
+    top: -10px;
     transform: scale(0.5, 0.5);
     &:hover, &:focus {
-      top: -2x;
-      right: -2px;
-      transform: scale(1, 1);
+      top: -5px;
+      transform: scale(0.75, 0.75);
     }
     &:active {
-      top: 0;
-      right: 0;
+      top: -10px;
       transform: scale(0.5, 0.5);
     }
+  }
+  .fullscreen-button {
+    right: 20px;
+  }
+  .close-button {
+    right: -5px;
   }
 }
 #dialog::backdrop {
