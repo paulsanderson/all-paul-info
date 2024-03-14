@@ -21,6 +21,7 @@
     <div class="collapsible-content active">
       <ul>
         <li>Photo description and fullscreen overlay display</li>
+        <li>Ability to search and sort photos</li>
         <li>Ability to share photo links</li>
         <li>Gallery print shop integration</li>
         <li>Ability to like/comment on photos</li>

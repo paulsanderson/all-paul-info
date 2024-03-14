@@ -9,8 +9,9 @@
             <img class="flex-dynamic large-image" width="266" height="400" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.webp"/>
             <div class="flex-dynamic align-left">
               This is the personal page for Paul Sanderson. He is a software developer in Bozeman, Montana, USA.
-              Paul enjoys photography, DIY projects, mountain biking, guitar, chess, and a variety of studies like economics, linguistics, and history.
-              This site was built from scratch and is intended to always be a work in progress. Eventually, it will host photography, projects, and a blog. Feedback is welcome.
+              Paul enjoys photography, playing guitar, the outdoors, a game of chess, and a variety of studies like economics, linguistics, and history.
+              The Gallery has a set of Paul's photography, viewable as tiles, in a dialog, or fullscreen. As outlined on the Blog page, more Gallery features are coming.
+              This site was built from scratch and is intended to always be a work in progress. Feedback is welcome.
             </div>
           </div>
         </div>
