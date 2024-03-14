@@ -7,11 +7,11 @@
     <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
-    <img class="close-button" title="Close" alt="Close" loading="lazy" @click="onCloseDialog" src="../assets/close.png"/>
-    <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" loading="lazy" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
+    <img class="close-button" title="Close" alt="Close" @click="onCloseDialog" src="../assets/close.png"/>
+    <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
     <div class="flex-container flex-nowrap flex-gap" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
       <div class="flex-bypass">
-        <img id="previousButton" class="previous-button" title="Previous" alt="Previous" loading="lazy" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
+        <img id="previousButton" class="previous-button" title="Previous" alt="Previous" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
         <div id="previousPhotoWrapper" class="previous-photo-wrapper">
           <img id="previousPhoto" class="previous-photo"/>
         </div>
@@ -29,7 +29,7 @@
         <div id="nextPhotoWrapper" class="next-photo-wrapper">
           <img id="nextPhoto" class="next-photo"/>
         </div>
-        <img id="nextButton" class="next-button" title="Next" alt="Next" loading="lazy" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
+        <img id="nextButton" class="next-button" title="Next" alt="Next" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
       </div>
       <div class="flex-static flex-container flex-column details-panel">
         <div class="flex-static"><b>Details</b></div>
