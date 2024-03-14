@@ -17,7 +17,7 @@
         </div>
         <div id="currentPhotoWrapper" class="current-photo-wrapper" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
           <img id="currentPhoto" class="flex-dynamic current-photo" :onload="onDialogPhotoLoad" :alt="currentPhoto.name" :src="currentPhoto.url"/>
-          <div class="fullscreen-overlay details-panel">
+          <div class="fullscreen-overlay">
             <div class="flex-static"><b>Details</b></div>
             <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
             <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
@@ -100,7 +100,9 @@ export default defineComponent({
       this.photos[index].aspectRatio = aspectRatio
     },
     onDialogPhotoLoad () {
-      this.updateButtonPosition()
+      requestAnimationFrame(() => {
+        this.updateButtonPosition()
+      })
     },
     onClickPhoto (event: MouseEvent | KeyboardEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
@@ -209,8 +211,10 @@ export default defineComponent({
                 setTimeout(() => {
                   // Once resize transitions are done, display currentPhoto and hide nextPhoto
                   this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
-                  this.updateButtonPosition()
-                  this.showButtons = true
+                  requestAnimationFrame(() => {
+                    this.updateButtonPosition()
+                    this.showButtons = true
+                  })
                 }, resizeTime)
               }, resizeTime)
             })
@@ -259,12 +263,17 @@ export default defineComponent({
     updateButtonPosition () {
       if (!this.pauseButtonUpdates) {
         const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
+        const currentPhotoWrapper: HTMLDivElement = document.getElementById('currentPhotoWrapper') as HTMLDivElement
         const nextButton: HTMLImageElement = document.getElementById('nextButton') as HTMLImageElement
         const previousButton: HTMLImageElement = document.getElementById('previousButton') as HTMLImageElement
-        const currentPhotoHeight: number = currentPhoto.getBoundingClientRect().height
-        console.log(`currentPhotoHeight: ${currentPhotoHeight}, top: ${currentPhotoHeight / 2 - 40}`)
-        nextButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
-        previousButton.style.top = currentPhotoHeight / 2 - 40 + 'px'
+        const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
+        const currentPhotoWrapperRect: DOMRect = currentPhotoWrapper.getBoundingClientRect()
+        const nextRight: number = (currentPhotoWrapperRect.right - currentPhotoRect.right) / 2
+        const previousLeft: number = (currentPhotoRect.left - currentPhotoWrapperRect.left) / 2
+        nextButton.style.right = (nextRight < 1 ? -25 : nextRight + 3) + 'px'
+        previousButton.style.left = (previousLeft < 1 ? -25 : previousLeft + 3) + 'px'
+        nextButton.style.top = currentPhotoRect.height / 2 - 40 + 'px'
+        previousButton.style.top = currentPhotoRect.height / 2 - 40 + 'px'
       }
     },
     dialogKeyHandler (event: KeyboardEvent) {
@@ -319,7 +328,6 @@ export default defineComponent({
 .photo-dialog {
   height: 90%;
   width: 90%;
-  padding: 20px;
   position: relative;
   overflow: hidden;
   .flex-bypass {
@@ -431,10 +439,15 @@ export default defineComponent({
       }
       .fullscreen-overlay {
         visibility: visible;
+        max-width: 200px;
+        min-width: 200px;
+        max-height: 100px;
+        min-height: 100px;
       }
     }
     .fullscreen-overlay {
       flex: 0 0 auto;
+      align-self: center;
       background: $body-background-color;
       color: $hover-link-font-color;
       visibility: hidden;
