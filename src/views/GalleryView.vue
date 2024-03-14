@@ -384,7 +384,7 @@ export default defineComponent({
   .previous-button, .next-button {
     opacity: 0.75;
     transform: scale(0.5, 2);
-    &:hover, &:focus {
+    &:hover {
       opacity: 1;
       transform: scale(1, 2);
     }
@@ -394,7 +394,7 @@ export default defineComponent({
   }
   .previous-button {
     left: -25px;
-    &:hover, &:focus {
+    &:hover {
       left: -28px;
     }
     &:active {
@@ -403,7 +403,7 @@ export default defineComponent({
   }
   .next-button {
     right: -25px;
-    &:hover, &:focus {
+    &:hover {
       right: -28px;
     }
     &:active {
@@ -414,7 +414,7 @@ export default defineComponent({
     z-index: 1;
     top: -10px;
     transform: scale(0.5, 0.5);
-    &:hover, &:focus {
+    &:hover {
       top: -5px;
       transform: scale(0.75, 0.75);
     }
