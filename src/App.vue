@@ -3,9 +3,9 @@
     <hr/>
     <nav>
       <router-link to="/">Home</router-link> |
+      <router-link to="/gallery">Gallery</router-link> |
       <router-link to="/jokes">Jokes</router-link> |
       <router-link to="/projects">Projects</router-link> |
-      <router-link to="/gallery">Gallery</router-link> |
       <router-link to="/blog">Blog</router-link>
     </nav>
     <!-- TODO: add language support to header -->

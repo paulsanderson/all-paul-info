@@ -9,9 +9,11 @@
             <img class="flex-dynamic large-image" width="266" height="400" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.webp"/>
             <div class="flex-dynamic align-left">
               This is the personal page for Paul Sanderson. He is a software developer in Bozeman, Montana, USA.
-              Paul enjoys photography, playing guitar, the outdoors, a game of chess, and a variety of studies like economics, linguistics, and history.
-              The Gallery has a set of Paul's photography, viewable as tiles, in a dialog, or fullscreen. As outlined on the Blog page, more Gallery features are coming.
-              This site was built from scratch and is intended to always be a work in progress. Feedback is welcome.
+              Paul enjoys photography, playing guitar, the outdoors, a game of chess, and a variety of studies like history, economics, and linguistics.<br/>
+              The <router-link to="/gallery">Gallery</router-link> has a selection of Paul's photography - viewable as tiles, in a dialog, or fullscreen.<br/>
+              The <router-link to="/blog">Blog</router-link> has details on which features have been added and which are yet to come.<br/>
+              The <router-link to="/jokes">Jokes</router-link> page is just a fun project for finding, saving, and sharing silly jokes.<br/>
+              The rest of this site is under construction. It is being built from scratch and is intended to always be a work in progress. Feedback is welcome.
             </div>
           </div>
         </div>
@@ -172,6 +174,7 @@ h5 {
   border-radius: 10px;
   transition: 0.5s;
   min-width: 266px;
+  max-width: 266px;
   object-fit: cover;
   aspect-ratio: 0.665;
   @media screen and (max-width: $small) {

@@ -5,6 +5,8 @@
     <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">March 2024 Website Updates</h3>
     <div class="collapsible-content active">
       <ul>
+        <li>March 18&ensp;Add descriptions to photo metadata and display on dialog and fullscreen displays</li>
+        <li>March 17&ensp;Eliminated dependencies, reduced module size from 290kb to 214kb, mobile browser fixes</li>
         <li>March 13&ensp;Added fullscreen button to photo dialog, add details to overlay</li>
         <li>March 12&ensp;Added slide and resize transitions when using next/previous buttons</li>
         <li>March 9 &ensp;Added keyboard and swipe support for next/previous buttons</li>
@@ -20,7 +22,6 @@
     <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">Upcoming Website Features</h3>
     <div class="collapsible-content active">
       <ul>
-        <li>Photo description and fullscreen overlay display</li>
         <li>Ability to search and sort photos</li>
         <li>Ability to share photo links</li>
         <li>Gallery print shop integration</li>
