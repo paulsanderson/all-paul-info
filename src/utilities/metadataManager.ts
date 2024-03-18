@@ -1,5 +1,4 @@
 import { StorageReference, SettableMetadata, updateMetadata } from 'firebase/storage'
-import _ from 'lodash'
 
 const metadataBlob = `DSC_0837.jpg,2023:11:18 02:40:05,20s,f4.0,58.0mm,8000ISO
 PNS_0109.jpg,2022:08:03 20:27:27,1/800s,f7.1,70.0mm,640ISO
@@ -97,9 +96,9 @@ type MetadataObject = {
 
 export class MetadataManager {
   static async setMetadata (item: StorageReference) {
-    const metadataObj: Array<MetadataObject> = this.parseMetadata()
-    const metadataObject = _.find(metadataObj, ({ name }) => {
-      return name === item.name
+    const metadataArray: Array<MetadataObject> = this.parseMetadata()
+    const metadataObject: MetadataObject | undefined = metadataArray.find((element: MetadataObject) => {
+      return item.name === element.name
     })
     const updatedMetadata: SettableMetadata = {
       customMetadata: {

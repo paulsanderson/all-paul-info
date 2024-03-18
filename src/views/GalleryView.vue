@@ -46,10 +46,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import _ from 'lodash'
 import { initializeApp, FirebaseOptions, FirebaseApp } from 'firebase/app'
 import { ref, listAll, getStorage, getDownloadURL, FirebaseStorage, StorageReference, ListResult, getMetadata, FullMetadata } from 'firebase/storage'
 import { Photo } from '@/models/photo'
+import { Utilities } from '@/utilities/utilities'
 // import { MetadataManager } from '@/utilities/metadataManager'
 
 export default defineComponent({
@@ -255,8 +255,7 @@ export default defineComponent({
       nextPhoto.style.transition = `width ${resizeString} ease-in-out`
       nextPhoto.style.width = updatedWidth + 'px'
     },
-    // eslint-disable-next-line
-    onWindowResize: _.debounce(function (this: any) {
+    onWindowResize: Utilities.debounce(function (this: { viewportAspectRatio: number, updateButtonPosition: () => void }) {
       this.viewportAspectRatio = window.innerWidth / window.innerHeight
       this.updateButtonPosition()
     }, 20),

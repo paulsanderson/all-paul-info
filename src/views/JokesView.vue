@@ -37,7 +37,6 @@
 <script lang="ts">
 import { Utilities, Joke, JokeCollection } from '@/utilities/utilities'
 import { defineComponent } from 'vue'
-import _ from 'lodash'
 
 export default defineComponent({
   name: 'JokesView',
@@ -68,7 +67,7 @@ export default defineComponent({
   methods: {
     // TODO: add component-wide busyCursor using isBusy flag
     async onInput (event: Event) {
-      const debounceInput = _.debounce(async () => {
+      const debounceInput = Utilities.debounce(async () => {
         const searchTerm: string = (event.target as HTMLInputElement).value
         if (!searchTerm) {
           this.$data.response = new JokeCollection()
