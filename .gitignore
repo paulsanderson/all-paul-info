@@ -4,6 +4,7 @@ node_modules
 .firebaserc
 .firebase/
 firebase.json
+firebaseOptions.json
 .npmrc
 
 

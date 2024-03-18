@@ -66,18 +66,7 @@ export default defineComponent({
     }
   },
   async beforeMount () {
-    const firebaseConfig: FirebaseOptions = {
-      apiKey: 'AIzaSyChz05zVIVwlI8xu7n0MPITOfgRBPM7bHA',
-      authDomain: 'homepage-413204.firebaseapp.com',
-      projectId: 'homepage-413204',
-      storageBucket: 'homepage-413204.appspot.com',
-      messagingSenderId: '517761735577',
-      appId: '1:517761735577:web:7eac7d1669f86177be1108',
-      measurementId: 'G-5NH4HF3RY0'
-    }
-    const app: FirebaseApp = initializeApp(firebaseConfig)
-    const storage: FirebaseStorage = getStorage(app)
-    const photographyRef: StorageReference = ref(storage, 'photography')
+    const photographyRef: StorageReference = Utilities.getStorageReference('photography')
     const listResult: ListResult = await listAll(photographyRef)
     listResult.items.forEach(async (item: StorageReference) => {
       const url: string = await getDownloadURL(item)
