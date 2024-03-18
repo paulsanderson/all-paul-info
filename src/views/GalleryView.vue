@@ -18,7 +18,7 @@
         <div id="currentPhotoWrapper" class="current-photo-wrapper" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
           <img id="currentPhoto" class="flex-dynamic current-photo" :onload="onDialogPhotoLoad" :alt="currentPhoto.name" :src="currentPhoto.url"/>
           <div class="fullscreen-overlay">
-            <!-- TODO: add close button for mobile -->
+            <img class="close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
             <div class="flex-static"><b>Details</b></div>
             <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
             <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
@@ -124,6 +124,9 @@ export default defineComponent({
       dialog.removeEventListener('touchend', this.touchEndHandler)
       dialog.close()
       return false
+    },
+    onCloseFullscreen () {
+      document.exitFullscreen()
     },
     onClickFullscreen () {
       const currentPhoto: HTMLDivElement = document.getElementById('currentPhotoWrapper') as HTMLDivElement
