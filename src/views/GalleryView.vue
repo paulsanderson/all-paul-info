@@ -393,7 +393,7 @@ export default defineComponent({
       opacity: 1;
       transform: scale(1, 2);
     }
-    &:active {
+    &:active, &:focus {
       transform: scale(0.5, 2);
     }
   }
@@ -423,7 +423,7 @@ export default defineComponent({
       top: -5px;
       transform: scale(0.75, 0.75);
     }
-    &:active {
+    &:active, &:focus {
       top: -10px;
       transform: scale(0.5, 0.5);
     }
