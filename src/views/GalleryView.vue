@@ -46,8 +46,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { initializeApp, FirebaseOptions, FirebaseApp } from 'firebase/app'
-import { ref, listAll, getStorage, getDownloadURL, FirebaseStorage, StorageReference, ListResult, getMetadata, FullMetadata } from 'firebase/storage'
+import { listAll, getDownloadURL, StorageReference, ListResult, getMetadata, FullMetadata } from 'firebase/storage'
 import { Photo } from '@/models/photo'
 import { Utilities } from '@/utilities/utilities'
 // import { MetadataManager } from '@/utilities/metadataManager'

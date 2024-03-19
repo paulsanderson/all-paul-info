@@ -1,4 +1,4 @@
-import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app'
+import { FirebaseApp, initializeApp } from 'firebase/app'
 import { FirebaseStorage, StorageReference, getStorage, ref } from 'firebase/storage'
 import * as firebaseOptions from '../../firebaseOptions.json'
 

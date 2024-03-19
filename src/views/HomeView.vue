@@ -20,8 +20,9 @@
         <h2 class="collapsible-header" @click="(event) => onClickCollapse(event)">Career</h2>
         <div class="collapsible-content relative-parent">
           <div class="absolute-container">
-            <!-- TODO: add support for download -->
-            <img class="button-small" title="Download as PDF" @click="onClickDownload" alt="Download" loading="lazy" src="../assets/download.png"/>
+            <a target="_blank" href="/PaulSandersonResume.pdf" download="PaulSandersonResume.pdf">
+              <img class="button-small" title="Download as PDF" alt="Download as PDF" loading="lazy" src="../assets/download.png"/>
+            </a>
             <a target="_blank" href="https://www.linkedin.com/in/paulsandersonyup/">
               <img class="button-small" title="LinkedIn" alt="LinkedIn" loading="lazy" src="../assets/linkedin.png"/>
             </a>
@@ -141,9 +142,6 @@ export default defineComponent({
       const targetElement: HTMLElement = event.target as HTMLElement
       targetElement.nextElementSibling?.classList.toggle('active')
       targetElement.classList.toggle('active')
-    },
-    async onClickDownload () {
-      return false
     }
   }
 })
