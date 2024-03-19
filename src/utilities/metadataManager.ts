@@ -13,7 +13,7 @@ PNS_4709.jpg|2022-09-18 17:40:17|1/200s|f4.0|70.0mm|31ISO|The view of the Bridge
 PNS_5522.jpg|2022-09-22 14:18:32|1/125s|f4.0|70.0mm|800ISO|A flower in the lush gardens of San Diego's Balboa park.
 PNS_5740.jpg|2022-09-22 16:43:03|1/50s|f13.0|24.0mm|64ISO|A pair of roses in the lush gardens of San Diego's Balboa park.
 PNS_5803.jpg|2022-09-23 13:50:49|1/500s|f4.0|70.0mm|31ISO|A bottlenose dolphin jumping as a man wades into the waters of Mission Beach in San Diego.
-PNS_6519.jpg|2022-09-26 15:03:51|1/500s|f4.0|57.0mm|31ISO|A crooked tree, a crooked street, a cliff, y una casa precario construido con cojones, San Diego.
+PNS_6519.jpg|2022-09-26 15:03:51|1/500s|f4.0|57.0mm|31ISO|A crooked tree, a crooked street, a cliff, y una casa precaria construida con cojones, San Diego.
 PNS_7005.jpg|2022-09-27 12:05:17|1/100s|f4.0|70.0mm|100ISO|A red panda yawning between naps at the San Diego Zoo.
 PNS_7011.jpg|2022-09-27 12:05:31|1/100s|f4.0|70.0mm|100ISO|A red panda between naps at the San Diego Zoo.
 PNS_7025.jpg|2022-09-27 12:06:28|1/100s|f4.0|70.0mm|100ISO|A red panda napping at the San Diego Zoo.
