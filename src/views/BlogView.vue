@@ -26,7 +26,6 @@
         <li>Ability to share photo links</li>
         <li>Gallery print shop integration</li>
         <li>Ability to like/comment on photos</li>
-        <li>Ability to download resume</li>
         <li>Create contact form</li>
       </ul>
     </div>
