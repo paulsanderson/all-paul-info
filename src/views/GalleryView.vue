@@ -375,45 +375,55 @@ export default defineComponent({
     transition: 0.15s ease-in-out;
   }
   .previous-button, .next-button {
-    opacity: 0.75;
     transform: scale(0.5, 2);
-    &:hover {
-      opacity: 1;
-      transform: scale(1, 2);
-    }
-    &:active, &:focus {
-      transform: scale(0.5, 2);
+    @media (hover: hover) {
+      opacity: 0.4;
+      &:hover {
+        opacity: 1;
+        transform: scale(1, 2);
+      }
+      &:active, &:focus {
+        transform: scale(0.5, 2);
+      }
     }
   }
   .previous-button {
     left: -25px;
-    &:hover {
-      left: -28px;
-    }
-    &:active {
-      left: -25px;
+    @media (hover: hover) {
+      &:hover {
+        left: -28px;
+      }
+      &:active {
+        left: -25px;
+      }
     }
   }
   .next-button {
     right: -25px;
-    &:hover {
-      right: -28px;
-    }
-    &:active {
-      right: -25px;
+    @media (hover: hover) {
+      &:hover {
+        right: -28px;
+      }
+      &:active {
+        right: -25px;
+      }
     }
   }
   .fullscreen-button, .close-button {
     z-index: 1;
     top: -10px;
     transform: scale(0.5, 0.5);
-    &:hover {
-      top: -5px;
-      transform: scale(0.75, 0.75);
-    }
-    &:active, &:focus {
-      top: -10px;
-      transform: scale(0.5, 0.5);
+    @media (hover: hover) {
+      opacity: 0.4;
+      &:hover {
+        opacity: 1;
+        top: -5px;
+        transform: scale(0.75, 0.75);
+      }
+      &:active, &:focus {
+        top: -10px;
+        transform: scale(0.5, 0.5);
+      }
     }
   }
   .fullscreen-button {
@@ -427,18 +437,19 @@ export default defineComponent({
     top: 10px;
     right: 10px;
     transform: scale(0.75, 0.75);
-    opacity: 0.3;
-    &:hover {
-      top: 12px;
-      right: 12px;
-      transform: scale(1, 1);
-      opacity: 1;
-    }
-    &:active, &:focus {
-      top: 10px;
-      right: 10px;
-      transform: scale(0.75, 0.75);
-      opacity: 0.3;
+    opacity: 0.4;
+    @media (hover: hover) {
+      &:hover {
+        top: 12px;
+        right: 12px;
+        transform: scale(1, 1);
+        opacity: 1;
+      }
+      &:active, &:focus {
+        top: 10px;
+        right: 10px;
+        transform: scale(0.75, 0.75);
+      }
     }
   }
   .current-photo-wrapper {
