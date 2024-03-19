@@ -18,7 +18,7 @@
         <div id="currentPhotoWrapper" class="current-photo-wrapper" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
           <img id="currentPhoto" class="flex-dynamic current-photo" :onload="onDialogPhotoLoad" :alt="currentPhoto.name" :src="currentPhoto.url"/>
           <div class="fullscreen-overlay">
-            <img class="close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
+            <img class="fullscreen-close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
             <div class="flex-static"><b>Details</b></div>
             <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
             <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
@@ -369,7 +369,7 @@ export default defineComponent({
     max-height: 100px;
     min-height: 100px;
   }
-  .previous-button, .next-button, .close-button, .fullscreen-button {
+  .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button {
     position: absolute;
     cursor: pointer;
     transition: 0.15s ease-in-out;
@@ -421,6 +421,25 @@ export default defineComponent({
   }
   .close-button {
     right: -5px;
+  }
+  .fullscreen-close-button {
+    z-index: 1;
+    top: 10px;
+    right: 10px;
+    transform: scale(0.75, 0.75);
+    opacity: 0.3;
+    &:hover {
+      top: 12px;
+      right: 12px;
+      transform: scale(1, 1);
+      opacity: 1;
+    }
+    &:active, &:focus {
+      top: 10px;
+      right: 10px;
+      transform: scale(0.75, 0.75);
+      opacity: 0.3;
+    }
   }
   .current-photo-wrapper {
     height: 100%;
