@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: make header parallax scroll and include details -->
   <h1 class="flex-static">Gallery</h1>
   <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
   <div class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center width-95 overflow-y">
@@ -16,7 +17,7 @@
           <img id="previousPhoto" class="previous-photo"/>
         </div>
         <div id="currentPhotoWrapper" class="current-photo-wrapper" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
-          <img id="currentPhoto" class="flex-dynamic current-photo" :onload="onDialogPhotoLoad" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+          <img id="currentPhoto" class="flex-dynamic current-photo" :alt="currentPhoto.name" :src="currentPhoto.url"/>
           <div class="fullscreen-overlay">
             <img class="fullscreen-close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
             <div class="flex-static"><b>Details</b></div>
@@ -83,17 +84,7 @@ export default defineComponent({
   },
   methods: {
     onPhotoLoad (event: Event) {
-      const currentImage = event.target as HTMLImageElement
-      currentImage.style.opacity = '1'
-      const index: number = Array.from(currentImage.parentNode?.children ?? []).indexOf(currentImage)
-      const aspectRatio: number = currentImage.naturalWidth / currentImage.naturalHeight
-      currentImage.style.aspectRatio = aspectRatio.toString()
-      this.photos[index].aspectRatio = aspectRatio
-    },
-    onDialogPhotoLoad () {
-      requestAnimationFrame(() => {
-        this.updateButtonPosition()
-      })
+      (event.target as HTMLImageElement).style.opacity = '1'
     },
     onClickPhoto (event: MouseEvent | KeyboardEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
@@ -104,6 +95,9 @@ export default defineComponent({
       dialog.addEventListener('touchstart', this.touchStartHandler)
       dialog.addEventListener('touchend', this.touchEndHandler)
       dialog.showModal()
+      setTimeout(() => {
+        this.updateButtonPosition()
+      })
       return false
     },
     onCloseDialog () {
@@ -143,84 +137,88 @@ export default defineComponent({
     },
     turnPage (isPrevious: boolean) {
       const nextPhoto: HTMLImageElement = document.getElementById(isPrevious ? 'previousPhoto' : 'nextPhoto') as HTMLImageElement
+      nextPhoto.setAttribute('src', this.photos[isPrevious ? this.currentIndex - 1 : this.currentIndex + 1].url)
+      if (nextPhoto.complete) {
+        nextPhoto.onload = null
+        this.doTurnPage(isPrevious, nextPhoto)
+      } else {
+        nextPhoto.onload = () => this.doTurnPage(isPrevious, nextPhoto)
+      }
+    },
+    doTurnPage (isPrevious: boolean, nextPhoto: HTMLImageElement) {
       const nextPhotoWrapper: HTMLDivElement = document.getElementById(isPrevious ? 'previousPhotoWrapper' : 'nextPhotoWrapper') as HTMLDivElement
       const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
       const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
       const resizeString = '0.2s'
       const resizeTime = 200
-      nextPhoto.setAttribute('src', this.photos[isPrevious ? this.currentIndex - 1 : this.currentIndex + 1].url)
-      nextPhoto.onload = () => {
-        // Set nextPhoto and wrapper size to that of currentPhoto, hide overflow, and start sliding it into view
-        nextPhotoWrapper.style.left = '0'
-        nextPhoto.style.height = currentPhotoRect.height + 'px'
-        nextPhoto.style.width = currentPhotoRect.width + 'px'
-        nextPhoto.style.visibility = 'visible'
-        isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
-        nextPhoto.style.transition = `${isPrevious ? 'right' : 'left'} 0.4s ease-in-out`
-        requestAnimationFrame(() => {
-          nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
-          nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
-          isPrevious ? nextPhoto.style.right = '0' : nextPhoto.style.left = '0'
-          isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
-          setTimeout(() => {
-            // Sliding into view has finished, check if resize is needed
-            if (currentPhoto.naturalHeight !== nextPhoto.naturalHeight || currentPhoto.naturalWidth !== nextPhoto.naturalWidth) {
-              // Set nextPhoto left/right so it grows from top-left
-              nextPhoto.style.left = '0'
-              nextPhoto.style.right = '100%'
-              // Hide currentPhoto and buttons, then update bindings
-              currentPhoto.style.opacity = '0'
-              this.showButtons = false
-              this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
-              requestAnimationFrame(() => {
-                // Once currentPhoto is updated
-                const updatedPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
-                // Set wrapper size to larger of two photos
-                nextPhotoWrapper.style.height = Math.max(updatedPhotoRect.height, currentPhotoRect.height) + 'px'
-                nextPhotoWrapper.style.width = Math.max(updatedPhotoRect.width, currentPhotoRect.width) + 'px'
-                if (this.photos[isPrevious ? this.currentIndex + 1 : this.currentIndex - 1].aspectRatio < this.photos[this.currentIndex].aspectRatio) {
-                  // if nextPhoto is taller, transition width first
-                  // if width transition not needed, do height immediately
-                  if (currentPhotoRect.width === updatedPhotoRect.width) {
-                    this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
-                  } else {
-                    this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
-                  }
-                } else {
-                  // if nextPhoto is wider, transition height first
-                  // if height transition not needed, do width immediately
-                  if (currentPhotoRect.height === updatedPhotoRect.height) {
-                    this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
-                  } else {
-                    this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
-                  }
-                }
-                setTimeout(() => {
-                  if (this.photos[isPrevious ? this.currentIndex + 1 : this.currentIndex - 1].aspectRatio > this.photos[this.currentIndex].aspectRatio) {
-                    // if nextPhoto is wider, transition width second
-                    this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
-                  } else {
-                    // if nextPhoto is taller, transition height second
-                    this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
-                  }
-                  setTimeout(() => {
-                    // Once resize transitions are done, display currentPhoto and hide nextPhoto
-                    this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
-                    requestAnimationFrame(() => {
-                      this.updateButtonPosition()
-                      this.showButtons = true
-                    })
-                  }, resizeTime)
-                }, resizeTime)
-              })
+      // Set nextPhoto and wrapper size to that of currentPhoto, hide overflow, and start sliding it into view
+      nextPhotoWrapper.style.left = '0'
+      nextPhoto.style.height = currentPhotoRect.height + 'px'
+      nextPhoto.style.width = currentPhotoRect.width + 'px'
+      nextPhoto.style.visibility = 'visible'
+      isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
+      nextPhoto.style.transition = `${isPrevious ? 'right' : 'left'} 0.4s ease-in-out`
+      nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
+      nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
+      isPrevious ? nextPhoto.style.right = '0' : nextPhoto.style.left = '0'
+      isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
+      setTimeout(() => {
+        // Sliding into view has finished, check if resize is needed
+        if (currentPhoto.naturalHeight !== nextPhoto.naturalHeight || currentPhoto.naturalWidth !== nextPhoto.naturalWidth) {
+          // Set nextPhoto left/right so it grows from top-left
+          nextPhoto.style.left = '0'
+          nextPhoto.style.right = '100%'
+          // Hide currentPhoto and buttons, then update bindings
+          currentPhoto.style.opacity = '0'
+          this.showButtons = false
+          this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
+          requestAnimationFrame(() => {
+            // Once currentPhoto is updated
+            const updatedPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
+            // Set wrapper size to larger of two photos
+            nextPhotoWrapper.style.height = Math.max(updatedPhotoRect.height, currentPhotoRect.height) + 'px'
+            nextPhotoWrapper.style.width = Math.max(updatedPhotoRect.width, currentPhotoRect.width) + 'px'
+            if (this.photos[isPrevious ? this.currentIndex + 1 : this.currentIndex - 1].aspectRatio < this.photos[this.currentIndex].aspectRatio) {
+              // if nextPhoto is taller, transition width first
+              // if width transition not needed, do height immediately
+              if (currentPhotoRect.width === updatedPhotoRect.width) {
+                this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
+              } else {
+                this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
+              }
             } else {
-              // If no resize transition is needed, display currentPhoto and hide nextPhoto
-              this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
-              this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
+              // if nextPhoto is wider, transition height first
+              // if height transition not needed, do width immediately
+              if (currentPhotoRect.height === updatedPhotoRect.height) {
+                this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
+              } else {
+                this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
+              }
             }
-          }, 400)
-        })
-      }
+            setTimeout(() => {
+              if (this.photos[isPrevious ? this.currentIndex + 1 : this.currentIndex - 1].aspectRatio > this.photos[this.currentIndex].aspectRatio) {
+                // if nextPhoto is wider, transition width second
+                this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, resizeString)
+              } else {
+                // if nextPhoto is taller, transition height second
+                this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, resizeString)
+              }
+              setTimeout(() => {
+                // Once resize transitions are done, display currentPhoto and hide nextPhoto
+                this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
+                requestAnimationFrame(() => {
+                  this.updateButtonPosition()
+                  this.showButtons = true
+                })
+              }, resizeTime)
+            }, resizeTime)
+          })
+        } else {
+          // If no resize transition is needed, display currentPhoto and hide nextPhoto
+          this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
+          this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
+        }
+      }, 400)
     },
     resetTransitions (currentPhoto: HTMLImageElement, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, isPrevious: boolean) {
       currentPhoto.style.opacity = '1'
@@ -253,7 +251,8 @@ export default defineComponent({
       this.updateButtonPosition()
     }, 20),
     getViewportHorizontal (): boolean {
-      return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
+      const currentImage: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement ?? { naturalWidth: 0, naturalHeight: 1 }
+      return this.viewportAspectRatio * 0.9 > currentImage.naturalWidth / currentImage.naturalHeight
     },
     updateButtonPosition () {
       if (!this.pauseButtonUpdates) {
