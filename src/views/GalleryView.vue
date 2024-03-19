@@ -20,6 +20,7 @@
           <div class="fullscreen-overlay">
             <img class="fullscreen-close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
             <div class="flex-static"><b>Details</b></div>
+            <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
             <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
             <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
             currentPhoto.metadata.customMetadata?.aperture + ' ' +
@@ -34,6 +35,7 @@
       </div>
       <div class="flex-static flex-container flex-column details-panel">
         <div class="flex-static"><b>Details</b></div>
+        <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
         <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
         <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
         currentPhoto.metadata.customMetadata?.aperture + ' ' +
@@ -323,50 +325,59 @@ export default defineComponent({
   width: 90%;
   position: relative;
   overflow: hidden;
-  .flex-bypass {
-    position: relative;
-    min-height: 0;
-    min-width: 0;
-    height: 100%;
-    width: fit-content;
-    .current-photo {
-      object-fit: scale-down;
-      cursor: auto;
-      max-height: 100%;
-      max-width: 100%;
+  .flex-container {
+    &.flex-row {
+      place-content: center;
+    }
+    &.flex-column {
+      place-items: center;
+    }
+    .flex-bypass {
+      position: relative;
       min-height: 0;
       min-width: 0;
-    }
-    .previous-photo-wrapper, .next-photo-wrapper {
-      position: absolute;
-      top: 0;
-      overflow: hidden;
-      img {
-        object-fit: cover;
-        visibility: hidden;
+      height: 100%;
+      width: fit-content;
+      .current-photo {
+        object-fit: scale-down;
+        cursor: auto;
+        max-height: 100%;
+        max-width: 100%;
+        min-height: 0;
+        min-width: 0;
+      }
+      .previous-photo-wrapper, .next-photo-wrapper {
         position: absolute;
         top: 0;
+        overflow: hidden;
+        img {
+          object-fit: cover;
+          visibility: hidden;
+          position: absolute;
+          top: 0;
+        }
       }
-    }
-    .previous-photo-wrapper {
-      left: 0;
-      right: 0;
-      img {
-        right: 100%;
+      .previous-photo-wrapper {
+        left: 0;
+        right: 0;
+        img {
+          right: 100%;
+        }
       }
-    }
-    .next-photo-wrapper {
-      left: 0;
-      img {
-        left: 100%;
+      .next-photo-wrapper {
+        left: 0;
+        img {
+          left: 100%;
+        }
       }
     }
   }
   .details-panel {
+    place-items: center;
+    place-content: center;
     align-self: center;
-    max-width: 200px;
+    text-wrap: pretty;
     min-width: 200px;
-    max-height: 100px;
     min-height: 100px;
   }
   .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button {
@@ -462,10 +473,9 @@ export default defineComponent({
       }
       .fullscreen-overlay {
         visibility: visible;
-        max-width: 200px;
         min-width: 200px;
-        max-height: 100px;
         min-height: 100px;
+        padding: 5px;
       }
     }
     .fullscreen-overlay {
