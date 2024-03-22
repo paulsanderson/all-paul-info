@@ -86,12 +86,10 @@ export default defineComponent({
     onPhotoLoad (event: Event) {
       const currentImage = event.target as HTMLImageElement
       currentImage.style.opacity = '1'
-      console.log('setting aspectRatio from onPhotoLoad')
       this.calculatePhotoAspectRatio(currentImage, Array.from(currentImage.parentNode?.children ?? []).indexOf(currentImage))
     },
     onDialogPhotoLoad (event: Event) {
       const currentImage = event.target as HTMLImageElement
-      console.log('setting aspectRatio from onDialogPhotoLoad')
       this.calculatePhotoAspectRatio(currentImage, this.currentIndex)
       requestAnimationFrame(() => {
         this.updateButtonPosition()
@@ -111,9 +109,6 @@ export default defineComponent({
       dialog.addEventListener('touchstart', this.touchStartHandler)
       dialog.addEventListener('touchend', this.touchEndHandler)
       dialog.showModal()
-      setTimeout(() => {
-        this.updateButtonPosition()
-      })
       return false
     },
     onCloseDialog () {
@@ -277,10 +272,10 @@ export default defineComponent({
         const previousButton: HTMLImageElement = document.getElementById('previousButton') as HTMLImageElement
         const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
         const currentPhotoWrapperRect: DOMRect = currentPhotoWrapper.getBoundingClientRect()
-        const nextRight: number = (currentPhotoWrapperRect.right - currentPhotoRect.right) / 2
-        const previousLeft: number = (currentPhotoRect.left - currentPhotoWrapperRect.left) / 2
-        nextButton.style.right = (nextRight < 1 ? -25 : nextRight + 3) + 'px'
-        previousButton.style.left = (previousLeft < 1 ? -25 : previousLeft + 3) + 'px'
+        const nextRight: number = currentPhotoWrapperRect.right - currentPhotoRect.right
+        const previousLeft: number = currentPhotoRect.left - currentPhotoWrapperRect.left
+        nextButton.style.right = (-25 + nextRight) + 'px'
+        previousButton.style.left = (-25 + previousLeft) + 'px'
         nextButton.style.top = currentPhotoRect.height / 2 - 40 + 'px'
         previousButton.style.top = currentPhotoRect.height / 2 - 40 + 'px'
       }
