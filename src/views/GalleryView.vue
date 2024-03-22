@@ -17,7 +17,7 @@
           <img id="previousPhoto" class="previous-photo"/>
         </div>
         <div id="currentPhotoWrapper" class="current-photo-wrapper" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
-          <img id="currentPhoto" class="flex-dynamic current-photo" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+          <img id="currentPhoto" class="flex-dynamic current-photo" :onload="(event: any) => onDialogPhotoLoad(event)" :alt="currentPhoto.name" :src="currentPhoto.url"/>
           <div class="fullscreen-overlay">
             <img class="fullscreen-close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
             <div class="flex-static"><b>Details</b></div>
@@ -84,7 +84,23 @@ export default defineComponent({
   },
   methods: {
     onPhotoLoad (event: Event) {
-      (event.target as HTMLImageElement).style.opacity = '1'
+      const currentImage = event.target as HTMLImageElement
+      currentImage.style.opacity = '1'
+      console.log('setting aspectRatio from onPhotoLoad')
+      this.calculatePhotoAspectRatio(currentImage, Array.from(currentImage.parentNode?.children ?? []).indexOf(currentImage))
+    },
+    onDialogPhotoLoad (event: Event) {
+      const currentImage = event.target as HTMLImageElement
+      console.log('setting aspectRatio from onDialogPhotoLoad')
+      this.calculatePhotoAspectRatio(currentImage, this.currentIndex)
+      requestAnimationFrame(() => {
+        this.updateButtonPosition()
+      })
+    },
+    calculatePhotoAspectRatio (currentImage: HTMLImageElement, index: number) {
+      const aspectRatio: number = currentImage.naturalWidth / currentImage.naturalHeight
+      currentImage.style.aspectRatio = aspectRatio.toString()
+      this.photos[index].aspectRatio = aspectRatio
     },
     onClickPhoto (event: MouseEvent | KeyboardEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
@@ -251,8 +267,7 @@ export default defineComponent({
       this.updateButtonPosition()
     }, 20),
     getViewportHorizontal (): boolean {
-      const currentImage: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement ?? { naturalWidth: 0, naturalHeight: 1 }
-      return this.viewportAspectRatio * 0.9 > currentImage.naturalWidth / currentImage.naturalHeight
+      return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
     },
     updateButtonPosition () {
       if (!this.pauseButtonUpdates) {
