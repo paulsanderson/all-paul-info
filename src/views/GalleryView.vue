@@ -259,7 +259,9 @@ export default defineComponent({
     },
     onWindowResize: Utilities.debounce(function (this: { viewportAspectRatio: number, updateButtonPosition: () => void }) {
       this.viewportAspectRatio = window.innerWidth / window.innerHeight
-      this.updateButtonPosition()
+      requestAnimationFrame(() => {
+        this.updateButtonPosition()
+      })
     }, 20),
     getViewportHorizontal (): boolean {
       return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
