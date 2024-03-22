@@ -272,10 +272,8 @@ export default defineComponent({
         const previousButton: HTMLImageElement = document.getElementById('previousButton') as HTMLImageElement
         const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
         const currentPhotoWrapperRect: DOMRect = currentPhotoWrapper.getBoundingClientRect()
-        const nextRight: number = currentPhotoWrapperRect.right - currentPhotoRect.right
-        const previousLeft: number = currentPhotoRect.left - currentPhotoWrapperRect.left
-        nextButton.style.right = (-25 + nextRight) + 'px'
-        previousButton.style.left = (-25 + previousLeft) + 'px'
+        nextButton.style.right = (-25 + (currentPhotoWrapperRect.right - currentPhotoRect.right)) + 'px'
+        previousButton.style.left = (-25 + (currentPhotoRect.left - currentPhotoWrapperRect.left)) + 'px'
         nextButton.style.top = currentPhotoRect.height / 2 - 40 + 'px'
         previousButton.style.top = currentPhotoRect.height / 2 - 40 + 'px'
       }
@@ -387,7 +385,6 @@ export default defineComponent({
     align-self: center;
     text-wrap: pretty;
     min-width: 200px;
-    min-height: 100px;
   }
   .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button {
     position: absolute;
