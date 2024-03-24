@@ -188,24 +188,11 @@ export default defineComponent({
             // Set wrapper size to larger of two photos
             nextPhotoWrapper.style.height = Math.max(updatedPhotoRect.height, currentPhotoRect.height) + 'px'
             nextPhotoWrapper.style.width = Math.max(updatedPhotoRect.width, currentPhotoRect.width) + 'px'
-            let firstResizeTime: number
-            // if nextPhoto is taller, transition height first and width second
-            if (this.photos[isPrevious ? this.currentIndex + 1 : this.currentIndex - 1].aspectRatio < this.photos[this.currentIndex].aspectRatio) {
-              firstResizeTime = currentPhotoRect.width === updatedPhotoRect.width ? 0 : 200
-              this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, firstResizeTime)
-            } else {
-              firstResizeTime = currentPhotoRect.height === updatedPhotoRect.height ? 0 : 200
-              this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, firstResizeTime)
-            }
+            const firstResizeTime: number = currentPhotoRect.width === updatedPhotoRect.width ? 0 : 200
+            this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, firstResizeTime)
             setTimeout(() => {
-              let secondResizeTime: number
-              if (this.photos[isPrevious ? this.currentIndex + 1 : this.currentIndex - 1].aspectRatio > this.photos[this.currentIndex].aspectRatio) {
-                secondResizeTime = currentPhotoRect.width === updatedPhotoRect.width ? 0 : 200
-                this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, secondResizeTime)
-              } else {
-                secondResizeTime = currentPhotoRect.height === updatedPhotoRect.height ? 0 : 200
-                this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, secondResizeTime)
-              }
+              const secondResizeTime: number = currentPhotoRect.height === updatedPhotoRect.height ? 0 : 200
+              this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, secondResizeTime)
               setTimeout(() => {
                 // Once resize transitions are done, display currentPhoto and hide nextPhoto
                 this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
@@ -213,7 +200,6 @@ export default defineComponent({
                   this.updateButtonPosition()
                   this.showButtons = true
                 })
-                }
               }, secondResizeTime)
             }, firstResizeTime)
           })
