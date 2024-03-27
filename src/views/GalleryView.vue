@@ -10,39 +10,25 @@
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" @click="onCloseDialog" src="../assets/close.png"/>
     <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
-    <div class="flex-container flex-nowrap flex-gap" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
-      <div class="flex-bypass">
-        <img id="previousButton" class="previous-button" title="Previous" alt="Previous" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
-        <div id="previousPhotoWrapper" class="previous-photo-wrapper">
-          <img id="previousPhoto" class="previous-photo"/>
-        </div>
-        <div id="currentPhotoWrapper" class="current-photo-wrapper" :class="getViewportHorizontal() ? 'flex-row' : 'flex-column'">
-          <img id="currentPhoto" class="flex-dynamic current-photo" :onload="(event: any) => onDialogPhotoLoad(event)" :alt="currentPhoto.name" :src="currentPhoto.url"/>
-          <div class="fullscreen-overlay">
-            <img class="fullscreen-close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
-            <div class="flex-static"><b>Details</b></div>
-            <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
-            <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
-            <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
-            currentPhoto.metadata.customMetadata?.aperture + ' ' +
-            currentPhoto.metadata.customMetadata?.focalLength + ' ' +
-            currentPhoto.metadata.customMetadata?.iso }}</div>
-          </div>
-        </div>
-        <div id="nextPhotoWrapper" class="next-photo-wrapper">
-          <img id="nextPhoto" class="next-photo"/>
-        </div>
-        <img id="nextButton" class="next-button" title="Next" alt="Next" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
+    <div id="currentPhotoWrapper" class="current-photo-wrapper">
+      <div id="previousPhotoWrapper" class="previous-photo-wrapper">
+        <img id="previousPhoto" class="previous-photo"/>
       </div>
-      <div class="flex-static flex-container flex-column details-panel">
-        <div class="flex-static"><b>Details</b></div>
-        <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
-        <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
-        <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
-        currentPhoto.metadata.customMetadata?.aperture + ' ' +
-        currentPhoto.metadata.customMetadata?.focalLength + ' ' +
-        currentPhoto.metadata.customMetadata?.iso }}</div>
+      <img id="previousButton" class="previous-button" title="Previous" alt="Previous" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
+      <img id="currentPhoto" class="current-photo" :onload="setPhotoPosition" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+      <img id="nextButton" class="next-button" title="Next" alt="Next" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
+      <div id="nextPhotoWrapper" class="next-photo-wrapper">
+        <img id="nextPhoto" class="next-photo"/>
       </div>
+    </div>
+    <div id="details" class="flex-container flex-column details-panel">
+      <div class="flex-static"><b>Details</b></div>
+      <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
+      <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
+      <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
+      currentPhoto.metadata.customMetadata?.aperture + ' ' +
+      currentPhoto.metadata.customMetadata?.focalLength + ' ' +
+      currentPhoto.metadata.customMetadata?.iso }}</div>
     </div>
   </dialog>
 </template>
@@ -63,8 +49,7 @@ export default defineComponent({
       currentIndex: 0,
       viewportAspectRatio: 0,
       touchStartX: 0,
-      showButtons: true,
-      pauseButtonUpdates: false
+      showButtons: true
     }
   },
   async beforeMount () {
@@ -86,19 +71,6 @@ export default defineComponent({
     onPhotoLoad (event: Event) {
       const currentImage = event.target as HTMLImageElement
       currentImage.style.opacity = '1'
-      this.calculatePhotoAspectRatio(currentImage, Array.from(currentImage.parentNode?.children ?? []).indexOf(currentImage))
-    },
-    onDialogPhotoLoad (event: Event) {
-      const currentImage = event.target as HTMLImageElement
-      this.calculatePhotoAspectRatio(currentImage, this.currentIndex)
-      requestAnimationFrame(() => {
-        this.updateButtonPosition()
-      })
-    },
-    calculatePhotoAspectRatio (currentImage: HTMLImageElement, index: number) {
-      const aspectRatio: number = currentImage.naturalWidth / currentImage.naturalHeight
-      currentImage.style.aspectRatio = aspectRatio.toString()
-      this.photos[index].aspectRatio = aspectRatio
     },
     onClickPhoto (event: MouseEvent | KeyboardEvent) {
       const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
@@ -124,20 +96,34 @@ export default defineComponent({
       document.exitFullscreen()
     },
     onClickFullscreen () {
-      const currentPhoto: HTMLDivElement = document.getElementById('currentPhotoWrapper') as HTMLDivElement
-      currentPhoto.addEventListener('fullscreenchange', this.onChangeFullscreen)
-      currentPhoto.requestFullscreen()
+      (document.getElementById('currentPhotoWrapper') as HTMLDivElement).requestFullscreen()
     },
-    onChangeFullscreen () {
-      if (document.fullscreenElement) {
-        this.pauseButtonUpdates = true
-        this.updateButtonPosition()
-      } else {
-        setTimeout(() => {
-          this.pauseButtonUpdates = false
-          const currentPhoto: HTMLDivElement = document.getElementById('currentPhotoWrapper') as HTMLDivElement
-          currentPhoto.removeEventListener('fullscreenchange', this.onChangeFullscreen)
-        }, 100)
+    onWindowResize: Utilities.debounce(function (this: { viewportAspectRatio: number, setPhotoPosition: () => void }) {
+      this.viewportAspectRatio = window.innerWidth / window.innerHeight
+      this.setPhotoPosition()
+    }, 20),
+    getViewportHorizontal (): boolean {
+      return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
+    },
+    dialogKeyHandler (event: KeyboardEvent) {
+      if (event.key === 'ArrowLeft' && this.currentIndex > 0) {
+        this.onClickPrevious()
+      } else if (event.key === 'ArrowRight' && this.currentIndex < this.photos.length - 1) {
+        this.onClickNext()
+      } else if (event.key === 'Enter') {
+        this.onClickFullscreen()
+      }
+    },
+    touchStartHandler (event: TouchEvent) {
+      this.touchStartX = event.changedTouches[0].screenX
+    },
+    touchEndHandler (event: TouchEvent) {
+      // TODO: prevent pinch gesture from changing pages
+      const touchEndX: number = event.changedTouches[0].screenX
+      if (this.currentIndex > 0 && touchEndX > this.touchStartX + 25) {
+        this.onClickPrevious()
+      } else if (this.currentIndex < this.photos.length - 1 && touchEndX < this.touchStartX - 25) {
+        this.onClickNext()
       }
     },
     onClickPrevious () {
@@ -160,124 +146,119 @@ export default defineComponent({
       const nextPhotoWrapper: HTMLDivElement = document.getElementById(isPrevious ? 'previousPhotoWrapper' : 'nextPhotoWrapper') as HTMLDivElement
       const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
       const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
-      // Set nextPhoto and wrapper size to that of currentPhoto, hide overflow, and start sliding it into view
-      const slideTransitionTime = 400
-      nextPhotoWrapper.style.left = '0'
-      nextPhoto.style.height = currentPhotoRect.height + 'px'
-      nextPhoto.style.width = currentPhotoRect.width + 'px'
-      nextPhoto.style.visibility = 'visible'
-      isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
-      nextPhoto.style.transition = `${isPrevious ? 'right' : 'left'} ${slideTransitionTime / 1000}s ease-in-out`
-      nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
-      nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
-      isPrevious ? nextPhoto.style.right = '0' : nextPhoto.style.left = '0'
-      isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
+      const slideTransitionTime = 500
+      this.doSlideTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhotoRect, slideTransitionTime)
       setTimeout(() => {
-        // Sliding into view has finished, check if resize is needed
         if (currentPhoto.naturalHeight !== nextPhoto.naturalHeight || currentPhoto.naturalWidth !== nextPhoto.naturalWidth) {
-          // Set nextPhoto left/right so it grows from top-left
-          nextPhoto.style.left = '0'
-          nextPhoto.style.right = '100%'
-          // Hide currentPhoto and buttons, then update bindings
-          currentPhoto.style.opacity = '0'
+          // Hide buttons and currentPhoto, fix nextPhoto in place, update currentPhoto binding
           this.showButtons = false
+          currentPhoto.style.opacity = '0'
+          nextPhotoWrapper.style.position = 'fixed'
+          nextPhotoWrapper.style.left = currentPhotoRect.x + 'px'
+          nextPhotoWrapper.style.top = currentPhotoRect.y + 'px'
+          nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
+          nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
           this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
           requestAnimationFrame(() => {
-            // Once currentPhoto is updated
-            const updatedPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
-            // Set wrapper size to larger of two photos
-            nextPhotoWrapper.style.height = Math.max(updatedPhotoRect.height, currentPhotoRect.height) + 'px'
-            nextPhotoWrapper.style.width = Math.max(updatedPhotoRect.width, currentPhotoRect.width) + 'px'
-            const firstResizeTime: number = currentPhotoRect.width === updatedPhotoRect.width ? 0 : 200
-            this.doWidthTransition(nextPhoto, currentPhotoRect.width, updatedPhotoRect.width, firstResizeTime)
-            setTimeout(() => {
-              const secondResizeTime: number = currentPhotoRect.height === updatedPhotoRect.height ? 0 : 200
-              this.doHeightTransition(nextPhoto, currentPhotoRect.height, updatedPhotoRect.height, secondResizeTime)
-              setTimeout(() => {
-                // Once resize transitions are done, display currentPhoto and hide nextPhoto
-                this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
-                requestAnimationFrame(() => {
-                  this.updateButtonPosition()
-                  this.showButtons = true
-                })
-              }, secondResizeTime)
-            }, firstResizeTime)
+            if (currentPhoto.complete) {
+              nextPhoto.onload = null
+              this.doResizeTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhoto, currentPhotoRect)
+            } else {
+              currentPhoto.onload = () => {
+                this.doResizeTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhoto, currentPhotoRect)
+              }
+            }
           })
         } else {
-          // If no resize transition is needed, display currentPhoto and hide nextPhoto
-          this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
           this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
+          this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
         }
       }, slideTransitionTime)
     },
-    resetTransitions (currentPhoto: HTMLImageElement, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, isPrevious: boolean) {
-      currentPhoto.style.opacity = '1'
-      nextPhotoWrapper.style.height = ''
-      nextPhotoWrapper.style.width = ''
-      nextPhotoWrapper.style.left = '0'
-      nextPhotoWrapper.style.right = '0'
-      nextPhoto.style.transition = ''
+    doSlideTransition (isPrevious: boolean, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, currentPhotoRect: DOMRect, transitionTime: number) {
+      // Set nextPhoto and wrapper size to that of currentPhoto, hide overflow, and start sliding it into view
+      nextPhotoWrapper.style.inset = '0 0 0 0'
+      nextPhoto.width = currentPhotoRect.width
+      nextPhoto.height = currentPhotoRect.height
+      nextPhoto.style.visibility = 'visible'
       isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
       isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
-      nextPhoto.style.height = ''
-      nextPhoto.style.width = ''
+      nextPhoto.style.transition = `${isPrevious ? 'right' : 'left'} ${transitionTime / 1000}s ease-in-out`
+      isPrevious ? nextPhoto.style.right = '0' : nextPhoto.style.left = '0'
+      isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
+    },
+    doResizeTransition (isPrevious: boolean, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, currentPhoto: HTMLImageElement, currentPhotoRect: DOMRect) {
+      this.setPhotoPosition()
+      const updatedPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
+      const resizeTime: number = currentPhotoRect.width === updatedPhotoRect.width && currentPhotoRect.height === updatedPhotoRect.height ? 0 : 300
+      nextPhoto.style.transition = ''
+      nextPhoto.style.left = '0'
+      nextPhoto.style.top = '0'
+      nextPhoto.style.transition = `all ${resizeTime / 1000}s ease-in-out`
+      nextPhoto.width = updatedPhotoRect.width
+      nextPhoto.height = updatedPhotoRect.height
+      nextPhotoWrapper.style.transition = `all ${resizeTime / 1000}s ease-in-out`
+      nextPhotoWrapper.style.left = updatedPhotoRect.x + 'px'
+      nextPhotoWrapper.style.top = updatedPhotoRect.y + 'px'
+      nextPhotoWrapper.style.width = updatedPhotoRect.width + 'px'
+      nextPhotoWrapper.style.height = updatedPhotoRect.height + 'px'
+      setTimeout(() => {
+        this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
+      }, resizeTime)
+    },
+    resetTransitions (currentPhoto: HTMLImageElement, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, isPrevious: boolean) {
+      currentPhoto.style.opacity = '1'
+      nextPhotoWrapper.style.transition = ''
+      nextPhotoWrapper.style.visibility = 'hidden'
+      nextPhotoWrapper.style.position = 'absolute'
+      nextPhotoWrapper.style.left = '0'
+      nextPhotoWrapper.style.top = '0'
+      nextPhotoWrapper.style.width = ''
+      nextPhotoWrapper.style.height = ''
+      nextPhoto.style.transition = ''
       nextPhoto.style.visibility = 'hidden'
+      isPrevious ? nextPhoto.style.right = '100%' : nextPhoto.style.left = '100%'
+      isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
+      nextPhoto.removeAttribute('height')
+      nextPhoto.removeAttribute('width')
       nextPhoto.removeAttribute('src')
+      this.showButtons = true
     },
-    doHeightTransition (nextPhoto: HTMLImageElement, currentHeight: number, updatedHeight: number, resizeTime: number) {
-      // Set height to currentPhoto, add transition, update height to nextPhoto
-      nextPhoto.style.height = currentHeight + 'px'
-      nextPhoto.style.transition = `height ${resizeTime / 1000 + 's'} ease-in-out`
-      nextPhoto.style.height = updatedHeight + 'px'
-    },
-    doWidthTransition (nextPhoto: HTMLImageElement, currentWidth: number, updatedWidth: number, resizeTime: number) {
-      // Set width to currentPhoto, add transition, update width to nextPhoto
-      nextPhoto.style.width = currentWidth + 'px'
-      nextPhoto.style.transition = `width ${resizeTime / 1000 + 's'} ease-in-out`
-      nextPhoto.style.width = updatedWidth + 'px'
-    },
-    onWindowResize: Utilities.debounce(function (this: { viewportAspectRatio: number, updateButtonPosition: () => void }) {
-      this.viewportAspectRatio = window.innerWidth / window.innerHeight
-      requestAnimationFrame(() => {
-        this.updateButtonPosition()
-      })
-    }, 20),
-    getViewportHorizontal (): boolean {
-      return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
-    },
-    updateButtonPosition () {
-      if (!this.pauseButtonUpdates) {
-        const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
-        const currentPhotoWrapper: HTMLDivElement = currentPhoto.parentNode as HTMLDivElement
-        const nextButton: HTMLImageElement = document.getElementById('nextButton') as HTMLImageElement
-        const previousButton: HTMLImageElement = document.getElementById('previousButton') as HTMLImageElement
-        const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
-        const currentPhotoWrapperRect: DOMRect = currentPhotoWrapper.getBoundingClientRect()
-        nextButton.style.right = (-25 + (currentPhotoWrapperRect.right - currentPhotoRect.right)) + 'px'
-        previousButton.style.left = (-25 + (currentPhotoRect.left - currentPhotoWrapperRect.left)) + 'px'
-        nextButton.style.top = currentPhotoRect.height / 2 - 40 + 'px'
-        previousButton.style.top = currentPhotoRect.height / 2 - 40 + 'px'
-      }
-    },
-    dialogKeyHandler (event: KeyboardEvent) {
-      if (event.key === 'ArrowLeft' && this.currentIndex > 0) {
-        this.onClickPrevious()
-      } else if (event.key === 'ArrowRight' && this.currentIndex < this.photos.length - 1) {
-        this.onClickNext()
-      } else if (event.key === 'Enter') {
-        this.onClickFullscreen()
-      }
-    },
-    touchStartHandler (event: TouchEvent) {
-      this.touchStartX = event.changedTouches[0].screenX
-    },
-    touchEndHandler (event: TouchEvent) {
-      // TODO: prevent pinch gesture from changing pages
-      const touchEndX: number = event.changedTouches[0].screenX
-      if (this.currentIndex > 0 && touchEndX > this.touchStartX + 25) {
-        this.onClickPrevious()
-      } else if (this.currentIndex < this.photos.length - 1 && touchEndX < this.touchStartX - 25) {
-        this.onClickNext()
+    setPhotoPosition () {
+      const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
+      const details: HTMLDivElement = document.getElementById('details') as HTMLDivElement
+      const dialog: HTMLDivElement = document.getElementById('dialog') as HTMLDivElement
+      const dialogRect: DOMRect = dialog.getBoundingClientRect()
+      if (dialogRect.width / dialogRect.height > currentPhoto.naturalWidth / currentPhoto.naturalHeight) {
+        // If dialog is wider than photo, maximize for photo height and base width on that, set details to right
+        currentPhoto.height = Math.min(dialogRect.height - 38, currentPhoto.naturalHeight) // 38 = padding + border
+        currentPhoto.width = currentPhoto.naturalWidth * currentPhoto.height / currentPhoto.naturalHeight
+        const spareWidth: number = (dialogRect.width - currentPhoto.width - 64) / 2
+        if (spareWidth > 250) {
+          details.style.inset = 'auto 19px auto auto'
+          details.style.maxWidth = spareWidth + 'px'
+          dialog.style.overflowY = 'hidden'
+        } else {
+          details.style.inset = 'calc(100% - 18px) auto auto auto'
+          details.style.maxWidth = ''
+          const spareHeight: number = (dialogRect.height - currentPhoto.height - 44) / 2
+          if (spareHeight < details.getBoundingClientRect().height) {
+            dialog.style.overflowY = 'scroll'
+          } else {
+            dialog.style.overflowY = 'hidden'
+          }
+        }
+      } else {
+        currentPhoto.width = Math.min(dialogRect.width - 38, currentPhoto.naturalWidth)
+        currentPhoto.height = currentPhoto.naturalHeight * currentPhoto.width / currentPhoto.naturalWidth
+        details.style.inset = 'calc(100% - 18px) auto auto auto'
+        details.style.maxWidth = ''
+        const spareHeight: number = (dialogRect.height - currentPhoto.height - 44) / 2
+        if (spareHeight < details.getBoundingClientRect().height) {
+          dialog.style.overflowY = 'scroll'
+        } else {
+          dialog.style.overflowY = 'hidden'
+        }
       }
     }
   }
@@ -313,59 +294,65 @@ export default defineComponent({
   width: 90%;
   position: relative;
   overflow: hidden;
-  .flex-container {
-    &.flex-row {
-      place-content: center;
+  place-items: center;
+  place-content: center;
+  &[open] {
+    display: flex;
+  }
+  .current-photo-wrapper {
+    position: relative;
+    &:fullscreen {
+      display: flex;
+      .fullscreen-overlay {
+        visibility: visible;
+        min-width: 200px;
+        min-height: 100px;
+        padding: 5px;
+      }
     }
-    &.flex-column {
-      place-items: center;
+    .fullscreen-overlay {
+      flex: 0 0 auto;
+      align-self: center;
+      background: $body-background-color;
+      color: $hover-link-font-color;
+      visibility: hidden;
+      margin: 20px;
     }
-    .flex-bypass {
-      position: relative;
-      min-height: 0;
-      min-width: 0;
-      height: 100%;
-      width: fit-content;
-      .current-photo {
-        object-fit: scale-down;
-        cursor: auto;
-        max-height: 100%;
-        max-width: 100%;
-        min-height: 0;
-        min-width: 0;
-      }
-      .previous-photo-wrapper, .next-photo-wrapper {
-        position: absolute;
-        top: 0;
-        overflow: hidden;
-        img {
-          object-fit: cover;
-          visibility: hidden;
-          position: absolute;
-          top: 0;
-        }
-      }
-      .previous-photo-wrapper {
-        left: 0;
-        right: 0;
-        img {
-          right: 100%;
-        }
-      }
-      .next-photo-wrapper {
-        left: 0;
-        img {
-          left: 100%;
-        }
-      }
+    .current-photo {
+      flex: 1 1 auto;
+      object-fit: scale-down;
+      cursor: auto;
+    }
+  }
+  .previous-photo-wrapper, .next-photo-wrapper {
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+    img {
+      object-fit: cover;
+      visibility: hidden;
+      position: absolute;
+      top: 0;
+    }
+  }
+  .previous-photo-wrapper {
+    left: 0;
+    right: 0;
+    img {
+      right: 100%;
+    }
+  }
+  .next-photo-wrapper {
+    left: 0;
+    img {
+      left: 100%;
     }
   }
   .details-panel {
-    place-items: center;
-    place-content: center;
-    align-self: center;
+    position: absolute;
     text-wrap: pretty;
-    min-width: 200px;
+    height: fit-content;
+    width: fit-content;
   }
   .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button {
     position: absolute;
@@ -374,6 +361,7 @@ export default defineComponent({
   }
   .previous-button, .next-button {
     transform: scale(0.5, 2);
+    top: calc(50% - 40px);
     @media (hover: hover) {
       opacity: 0.4;
       &:hover {
@@ -448,30 +436,6 @@ export default defineComponent({
         right: 10px;
         transform: scale(0.75, 0.75);
       }
-    }
-  }
-  .current-photo-wrapper {
-    height: 100%;
-    width: 100%;
-    &:fullscreen {
-      display: flex;
-      .current-photo {
-        flex: 1 1 auto;
-      }
-      .fullscreen-overlay {
-        visibility: visible;
-        min-width: 200px;
-        min-height: 100px;
-        padding: 5px;
-      }
-    }
-    .fullscreen-overlay {
-      flex: 0 0 auto;
-      align-self: center;
-      background: $body-background-color;
-      color: $hover-link-font-color;
-      visibility: hidden;
-      margin: 20px;
     }
   }
 }
