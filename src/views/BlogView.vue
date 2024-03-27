@@ -5,6 +5,9 @@
     <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">March 2024 Website Updates</h3>
     <div class="collapsible-content active">
       <ul>
+        <li>March 27&ensp;Center photo on dialog, dynamically position details</li>
+        <li>March 24&ensp;Combine height and width photo resize transitions</li>
+        <li>March 22&ensp;Fix calculation of photo aspect ratio on load and next/previous button positioning</li>
         <li>March 19&ensp;Fixed dialog and button display for Firefox mobile, style improvements</li>
         <li>March 18&ensp;Added descriptions to photos, added resume download functionality</li>
         <li>March 17&ensp;Eliminated dependencies, reduced module size from 290kb to 214kb</li>

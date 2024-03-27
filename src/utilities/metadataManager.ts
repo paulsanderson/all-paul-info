@@ -38,7 +38,7 @@ PNU_1220.jpg|2023-05-12 19:46:56|1/80s|f2.8|200.0mm|320ISO|A yellow-headed black
 PNU_1579.jpg|2023-05-14 06:12:21|1/200s|f2.8|200.0mm|250ISO|A young moose mid-molt having breakfast in the marshy floodplains of the Missouri River headwaters.
 PNU_1722.jpg|2023-05-14 06:59:21|1/1000s|f2.8|200.0mm|64ISO|A blanket of fog hugging the northern Madison mountain range, seen from the Missouri River headwaters.
 PNU_1914.jpg|2023-05-21 19:27:31|1/1600s|f2.8|200.0mm|1600ISO|A yellow-headed blackbird taking to flight.
-PNU_1987.jpg|2023-05-21 19:44:09|1/1600s|f2.8|70.0mm|140ISO|A smokey, early sunset over Cattail Lake.
+PNU_1987.jpg|2023-05-21 19:44:09|1/1600s|f2.8|70.0mm|140ISO|A smoky, early sunset over Cattail Lake.
 PNU_2109.jpg|2023-05-22 19:39:46|1/2000s|f2.8|200.0mm|2200ISO|A pair of Canadian geese chattering as they glide around Cattail Lake.
 PNU_2230.jpg|2023-05-22 19:54:30|1/2000s|f2.8|200.0mm|7200ISO|An osprey in futile search of fish, briefly turning Cattail Lake into a giant birdbath.
 PNU_2819.jpg|2023-06-06 20:02:22|1/200s|f2.8|200.0mm|640ISO|A velvety, verdant field and the crisp, cold Gallatin mountains.
@@ -47,7 +47,7 @@ PNU_3107.jpg|2023-06-10 12:43:33|1/200s|f4.0|70.0mm|64ISO|An old train tunnel on
 PNU_3441.jpg|2023-06-10 20:28:22|1/2500s|f2.8|200.0mm|20000ISO|The quintessential camping activity: roasting marshmellows.
 PNU_4895.jpg|2023-07-06 18:48:42|1/4000s|f5.6|400.0mm|2000ISO|Baby ducks snacking and quacking in equal amounts.
 PNU_5391.jpg|2023-07-17 20:55:03|1/125s|f8.0|140.0mm|140ISO|Water is often a perfect photography subject, uniquely combining light and motion, while the water wheel harkens back to earlier eras.
-PNU_6565.jpg|2023-08-17 20:19:04|1/250s|f4.0|70.0mm|64ISO|A smokey, early sunset over Cattail Lake.
+PNU_6565.jpg|2023-08-17 20:19:04|1/250s|f4.0|70.0mm|64ISO|A smoky, early sunset over Cattail Lake.
 PNU_7074.jpg|2023-09-05 19:32:38|1/500s|f5.6|400.0mm|7200ISO|A cedar waxwing taking a brief break from frenetically building a nest.
 PNU_7142.jpg|2023-09-05 19:48:05|1/200s|f2.8|200.0mm|80ISO|A row of power poles disappearing over the horizon, while the sun does the same.
 PNU_7277.jpg|2023-09-07 10:37:53|1/8000s|f5.6|400.0mm|1100ISO|A bumblebee gracefully flitting between flowers, packing on pollen.

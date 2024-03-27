@@ -280,7 +280,7 @@ export default defineComponent({
       details.style.maxWidth = ''
       if (spareHeight > detailsRect.height) {
         dialog.style.overflowY = 'hidden'
-        details.style.inset = `${photoRect.bottom - 20}px auto auto auto`
+        details.style.inset = `${photoRect.bottom - 15}px auto auto auto`
       } else {
         dialog.style.overflowY = 'scroll'
         details.style.inset = 'calc(100% - 42px) auto auto auto'
