@@ -11,6 +11,7 @@
     <img class="close-button" title="Close" alt="Close" @click="onCloseDialog" src="../assets/close.png"/>
     <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
     <div id="currentPhotoWrapper" class="current-photo-wrapper">
+      <img class="fullscreen-close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
       <div id="previousPhotoWrapper" class="previous-photo-wrapper">
         <img id="previousPhoto" class="previous-photo"/>
       </div>
@@ -22,13 +23,15 @@
       </div>
     </div>
     <div id="details" class="flex-container flex-column details-panel">
-      <div class="flex-static"><b>Details</b></div>
-      <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
-      <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
-      <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
-      currentPhoto.metadata.customMetadata?.aperture + ' ' +
-      currentPhoto.metadata.customMetadata?.focalLength + ' ' +
-      currentPhoto.metadata.customMetadata?.iso }}</div>
+      <h3 class="flex-static">Details</h3>
+      <div class="flex-static flex-container flex-column">
+        <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
+        <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
+        <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
+        currentPhoto.metadata.customMetadata?.aperture + ' ' +
+        currentPhoto.metadata.customMetadata?.focalLength + ' ' +
+        currentPhoto.metadata.customMetadata?.iso }}</div>
+      </div>
     </div>
   </dialog>
 </template>
@@ -96,7 +99,23 @@ export default defineComponent({
       document.exitFullscreen()
     },
     onClickFullscreen () {
-      (document.getElementById('currentPhotoWrapper') as HTMLDivElement).requestFullscreen()
+      const currentPhotoWrapper: HTMLDivElement = document.getElementById('currentPhotoWrapper') as HTMLDivElement
+      currentPhotoWrapper.addEventListener('fullscreenchange', this.onChangeFullscreen)
+      currentPhotoWrapper.requestFullscreen()
+    },
+    onChangeFullscreen (event: Event) {
+      const currentPhotoWrapper: HTMLDivElement = event.target as HTMLDivElement
+      const details: HTMLDivElement = document.getElementById('details') as HTMLDivElement
+      details.classList.toggle('fullscreen-overlay')
+      if (document.fullscreenElement) {
+        currentPhotoWrapper.append(details)
+      } else {
+        const dialog: HTMLDivElement = currentPhotoWrapper.parentNode as HTMLDivElement
+        dialog.append(details)
+        setTimeout(() => {
+          currentPhotoWrapper.removeEventListener('fullscreenchange', this.onChangeFullscreen)
+        }, 100)
+      }
     },
     onWindowResize: Utilities.debounce(function (this: { viewportAspectRatio: number, setPhotoPosition: () => void }) {
       this.viewportAspectRatio = window.innerWidth / window.innerHeight
@@ -230,35 +249,34 @@ export default defineComponent({
       const dialog: HTMLDivElement = document.getElementById('dialog') as HTMLDivElement
       const dialogRect: DOMRect = dialog.getBoundingClientRect()
       if (dialogRect.width / dialogRect.height > currentPhoto.naturalWidth / currentPhoto.naturalHeight) {
-        // If dialog is wider than photo, maximize for photo height and base width on that, set details to right
-        currentPhoto.height = Math.min(dialogRect.height - 38, currentPhoto.naturalHeight) // 38 = padding + border
+        currentPhoto.height = Math.min(dialogRect.height - 38, currentPhoto.naturalHeight)
         currentPhoto.width = currentPhoto.naturalWidth * currentPhoto.height / currentPhoto.naturalHeight
-        const spareWidth: number = (dialogRect.width - currentPhoto.width - 64) / 2
-        if (spareWidth > 250) {
+        const photoRect: DOMRect = currentPhoto.getBoundingClientRect()
+        const spareWidth: number = dialogRect.right - photoRect.right - 19 - 40
+        if (spareWidth > 200) {
           details.style.inset = 'auto 19px auto auto'
           details.style.maxWidth = spareWidth + 'px'
           dialog.style.overflowY = 'hidden'
         } else {
-          details.style.inset = 'calc(100% - 18px) auto auto auto'
-          details.style.maxWidth = ''
-          const spareHeight: number = (dialogRect.height - currentPhoto.height - 44) / 2
-          if (spareHeight < details.getBoundingClientRect().height) {
-            dialog.style.overflowY = 'scroll'
-          } else {
-            dialog.style.overflowY = 'hidden'
-          }
+          this.setDetailsBottomPosition(currentPhoto, details, dialog, dialogRect)
         }
       } else {
         currentPhoto.width = Math.min(dialogRect.width - 38, currentPhoto.naturalWidth)
         currentPhoto.height = currentPhoto.naturalHeight * currentPhoto.width / currentPhoto.naturalWidth
-        details.style.inset = 'calc(100% - 18px) auto auto auto'
         details.style.maxWidth = ''
-        const spareHeight: number = (dialogRect.height - currentPhoto.height - 44) / 2
-        if (spareHeight < details.getBoundingClientRect().height) {
-          dialog.style.overflowY = 'scroll'
-        } else {
-          dialog.style.overflowY = 'hidden'
-        }
+        this.setDetailsBottomPosition(currentPhoto, details, dialog, dialogRect)
+      }
+    },
+    setDetailsBottomPosition (currentPhoto: HTMLImageElement, details: HTMLDivElement, dialog: HTMLDivElement, dialogRect: DOMRect) {
+      const photoRect: DOMRect = currentPhoto.getBoundingClientRect()
+      const detailsRect: DOMRect = details.getBoundingClientRect()
+      const spareHeight: number = dialogRect.bottom - photoRect.bottom
+      if (spareHeight > detailsRect.height) {
+        dialog.style.overflowY = 'hidden'
+        details.style.inset = `${photoRect.bottom - 20}px auto auto auto`
+      } else {
+        dialog.style.overflowY = 'scroll'
+        details.style.inset = 'calc(100% - 42px) auto auto auto'
       }
     }
   }
@@ -300,28 +318,18 @@ export default defineComponent({
     display: flex;
   }
   .current-photo-wrapper {
+    display: grid;
     position: relative;
-    &:fullscreen {
-      display: flex;
-      .fullscreen-overlay {
-        visibility: visible;
-        min-width: 200px;
-        min-height: 100px;
-        padding: 5px;
-      }
-    }
-    .fullscreen-overlay {
-      flex: 0 0 auto;
-      align-self: center;
-      background: $body-background-color;
-      color: $hover-link-font-color;
-      visibility: hidden;
-      margin: 20px;
-    }
+    place-items: center;
     .current-photo {
       flex: 1 1 auto;
       object-fit: scale-down;
       cursor: auto;
+    }
+    &:fullscreen {
+      .fullscreen-close-button {
+        visibility: visible;
+      }
     }
   }
   .previous-photo-wrapper, .next-photo-wrapper {
@@ -350,9 +358,21 @@ export default defineComponent({
   }
   .details-panel {
     position: absolute;
-    text-wrap: pretty;
+    text-wrap: balance;
     height: fit-content;
     width: fit-content;
+    &.fullscreen-overlay {
+      align-self: center;
+      background: $body-background-color;
+      color: $hover-link-font-color;
+      margin: 50px;
+      min-width: 200px;
+      min-height: 100px;
+      padding: 5px;
+    }
+    @media screen and (max-width: $small) {
+      font-size-adjust: 0.4;
+    }
   }
   .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button {
     position: absolute;
@@ -419,6 +439,7 @@ export default defineComponent({
     right: -5px;
   }
   .fullscreen-close-button {
+    visibility: hidden;
     z-index: 1;
     top: 10px;
     right: 10px;
