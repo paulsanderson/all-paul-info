@@ -263,7 +263,6 @@ export default defineComponent({
       } else {
         currentPhoto.width = Math.min(dialogRect.width - 38, currentPhoto.naturalWidth)
         currentPhoto.height = currentPhoto.naturalHeight * currentPhoto.width / currentPhoto.naturalWidth
-        details.style.maxWidth = ''
         this.setDetailsBottomPosition(currentPhoto, details, dialog, dialogRect)
       }
     },
@@ -271,6 +270,7 @@ export default defineComponent({
       const photoRect: DOMRect = currentPhoto.getBoundingClientRect()
       const detailsRect: DOMRect = details.getBoundingClientRect()
       const spareHeight: number = dialogRect.bottom - photoRect.bottom
+      details.style.maxWidth = ''
       if (spareHeight > detailsRect.height) {
         dialog.style.overflowY = 'hidden'
         details.style.inset = `${photoRect.bottom - 20}px auto auto auto`
