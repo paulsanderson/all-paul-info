@@ -52,7 +52,8 @@ export default defineComponent({
       currentIndex: 0,
       viewportAspectRatio: 0,
       touchStartX: 0,
-      showButtons: true
+      showButtons: true,
+      isFullscreen: false
     }
   },
   async beforeMount () {
@@ -108,8 +109,10 @@ export default defineComponent({
       const details: HTMLDivElement = document.getElementById('details') as HTMLDivElement
       details.classList.toggle('fullscreen-overlay')
       if (document.fullscreenElement) {
+        this.isFullscreen = true
         currentPhotoWrapper.append(details)
       } else {
+        this.isFullscreen = false
         const dialog: HTMLDivElement = currentPhotoWrapper.parentNode as HTMLDivElement
         dialog.append(details)
         setTimeout(() => {
@@ -139,9 +142,9 @@ export default defineComponent({
     touchEndHandler (event: TouchEvent) {
       // TODO: prevent pinch gesture from changing pages
       const touchEndX: number = event.changedTouches[0].screenX
-      if (this.currentIndex > 0 && touchEndX > this.touchStartX + 25) {
+      if (this.currentIndex > 0 && touchEndX > this.touchStartX + 75) {
         this.onClickPrevious()
-      } else if (this.currentIndex < this.photos.length - 1 && touchEndX < this.touchStartX - 25) {
+      } else if (this.currentIndex < this.photos.length - 1 && touchEndX < this.touchStartX - 75) {
         this.onClickNext()
       }
     },
@@ -166,6 +169,10 @@ export default defineComponent({
       const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
       const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
       const slideTransitionTime = 500
+      if (this.isFullscreen) {
+        this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
+        return
+      }
       this.doSlideTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhotoRect, slideTransitionTime)
       setTimeout(() => {
         if (currentPhoto.naturalHeight !== nextPhoto.naturalHeight || currentPhoto.naturalWidth !== nextPhoto.naturalWidth) {
@@ -371,7 +378,7 @@ export default defineComponent({
       padding: 5px;
     }
     @media screen and (max-width: $small) {
-      font-size-adjust: 0.4;
+      font-size-adjust: 0.3;
     }
   }
   .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button {
