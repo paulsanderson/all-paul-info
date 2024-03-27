@@ -5,15 +5,14 @@
       <div class="flex-dynamic">
         <h2 class="collapsible-header active" @click="(event) => onClickCollapse(event)">About</h2>
         <div class="collapsible-content active">
-          <div class="flex-container flex-row flex-gap">
+          <div class="flex-container flex-row flex-gap flex-justify-center">
             <img class="flex-dynamic large-image" width="266" height="400" title="Paul Sanderson" alt="Paul Sanderson" src="../assets/paulsanderson.webp"/>
-            <div class="flex-dynamic align-left">
+            <div class="flex-dynamic align-left" style="max-width: 400px">
               This is the personal page for Paul Sanderson. He is a software developer in Bozeman, Montana, USA.
               Paul enjoys photography, playing guitar, the outdoors, a game of chess, and a variety of studies like history, economics, and linguistics.<br/>
               The <router-link to="/gallery">Gallery</router-link> has a selection of Paul's photography - viewable as tiles, in a dialog, or fullscreen.<br/>
               The <router-link to="/blog">Blog</router-link> has details on which features have been added and which are yet to come.<br/>
-              The <router-link to="/jokes">Jokes</router-link> page is just a fun project for finding, saving, and sharing silly jokes.<br/>
-              The rest of this site is under construction. It is being built from scratch and is intended to always be a work in progress. Feedback is welcome.
+              The rest of the site is under construction. It is being built from scratch and is intended to always be a work in progress. Feedback is welcome.
             </div>
           </div>
         </div>

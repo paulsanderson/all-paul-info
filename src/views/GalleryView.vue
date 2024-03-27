@@ -23,10 +23,10 @@
       </div>
     </div>
     <div id="details" class="flex-container flex-column details-panel">
-      <h3 class="flex-static">Details</h3>
+      <h4 class="flex-static">Details</h4>
       <div class="flex-static flex-container flex-column">
         <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
-        <div class="flex-static text-no-wrap"><b>Date: </b>{{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
+        <div class="flex-static text-no-wrap"><u>Date</u>: {{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
         <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
         currentPhoto.metadata.customMetadata?.aperture + ' ' +
         currentPhoto.metadata.customMetadata?.focalLength + ' ' +

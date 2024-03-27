@@ -4,8 +4,6 @@
     <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/gallery">Gallery</router-link> |
-      <router-link to="/jokes">Jokes</router-link> |
-      <router-link to="/projects">Projects</router-link> |
       <router-link to="/blog">Blog</router-link>
     </nav>
     <!-- TODO: add language support to header -->
@@ -16,7 +14,7 @@
       <hr/>
       <ul>
         <li>
-          <a target="_blank" href="https://github.com/paulsanderson">GitHub</a> |
+          <a target="_blank" href="https://github.com/paulsanderson/all-paul-info">GitHub</a> |
           <a target="_blank" href="https://www.linkedin.com/in/paulsandersonyup/">LinkedIn</a> |
           <a target="_blank" href="https://instagram.com/mountain.of.youth.photos">Instagram</a>
         </li>
