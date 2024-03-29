@@ -1,6 +1,6 @@
 <template>
   <h1 class="flex-static">Paul Sanderson</h1>
-  <div class="flex-dynamic flex-container flex-column width-95 overflow-y">
+  <div class="flex-dynamic flex-container flex-column width-95 overflow-y" style="scrollbar-width: thin;">
     <div class="flex-container flex-row">
       <div class="flex-dynamic">
         <h2 class="collapsible-header active" @click="(event) => onClickCollapse(event)">About</h2>

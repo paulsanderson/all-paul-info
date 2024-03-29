@@ -63,14 +63,14 @@ PNU_8343.jpg|2023-09-24 11:45:47|1/200s|f4.0|34.5mm|80ISO|The light at the end o
 PNU_8747.jpg|2023-10-08 16:25:02|1/2500s|f4.0|70.0mm|3200ISO|My dog realizing he has passed the point of no return and that I am too far away.
 PNU_8810.jpg|2023-10-08 16:37:42|1/2500s|f4.0|33.0mm|22800ISO|My dog crossing Crow Creek on a natural bridge.
 PNU_8863.jpg|2023-10-08 18:21:28|1/60s|f4.0|55.0mm|1800ISO|A layer of moss coating a granite boulder above Crow Creek.
-PNU_8879.jpg|2023-10-14 10:32:30|1/320s|f5.0|0.0mm|64ISO|A partial solar eclipse, taken with a solar filter and telescope.
+PNU_8879.jpg|2023-10-14 10:32:30|1/320s|f5.0|1524.0mm|64ISO|A partial solar eclipse, taken with a solar filter and telescope.
 PNU_9083.jpg|2023-10-17 18:54:41|1/60s|f4.0|70.0mm|400ISO|The sun and crescent moon setting over a field in Bozeman.
 PNU_9517.jpg|2023-10-22 16:13:47|1/200s|f5.6|400.0mm|72ISO|A late-season wildflower high on Sacagawea Peak.
 PNU_9520.jpg|2023-10-22 16:17:33|1/1250s|f5.6|400.0mm|800ISO|A curious, young mountain goat on Sacagawea Peak.
 PNU_9626.jpg|2023-10-22 18:20:15|1/200s|f4.0|24.0mm|2800ISO|My dog enjoying the enchanting view of Fairy Lake in the Bridger mountains.
 PNU_9657.jpg|2023-10-22 18:25:47|1/200s|f4.0|24.5mm|5000ISO|The stillness of the rope swing is reflected in the stillness of the lake
 PNU_9693.jpg|2023-10-26 15:05:52|1/2000s|f5.6|200.0mm|180ISO|A pair of magpies battling over my dog's bone in the back yard.
-PNV_0352.jpg|2023-11-18 03:17:40|1/2s|f5.0|0.0mm|400ISO|The Orion nebula taken with a telescope from my back yard.
+PNV_0352.jpg|2023-11-18 03:17:40|1/2s|f5.0|1524.0mm|400ISO|The Orion nebula taken with a telescope from my back yard.
 PNV_1717.jpg|2023-12-03 09:59:54|1/1000s|f5.6|400.0mm|560ISO|A pair of curious northern river otters at the headwaters of the Missouri River.
 PNV_2543.jpg|2023-12-16 08:42:49|1/60s|f4.0|24.0mm|450ISO|A winter sunrise at the headwaters of the Missouri River.
 PNV_2563.jpg|2023-12-16 08:51:54|1/100s|f4.0|24.0mm|250ISO|A winter sunrise at the headwaters of the Missouri River.

@@ -321,6 +321,7 @@ export default defineComponent({
   overflow: hidden;
   place-items: center;
   place-content: center;
+  scrollbar-width: thin;
   &[open] {
     display: flex;
   }
