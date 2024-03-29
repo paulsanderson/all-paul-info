@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import JokesView from '../views/JokesView.vue'
-import ProjectsView from '../views/ProjectsView.vue'
 import GalleryView from '../views/GalleryView.vue'
 import BlogView from '../views/BlogView.vue'
 
@@ -10,16 +8,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Paul',
     component: HomeView
-  },
-  {
-    path: '/jokes',
-    name: 'Jokes',
-    component: JokesView
-  },
-  {
-    path: '/projects',
-    name: 'Projects',
-    component: ProjectsView
   },
   {
     path: '/gallery',
@@ -38,7 +26,7 @@ const router = createRouter({
   routes
 })
 
-const DEFAULT_TITLE = 'Paul'
+const DEFAULT_TITLE = 'all-paul-info'
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   document.title = to.name?.toString() ?? DEFAULT_TITLE
   next()

@@ -2,7 +2,7 @@
   <!-- TODO: make header parallax scroll and include details -->
   <h1 class="flex-static">Gallery</h1>
   <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
-  <div class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center width-95 overflow-y">
+  <div class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center page-container">
     <!-- TODO: dynamically downscale images to save bandwidth? -->
     <!-- TODO: dynamically add watermarks? -->
     <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>

@@ -38,31 +38,12 @@ html {
       ::selection {
         color: $selected-font-color;
       }
-      > .flex-container {
-        overflow-y: auto;
-      }
-      .width-100 {
-        width: 100%;
-        padding-left: 0;
-        padding-right: 0;
-      }
-      .width-95 {
+      .page-container {
         width: 95%;
         padding-left: 2.5%;
         padding-right: 2.5%;
-      }
-      .width-90 {
-        width: 90%;
-        padding-left: 5%;
-        padding-right: 5%;
-      }
-      .width-80 {
-        width: 80%;
-        padding-left: 10%;
-        padding-right: 10%;
-      }
-      .overflow-y {
         overflow-y: auto;
+        scrollbar-width: thin;
       }
       header, footer {
         background-color: $header-footer-background-color;
@@ -98,20 +79,6 @@ html {
         transition: 0.5s;
         &:hover {
           color: $hover-link-font-color;
-        }
-      }
-      .button-large {
-        font-size: 24px;
-        height: 50px !important;
-        outline: none;
-        border: 2px solid black;
-        border-radius: 8px;
-        transition: 0.5s;
-        &:hover, &:focus {
-          border: 2px solid $hover-link-font-color;
-        }
-        @media screen and (max-width: $small) {
-          font-size: 14px;
         }
       }
       .button-small {
@@ -159,9 +126,6 @@ html {
     }
     .flex-justify-center {
       justify-content: center;
-    }
-    .flex-justify-space-between {
-      justify-content: space-between;
     }
     .text-no-wrap {
       text-wrap: nowrap;
