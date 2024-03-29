@@ -6,7 +6,6 @@
       <router-link to="/gallery">Gallery</router-link> |
       <router-link to="/blog">Blog</router-link>
     </nav>
-    <!-- TODO: add language support to header -->
     <hr/>
   </header>
   <router-view/>
@@ -16,7 +15,8 @@
         <li>
           <a target="_blank" href="https://github.com/paulsanderson/all-paul-info">GitHub</a> |
           <a target="_blank" href="https://www.linkedin.com/in/paulsandersonyup/">LinkedIn</a> |
-          <a target="_blank" href="https://instagram.com/mountain.of.youth.photos">Instagram</a>
+          <a target="_blank" href="https://instagram.com/mountain.of.youth.photos">Instagram</a> |
+          <a target="_blank" href="https://icons8.com">Icons by Icons8</a>
         </li>
       </ul>
       <hr/>
@@ -53,11 +53,6 @@ html {
           margin: 0;
           li {
             margin: 0 5px;
-            a {
-              &.router-link-exact-active, &:hover {
-                color: $hover-link-font-color;
-              }
-            }
           }
         }
       }
@@ -68,17 +63,11 @@ html {
         color: $link-font-color;
         font-weight: bold;
         transition: 0.5s;
-        &:hover {
+        &.router-link-exact-active {
           color: $hover-link-font-color;
         }
-        &:visited {
+        &:hover {
           color: $visited-link-font-color;
-        }
-      }
-      h1,h2 {
-        transition: 0.5s;
-        &:hover {
-          color: $hover-link-font-color;
         }
       }
       .button-small {
@@ -132,8 +121,12 @@ html {
     }
     .collapsible-header {
       cursor: pointer;
+      transition: 0.5s;
       &:not(.active) {
         color: $selected-font-color;
+      }
+      &:hover {
+        color: $visited-link-font-color;
       }
     }
     .collapsible-content {

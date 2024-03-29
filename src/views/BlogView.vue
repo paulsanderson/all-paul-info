@@ -1,7 +1,6 @@
 <template>
   <h1 class="flex-static">Blog</h1>
   <div class="flex-dynamic flex-container flex-column page-container">
-    <!-- TODO: add collapsible list of essays, date-stamped, searchable, taggable -->
     <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">March 2024 Website Updates</h3>
     <div class="collapsible-content active">
       <ul>

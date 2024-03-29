@@ -62,7 +62,6 @@
             <h5 class="flex-static no-wrap">01/2016–09/2022</h5>
           </div>
           <div class="flex-container flex-column align-left">
-            <!-- TODO: copy hover/selected text-overflow effect from jokes page -->
             <div class="flex-static">◆ Designed and developed complex web controls as a full-stack developer</div>
             <div class="flex-static">◆ Focused on security; scalability, reliability, and responsiveness; accessibility, usability and reusability</div>
             <div class="flex-static">◆ Optimized asynchronous web requests, data routing, and load balancing, caching and expiration</div>

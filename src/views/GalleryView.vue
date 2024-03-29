@@ -140,7 +140,6 @@ export default defineComponent({
       this.touchStartX = event.changedTouches[0].screenX
     },
     touchEndHandler (event: TouchEvent) {
-      // TODO: prevent pinch gesture from changing pages
       const touchEndX: number = event.changedTouches[0].screenX
       if (this.currentIndex > 0 && touchEndX > this.touchStartX + 75) {
         this.onClickPrevious()
@@ -311,8 +310,6 @@ export default defineComponent({
     margin: 0;
     border: 4px solid $link-font-color;
   }
-  //TODO: add a more intricate transition?
-  // transition: transform var(--ease-elastic-4);
 }
 .photo-dialog {
   height: 90%;
