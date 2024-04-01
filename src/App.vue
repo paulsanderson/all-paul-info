@@ -1,25 +1,34 @@
 <template>
   <header class="flex-static">
-    <hr/>
+    <hr class="horizontal-line"/>
     <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/gallery">Gallery</router-link> |
-      <router-link to="/blog">Blog</router-link>
+      <router-link to="/">HOME</router-link>
+      <hr class="vertical-line" width="0" size="15"/>
+      <router-link to="/gallery">GALLERY</router-link>
+      <hr class="vertical-line" width="0" size="15"/>
+      <router-link to="/blog">BLOG</router-link>
     </nav>
-    <hr/>
+    <hr class="horizontal-line" style="margin-top: 6px;"/>
   </header>
   <router-view/>
   <footer class="flex-static">
-      <hr/>
-      <ul>
-        <li>
-          <a target="_blank" href="https://github.com/paulsanderson/all-paul-info">GitHub</a> |
-          <a target="_blank" href="https://www.linkedin.com/in/paulsandersonyup/">LinkedIn</a> |
-          <a target="_blank" href="https://instagram.com/mountain.of.youth.photos">Instagram</a> |
-          <a target="_blank" href="https://icons8.com">Icons by Icons8</a>
-        </li>
-      </ul>
-      <hr/>
+    <hr class="horizontal-line" style="margin-bottom: 6px;"/>
+    <a target="_blank" href="https://github.com/paulsanderson/all-paul-info">
+      <img class="button-small" title="Github" alt="Github" loading="lazy" src="./assets/github.png"/>
+    </a>
+    <hr class="vertical-line" width="0" size="15"/>
+    <a target="_blank" href="https://www.linkedin.com/in/paulsandersonyup/">
+      <img class="button-small" title="LinkedIn" alt="LinkedIn" loading="lazy" src="./assets/linkedin.png"/>
+    </a>
+    <hr class="vertical-line" width="0" size="15"/>
+    <a target="_blank" href="https://instagram.com/mountain.of.youth.photos">
+      <img class="button-small" title="Instagram" alt="Instagram" loading="lazy" src="./assets/instagram.png"/>
+    </a>
+    <hr class="vertical-line" width="0" size="15"/>
+    <a target="_blank" href="https://icons8.com">
+      <img class="button-small" title="Icons8" alt="Icons8" loading="lazy" src="./assets/icons8.png"/>
+    </a>
+    <hr class="horizontal-line"/>
   </footer>
 </template>
 
@@ -45,15 +54,34 @@ html {
         overflow-y: auto;
         scrollbar-width: thin;
       }
+      header {
+        a {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          transform: scaleY(1.5);
+          line-height: 30.5px;
+          vertical-align: bottom;
+          display: inline-block;
+        }
+        .vertical-line {
+          display: inline-block;
+          padding-top: 26px;
+          margin: -10px 6px -10px 6px;
+        }
+      }
+      footer {
+        a {
+          max-height: 25px;
+        }
+        .vertical-line {
+          display: inline-block;
+          padding-top: 26px;
+          margin: -10px 6px -9px 6px;
+        }
+      }
       header, footer {
         background-color: $header-footer-background-color;
-        ul {
-          list-style-type: none;
-          padding: 0;
-          margin: 0;
-          li {
-            margin: 0 5px;
-          }
+        .horizontal-line {
+          margin: 4px 0 4px 0;
         }
       }
       button {
@@ -71,20 +99,18 @@ html {
         }
       }
       .button-small {
-        font-size: 18px;
-        background-color: $font-color;
         border-radius: 5px;
         cursor: pointer;
         height: 25px;
         width: 25px;
-        padding: 1px 0 1px 0;
         transition: 0.5s;
-        &:hover, &:focus {
-          background-color: $selected-font-color;
-        }
-        &:disabled {
-          cursor: inherit !important;
-          background-color: $selected-font-color;
+        @media (hover: hover) {
+          &:hover {
+            opacity: 0.5;
+          }
+          &:active, &:focus {
+            opacity: 1;
+          }
         }
       }
     }
