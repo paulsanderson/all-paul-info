@@ -28,12 +28,13 @@
     <div id="details" class="flex-container flex-column details-panel">
       <h4 class="flex-static">Details</h4>
       <div class="flex-static flex-container flex-column">
-        <div class="flex-static">{{ currentPhoto.metadata.customMetadata?.description }}</div>
-        <div class="flex-static text-no-wrap"><u>Date</u>: {{ currentPhoto.metadata.customMetadata?.dateCreated }}</div>
-        <div class="flex-static text-no-wrap">{{ currentPhoto.metadata.customMetadata?.exposure + ' ' +
-        currentPhoto.metadata.customMetadata?.aperture + ' ' +
-        currentPhoto.metadata.customMetadata?.focalLength + ' ' +
-        currentPhoto.metadata.customMetadata?.iso }}</div>
+        <div class="flex-static">{{ currentPhoto.description }}</div>
+        <div class="flex-static text-no-wrap"><u>Date</u>: {{ currentPhoto.dateCreated }}</div>
+        <div class="flex-static text-no-wrap">{{ currentPhoto.exposure + ' &bull; ' +
+        currentPhoto.aperture + ' &bull; ' +
+        currentPhoto.focalLength + ' &bull; ' +
+        currentPhoto.iso }}</div>
+        <div><a></a></div>
       </div>
     </div>
   </dialog>
