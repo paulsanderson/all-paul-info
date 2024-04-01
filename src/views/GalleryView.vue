@@ -1,8 +1,11 @@
 <template>
-  <!-- TODO: make header parallax scroll and include details -->
-  <h1 class="flex-static">Gallery</h1>
-  <!-- TODO: add ownership/copyright/usage disclaimer, general description of my photography -->
-  <div class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center page-container">
+  <h1 id="galleryHeader" class="flex-static collapsible-header active" @click="(event) => onClickCollapse(event)">Gallery</h1>
+  <div class="collapsible-content active">
+    All photos are the property of Paul Sanderson, all rights reserved, all reuse of images without permission is illegal, etc.
+    But more importantly, all photos are also available on request in higher quality - usually much higher.
+    Photos will also be available as prints on demand, an integration is in development.
+  </div>
+  <div id="gallery" class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center page-container">
     <!-- TODO: dynamically downscale images to save bandwidth? -->
     <!-- TODO: dynamically add watermarks? -->
     <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
@@ -63,15 +66,25 @@ export default defineComponent({
       const url: string = await getDownloadURL(item)
       const metadata: FullMetadata = await getMetadata(item)
       // MetadataManager.setMetadata(item)
-      this.photos.push(new Photo(metadata.name, url, metadata))
+      this.photos.push(new Photo(metadata.name, url, metadata.customMetadata))
     })
+    const gallery: HTMLDivElement = (document.getElementById('gallery') as HTMLDivElement)
+    gallery.addEventListener('scroll', this.onGalleryScroll)
+    this.onGalleryScroll()
     window.addEventListener('resize', this.onWindowResize)
     this.onWindowResize()
   },
-  unmounted () {
+  beforeUnmount () {
     window.removeEventListener('resize', this.onWindowResize)
+    const gallery: HTMLDivElement = (document.getElementById('gallery') as HTMLDivElement)
+    gallery.removeEventListener('scroll', this.onGalleryScroll)
   },
   methods: {
+    async onClickCollapse (event: MouseEvent) {
+      const targetElement: HTMLElement = event.target as HTMLElement
+      targetElement.nextElementSibling?.classList.toggle('active')
+      targetElement.classList.toggle('active')
+    },
     onPhotoLoad (event: Event) {
       const currentImage = event.target as HTMLImageElement
       currentImage.style.opacity = '1'
@@ -123,6 +136,15 @@ export default defineComponent({
     onWindowResize: Utilities.debounce(function (this: { viewportAspectRatio: number, setPhotoPosition: () => void }) {
       this.viewportAspectRatio = window.innerWidth / window.innerHeight
       this.setPhotoPosition()
+    }, 20),
+    onGalleryScroll: Utilities.debounce(function (this: { onClickCollapse: (event: MouseEvent) => void }) {
+      const gallery: HTMLDivElement = document.getElementById('gallery') as HTMLDivElement
+      const galleryHeader: HTMLDivElement = document.getElementById('galleryHeader') as HTMLDivElement
+      if (galleryHeader.classList.contains('active') && gallery.scrollTop >= 50) {
+        this.onClickCollapse({ target: galleryHeader } as unknown as MouseEvent)
+      } else if (!galleryHeader.classList.contains('active') && gallery.scrollTop < 50) {
+        this.onClickCollapse({ target: galleryHeader } as unknown as MouseEvent)
+      }
     }, 20),
     getViewportHorizontal (): boolean {
       return this.viewportAspectRatio * 0.9 > this.currentPhoto.aspectRatio
