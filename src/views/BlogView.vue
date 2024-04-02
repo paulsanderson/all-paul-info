@@ -4,6 +4,8 @@
     <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">March 2024 Website Updates</h3>
     <div class="collapsible-content active">
       <ul>
+        <li>March 31&ensp;Add gallery details to header, auto-collapse/expand on scroll</li>
+        <li>March 29&ensp;Update header/footer style and icons</li>
         <li>March 27&ensp;Center photo on dialog, dynamically position details</li>
         <li>March 24&ensp;Combine height and width photo resize transitions</li>
         <li>March 22&ensp;Fix calculation of photo aspect ratio on load and next/previous button positioning</li>
