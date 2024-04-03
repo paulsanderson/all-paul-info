@@ -8,7 +8,7 @@ export class Photo {
   public focalLength: string
   public iso: string
   public description: string
-  public storeURL: string
+  public title: string
 
   constructor (name = '', url = '', metadata: {[key: string]: string} = {}, aspectRatio = 0) {
     this.name = name
@@ -20,6 +20,6 @@ export class Photo {
     this.focalLength = metadata.focalLength
     this.iso = metadata.iso
     this.description = metadata.description
-    this.storeURL = metadata.storeURL
+    this.title = metadata.title
   }
 }

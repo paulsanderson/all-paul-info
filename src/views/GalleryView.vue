@@ -1,12 +1,13 @@
 <template>
   <h1 id="galleryHeader" class="flex-static collapsible-header active" @click="(event) => onClickCollapse(event)">Gallery</h1>
   <div class="collapsible-content active">
-    All photos are the property of Paul Sanderson, all rights reserved, all reuse of images without permission is illegal, etc.
-    But more importantly, all photos are also available on request in higher quality - usually much higher.
-    Photos will also be available as prints on demand, an integration is in development.
+    All photos are the property of Paul Sanderson, all rights reserved, all reuse of images without permission is illegal, etc. etc.
+    But more importantly, all photos are also available in higher quality - usually much higher - on purchase.
+    Any photo in the gallery or on instagram without a store page may have one requested.
+    If you prefer to browse the store gallery directly, you may do so <a target="_blank" href="https://2-paul-sanderson.pixels.com/">here</a>
   </div>
   <div id="gallery" class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center page-container">
-    <!-- TODO: dynamically downscale images to save bandwidth? -->
+    <!-- TODO: load tiles using downscaled images to save bandwidth? -->
     <!-- TODO: dynamically add watermarks? -->
     <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
   </div>
@@ -34,6 +35,9 @@
         currentPhoto.aperture + ' &bull; ' +
         currentPhoto.focalLength + ' &bull; ' +
         currentPhoto.iso }}</div>
+        <div v-show="currentPhoto.title" class="flex-static text-no-wrap">
+          <a target="_blank" :href="'https://fineartamerica.com/featured/' + currentPhoto.title + '-paul-sanderson.html'">Shop Products</a>
+        </div>
         <div><a></a></div>
       </div>
     </div>
