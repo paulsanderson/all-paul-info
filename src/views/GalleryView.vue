@@ -335,7 +335,7 @@ export default defineComponent({
         details.style.inset = `${photoRect.bottom - 15}px auto auto auto`
       } else {
         dialog.style.overflowY = 'scroll'
-        details.style.inset = 'calc(100% - 42px) auto auto auto'
+        details.style.inset = 'calc(100% - 38px) auto auto auto'
       }
     }
   }

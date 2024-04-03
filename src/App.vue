@@ -28,7 +28,7 @@
     <a target="_blank" href="https://icons8.com">
       <img class="button-small" title="Icons8" alt="Icons8" loading="lazy" src="./assets/icons8.png"/>
     </a>
-    <hr class="horizontal-line"/>
+    <hr class="horizontal-line" style="margin-top: 2px;"/>
   </footer>
 </template>
 
@@ -64,8 +64,8 @@ html {
         }
         .vertical-line {
           display: inline-block;
-          padding-top: 26px;
-          margin: -10px 6px -10px 6px;
+          padding-top: 27px;
+          margin: -6px 6px -11px 6px;
         }
       }
       footer {
@@ -74,8 +74,8 @@ html {
         }
         .vertical-line {
           display: inline-block;
-          padding-top: 26px;
-          margin: -10px 6px -9px 6px;
+          padding-top: 25px;
+          margin: -7px 6px -7px 6px;
         }
       }
       header, footer {
