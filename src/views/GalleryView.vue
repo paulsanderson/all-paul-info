@@ -14,6 +14,8 @@
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" @click="onCloseDialog" src="../assets/close.png"/>
     <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
+    <img class="copy-button" title="Copy Link" alt="Copy Link" @click="onCopyLink" src="../assets/copy.png"/>
+    <div v-show="showToast" class="toast">Copied Link!</div>
     <div id="currentPhotoWrapper" class="current-photo-wrapper">
       <img class="fullscreen-close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
       <div id="previousPhotoWrapper" class="previous-photo-wrapper">
@@ -29,6 +31,7 @@
     <div id="details" class="flex-container flex-column details-panel">
       <h4 class="flex-static">Details</h4>
       <div class="flex-static flex-container flex-column">
+        <h4 class="flex-static photo-title">{{ formatTitle(currentPhoto.title) }}</h4>
         <div class="flex-static">{{ currentPhoto.description }}</div>
         <div class="flex-static text-no-wrap"><u>Date</u>: {{ currentPhoto.dateCreated }}</div>
         <div class="flex-static text-no-wrap">{{ currentPhoto.exposure + ' &bull; ' +
@@ -36,7 +39,7 @@
         currentPhoto.focalLength + ' &bull; ' +
         currentPhoto.iso }}</div>
         <div v-show="currentPhoto.title" class="flex-static text-no-wrap">
-          <a target="_blank" :href="'https://fineartamerica.com/featured/' + currentPhoto.title + '-paul-sanderson.html'">Shop Products</a>
+          <a class="shop-link" target="_blank" :href="'https://fineartamerica.com/featured/' + currentPhoto.title + '-paul-sanderson.html'">Shop Products</a>
         </div>
         <div><a></a></div>
       </div>
@@ -61,7 +64,8 @@ export default defineComponent({
       viewportAspectRatio: 0,
       touchStartX: 0,
       showButtons: true,
-      isFullscreen: false
+      isFullscreen: false,
+      showToast: false
     }
   },
   async mounted () {
@@ -138,6 +142,20 @@ export default defineComponent({
       history.pushState({}, '', '/gallery')
       return false
     },
+    formatTitle (title: string): string {
+      return title?.split('-').join(' ')
+    },
+    async onCopyLink () {
+      if (!navigator.clipboard) {
+        throw new Error('Browser does not have clipboard support')
+      }
+      await navigator.clipboard.writeText(window.location.href)
+      this.showToast = true
+      setTimeout(() => {
+        this.showToast = false
+      }, 500)
+      return false
+    },
     onCloseFullscreen () {
       document.exitFullscreen()
     },
@@ -169,9 +187,9 @@ export default defineComponent({
     onGalleryScroll: Utilities.debounce(function (this: { onClickCollapse: (event: MouseEvent) => void }) {
       const gallery: HTMLDivElement = document.getElementById('gallery') as HTMLDivElement
       const galleryHeader: HTMLDivElement = document.getElementById('galleryHeader') as HTMLDivElement
-      if (galleryHeader.classList.contains('active') && gallery.scrollTop >= 50) {
+      if (galleryHeader.classList.contains('active') && gallery.scrollTop >= 75) {
         this.onClickCollapse({ target: galleryHeader } as unknown as MouseEvent)
-      } else if (!galleryHeader.classList.contains('active') && gallery.scrollTop < 50) {
+      } else if (!galleryHeader.classList.contains('active') && gallery.scrollTop < 75) {
         this.onClickCollapse({ target: galleryHeader } as unknown as MouseEvent)
       }
     }, 20),
@@ -431,8 +449,23 @@ export default defineComponent({
     @media screen and (max-width: $small) {
       font-size-adjust: 0.3;
     }
+    .shop-link {
+      color: $selected-font-color !important;
+      @media (hover: hover) {
+        &:hover {
+          color: $header-footer-background-color !important;
+        }
+        &:active {
+          color: $visited-link-font-color !important;
+        }
+      }
+    }
+    .photo-title {
+      margin: 0;
+      text-transform: capitalize;
+    }
   }
-  .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button {
+  .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button, .copy-button {
     position: absolute;
     cursor: pointer;
     transition: 0.15s ease-in-out;
@@ -473,7 +506,7 @@ export default defineComponent({
       }
     }
   }
-  .fullscreen-button, .close-button {
+  .fullscreen-button, .close-button, .copy-button {
     z-index: 1;
     top: -10px;
     transform: scale(0.5, 0.5);
@@ -496,6 +529,10 @@ export default defineComponent({
   .close-button {
     right: -5px;
   }
+  .copy-button {
+    right: 45px;
+    padding-top: 1px;
+  }
   .fullscreen-close-button {
     visibility: hidden;
     z-index: 1;
@@ -516,6 +553,15 @@ export default defineComponent({
         transform: scale(0.75, 0.75);
       }
     }
+  }
+  .toast {
+    position: absolute;
+    top: 4px;
+    right: 80px;
+    z-index: 999;
+    transition: 0.5s;
+    color: $selected-font-color;
+    font-size: small;
   }
 }
 #dialog::backdrop {
