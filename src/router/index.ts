@@ -12,6 +12,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/gallery',
     name: 'Gallery',
+    alias: ['/gallery/:id?'],
     component: GalleryView
   },
   {

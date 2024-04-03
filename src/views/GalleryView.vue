@@ -64,16 +64,13 @@ export default defineComponent({
       isFullscreen: false
     }
   },
-  async beforeMount () {
-    const photographyRef: StorageReference = Utilities.getStorageReference('photography')
-    const listResult: ListResult = await listAll(photographyRef)
-    listResult.items.forEach(async (item: StorageReference) => {
-      const url: string = await getDownloadURL(item)
-      const metadata: FullMetadata = await getMetadata(item)
-      // MetadataManager.setMetadata(item)
-      this.photos.push(new Photo(metadata.name, url, metadata.customMetadata))
-    })
-    const gallery: HTMLDivElement = (document.getElementById('gallery') as HTMLDivElement)
+  async mounted () {
+    const gallery: HTMLDivElement = document.getElementById('gallery') as HTMLDivElement
+    if (this.$route.params.id) {
+      this.fetchPhotoByName(this.$route.params.id as string, gallery)
+    } else {
+      this.fetchAllPhotos()
+    }
     gallery.addEventListener('scroll', this.onGalleryScroll)
     this.onGalleryScroll()
     window.addEventListener('resize', this.onWindowResize)
@@ -85,6 +82,27 @@ export default defineComponent({
     gallery.removeEventListener('scroll', this.onGalleryScroll)
   },
   methods: {
+    async fetchPhotoByName (name: string, gallery: HTMLDivElement) {
+      try {
+        const photoRef: StorageReference = Utilities.getStorageReference(`photography/${name}`)
+        const url: string = await getDownloadURL(photoRef)
+        const metadata: FullMetadata = await getMetadata(photoRef)
+        this.photos.push(new Photo(metadata.name, url, metadata.customMetadata))
+        this.onClickPhoto({ target: gallery.firstChild as HTMLElement } as unknown as MouseEvent, true)
+        this.photos.pop()
+      } catch (error) {}
+      this.fetchAllPhotos()
+    },
+    async fetchAllPhotos () {
+      const photographyRef: StorageReference = Utilities.getStorageReference('photography')
+      const listResult: ListResult = await listAll(photographyRef)
+      for await (const item of listResult.items) {
+        const url: string = await getDownloadURL(item)
+        const metadata: FullMetadata = await getMetadata(item)
+        // MetadataManager.setMetadata(item)
+        this.photos.push(new Photo(metadata.name, url, metadata.customMetadata))
+      }
+    },
     async onClickCollapse (event: MouseEvent) {
       const targetElement: HTMLElement = event.target as HTMLElement
       targetElement.nextElementSibling?.classList.toggle('active')
@@ -94,15 +112,19 @@ export default defineComponent({
       const currentImage = event.target as HTMLImageElement
       currentImage.style.opacity = '1'
     },
-    onClickPhoto (event: MouseEvent | KeyboardEvent) {
-      const selectedImage: HTMLImageElement = (event.target as HTMLImageElement)
-      this.currentIndex = Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
+    onClickPhoto (event: MouseEvent | KeyboardEvent, isParam = false) {
+      const selectedImage: HTMLImageElement = event.target as HTMLImageElement
+      this.currentIndex = isParam ? 0 : Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
       this.currentPhoto = this.photos[this.currentIndex]
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
       dialog.addEventListener('keyup', this.dialogKeyHandler)
       dialog.addEventListener('touchstart', this.touchStartHandler)
       dialog.addEventListener('touchend', this.touchEndHandler)
+      dialog.addEventListener('close', this.onCloseDialog)
       dialog.showModal()
+      if (!isParam) {
+        history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
+      }
       return false
     },
     onCloseDialog () {
@@ -111,7 +133,9 @@ export default defineComponent({
       dialog.removeEventListener('keyup', this.dialogKeyHandler)
       dialog.removeEventListener('touchstart', this.touchStartHandler)
       dialog.removeEventListener('touchend', this.touchEndHandler)
+      dialog.removeEventListener('close', this.onCloseDialog)
       dialog.close()
+      history.pushState({}, '', '/gallery')
       return false
     },
     onCloseFullscreen () {
@@ -211,6 +235,7 @@ export default defineComponent({
           nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
           nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
           this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
+          history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
           requestAnimationFrame(() => {
             if (currentPhoto.complete) {
               nextPhoto.onload = null
@@ -223,6 +248,7 @@ export default defineComponent({
           })
         } else {
           this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
+          history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
           this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
         }
       }, slideTransitionTime)

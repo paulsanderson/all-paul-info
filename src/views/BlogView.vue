@@ -4,6 +4,7 @@
     <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">March 2024 Website Updates</h3>
     <div class="collapsible-content active">
       <ul>
+        <li>April 3 &ensp;Allow linking to specific photos using query parameters</li>
         <li>April 2 &ensp;Add store pages for gallery photos</li>
         <li>March 31&ensp;Add gallery details to header, auto-collapse/expand on scroll</li>
         <li>March 29&ensp;Update header/footer style and icons</li>
@@ -29,7 +30,6 @@
     <div class="collapsible-content active">
       <ul>
         <li>Ability to search and sort photos</li>
-        <li>Ability to share photo links</li>
         <li>Ability to like/comment on photos</li>
         <li>Create contact form</li>
       </ul>
