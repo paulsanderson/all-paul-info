@@ -58,7 +58,7 @@ PNU_8211|2023-09-24 07:29:32|1/60s|f22.0|86.0mm|64ISO|A foggy Fall morning at th
 PNU_8231|2023-09-24 07:41:17|1/200s|f14.0|200.0mm|140ISO|A bird cuts through the fog at dawn at the headwaters of the Missouri River.|missouri-river-misty-bird
 PNU_8343|2023-09-24 11:45:47|1/200s|f4.0|34.5mm|80ISO|The light at the end of the tunnel is nature.|nature-tunnel
 PNU_8747|2023-10-08 16:25:02|1/2500s|f4.0|70.0mm|3200ISO|The best dog realizing he has just passed the point of no return on a natural bridge and that his owner is too far away.|natural-bridge-crossing
-PNU_8810|2023-10-08 16:37:42|1/2500s|f4.0|33.0mm|22800ISO|The best dog crossing Crow Creek on a natural bridge with colorful late-autumn leaves in the background.|crossing-crow-creek?newartwork=true
+PNU_8810|2023-10-08 16:37:42|1/2500s|f4.0|33.0mm|22800ISO|The best dog crossing Crow Creek on a natural bridge with colorful late-autumn leaves in the background.|crossing-crow-creek
 PNU_8863|2023-10-08 18:21:28|1/60s|f4.0|55.0mm|1800ISO|A layer of verdant green moss coating a granite boulder above Crow Creek.|mossy-boulders
 PNU_8879|2023-10-14 10:32:30|1/320s|f5.0|1524.0mm|64ISO|A partial solar eclipse captured with a solar filter and telescope.|solar-eclipse
 PNU_9083|2023-10-17 18:54:41|1/60s|f4.0|70.0mm|400ISO|The sun and crescent moon both set over a dark green field in Bozeman.|moon-and-sunset
@@ -76,7 +76,7 @@ PNV_3658|2023-12-24 09:38:23|1/400s|f5.6|140.0mm|64ISO|A thick morning fog blots
 PNV_3971|2023-12-31 10:42:02|1/2s|f22.0|34.5mm|64ISO|The frigid rapids of the Madison River in winter flowing over a slippery mid-river boulder.|madison-river-rapids
 PNV_4584|2024-01-04 11:46:11|1/1250s|f2.8|140.0mm|200ISO|A four-year-old, 1100 pound Alaskan Brown Bear named Max bearing a gentle expression at a rescue center in Montana.|brown-bear-smile
 PNV_6119|2024-02-10 11:52:06|1/2000s|f8.0|400.0mm|450ISO|A mature bald eagle majestically overlooks the Madison River from its snowy perch.|majestic-bald-eagle
-PNV_7984|2024-03-29 07:19:30|1/200s|f5.6|390.0mm|900ISO|A pair of American White Pelicans wake and stretch while the rest of their flock still sleeps. Migrating to their breeding grounds, the adult males have grown Nuptial Tubercles on their beaks to impress potential mates.|pelican-sunrise|`
+PNV_7984|2024-03-29 07:19:30|1/200s|f5.6|390.0mm|900ISO|A pair of American White Pelicans wake and stretch while the rest of their flock still sleeps. Migrating to their breeding grounds, the adult males have grown Nuptial Tubercles on their beaks to impress potential mates.|pelican-sunrise`
 
 type MetadataObject = {
   name: string
@@ -93,7 +93,7 @@ export class MetadataManager {
   static async setMetadata (item: StorageReference) {
     const metadataArray: Array<MetadataObject> = this.parseMetadata()
     const metadataObject: MetadataObject | undefined = metadataArray.find((element: MetadataObject) => {
-      return item.name === element.name
+      return item.name === element.name + '.jpg'
     })
     const updatedMetadata: SettableMetadata = {
       customMetadata: {
