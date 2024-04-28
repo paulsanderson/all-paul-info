@@ -76,7 +76,8 @@ PNV_3658|2023-12-24 09:38:23|1/400s|f5.6|140.0mm|64ISO|A thick morning fog blots
 PNV_3971|2023-12-31 10:42:02|1/2s|f22.0|34.5mm|64ISO|The frigid rapids of the Madison River in winter flowing over a slippery mid-river boulder.|madison-river-rapids
 PNV_4584|2024-01-04 11:46:11|1/1250s|f2.8|140.0mm|200ISO|A four-year-old, 1100 pound Alaskan Brown Bear named Max bearing a gentle expression at a rescue center in Montana.|brown-bear-smile
 PNV_6119|2024-02-10 11:52:06|1/2000s|f8.0|400.0mm|450ISO|A mature bald eagle majestically overlooks the Madison River from its snowy perch.|majestic-bald-eagle
-PNV_7984|2024-03-29 07:19:30|1/200s|f5.6|390.0mm|900ISO|A pair of American White Pelicans wake and stretch while the rest of their flock still sleeps. Migrating to their breeding grounds, the adult males have grown Nuptial Tubercles on their beaks to impress potential mates.|pelican-sunrise`
+PNV_7984|2024-03-29 07:19:30|1/200s|f5.6|390.0mm|900ISO|A pair of American White Pelicans wake and stretch while the rest of their flock still sleeps. Migrating to their breeding grounds, the adult males have grown Nuptial Tubercles on their beaks to impress potential mates.|pelican-sunrise
+PNW_0025|2024-04-15 10:25:44|1/250s|f6.3|400.0mm|64ISO|A juvenile bald eagle stares intensely, looking grumpy in the Spring rain.|going-bald`
 
 type MetadataObject = {
   name: string
