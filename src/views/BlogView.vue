@@ -1,11 +1,11 @@
 <template>
   <h1 class="flex-static">Blog</h1>
   <div class="flex-dynamic flex-container flex-column page-container">
-    <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">March 2024 Website Updates</h3>
+    <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">2024 Website Updates</h3>
     <div class="collapsible-content active">
       <ul>
         <li>April 3 &ensp;Allow linking to specific photos using query parameters</li>
-        <li>April 2 &ensp;Add store pages for gallery photos</li>
+        <li>April 2 &ensp;Add store pages for gallery photos, add copy link button and toast</li>
         <li>March 31&ensp;Add gallery details to header, auto-collapse/expand on scroll</li>
         <li>March 29&ensp;Update header/footer style and icons</li>
         <li>March 27&ensp;Center photo on dialog, dynamically position details</li>
@@ -30,7 +30,7 @@
     <div class="collapsible-content active">
       <ul>
         <li>Ability to search and sort photos</li>
-        <li>Ability to like/comment on photos</li>
+        <li>Ability to save/like/comment on photos</li>
         <li>Create contact form</li>
       </ul>
     </div>
