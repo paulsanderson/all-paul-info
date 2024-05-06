@@ -1,13 +1,21 @@
 <template>
   <h1 class="flex-static">Blog</h1>
   <div class="flex-dynamic flex-container flex-column page-container">
-    <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">2024 Website Updates</h3>
+    <h3 class="left-header collapsible-header active" @click="(event) => onClickCollapse(event)">2024 Website Updates</h3>
     <div class="collapsible-content active">
+      <h4 class="left-header">May</h4>
+      <ul>
+        <li>May 5 &ensp;Add search/sort UI to gallery header</li>
+      </ul>
+      <h4 class="left-header">April</h4>
       <ul>
         <li>April 17&ensp;Optimize Firebase requests by parallelizing them</li>
         <li>April 10&ensp;Load lower resolution photo copies for tile view</li>
         <li>April 3 &ensp;Allow linking to specific photos using query parameters</li>
         <li>April 2 &ensp;Add store pages for gallery photos, add copy link button and toast</li>
+      </ul>
+      <h4 class="left-header">March</h4>
+      <ul>
         <li>March 31&ensp;Add gallery details to header, auto-collapse/expand on scroll</li>
         <li>March 29&ensp;Update header/footer style and icons</li>
         <li>March 27&ensp;Center photo on dialog, dynamically position details</li>
@@ -28,7 +36,7 @@
         <li>March 1 &ensp;Domain acquired, github repository created, firebase hosting setup, website launched</li>
       </ul>
     </div>
-    <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">Upcoming Website Features</h3>
+    <h3 class="left-header collapsible-header active" @click="(event) => onClickCollapse(event)">Upcoming Website Features</h3>
     <div class="collapsible-content active">
       <ul>
         <li>Ability to search and sort photos</li>
@@ -64,5 +72,10 @@ ul {
     font-family: 'Hack';
     text-align: start;
   }
+}
+.left-header {
+  display: inline-block;
+  width: 95%;
+  text-align: left;
 }
 </style>
