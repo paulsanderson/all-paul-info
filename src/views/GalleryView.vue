@@ -256,12 +256,7 @@ export default defineComponent({
         if (currentPhoto.naturalHeight !== nextPhoto.naturalHeight || currentPhoto.naturalWidth !== nextPhoto.naturalWidth) {
           // Hide buttons and currentPhoto, fix nextPhoto in place, update currentPhoto binding
           this.showButtons = false
-          currentPhoto.style.opacity = '0'
-          nextPhotoWrapper.style.position = 'fixed'
-          nextPhotoWrapper.style.left = currentPhotoRect.x + 'px'
-          nextPhotoWrapper.style.top = currentPhotoRect.y + 'px'
-          nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
-          nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
+          this.setupResizeTransition(currentPhoto, nextPhotoWrapper, currentPhotoRect)
           this.loadLargePhoto(nextPhoto, isPrevious ? --this.currentIndex : ++this.currentIndex)
           requestAnimationFrame(() => {
             this.doResizeTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhoto, currentPhotoRect)
@@ -284,6 +279,14 @@ export default defineComponent({
       nextPhoto.style.transition = `${isPrevious ? 'right' : 'left'} ${transitionTime / 1000}s ease-in-out`
       isPrevious ? nextPhoto.style.right = '0' : nextPhoto.style.left = '0'
       isPrevious ? nextPhoto.style.left = '' : nextPhoto.style.right = ''
+    },
+    setupResizeTransition (currentPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, currentPhotoRect: DOMRect) {
+      currentPhoto.style.opacity = '0'
+      nextPhotoWrapper.style.position = 'fixed'
+      nextPhotoWrapper.style.left = currentPhotoRect.x + 'px'
+      nextPhotoWrapper.style.top = currentPhotoRect.y + 'px'
+      nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
+      nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
     },
     doResizeTransition (isPrevious: boolean, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, currentPhoto: HTMLImageElement, currentPhotoRect: DOMRect) {
       this.setPhotoPosition()
