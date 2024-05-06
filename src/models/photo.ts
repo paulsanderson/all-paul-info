@@ -1,6 +1,7 @@
 export class Photo {
   public name: string
-  public url: string
+  public smallUrl: string
+  public largeUrl: string
   public aspectRatio: number
   public dateCreated: string
   public exposure: string
@@ -10,9 +11,10 @@ export class Photo {
   public description: string
   public title: string
 
-  constructor (name = '', url = '', metadata: {[key: string]: string} = {}, aspectRatio = 0) {
+  constructor (name = '', smallUrl = '', largeUrl = '', metadata: {[key: string]: string} = {}, aspectRatio = 0) {
     this.name = name
-    this.url = url
+    this.smallUrl = smallUrl
+    this.largeUrl = largeUrl
     this.aspectRatio = aspectRatio
     this.dateCreated = metadata.dateCreated
     this.exposure = metadata.exposure

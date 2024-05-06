@@ -7,9 +7,7 @@
     If you prefer to browse the store gallery directly, you may do so <a target="_blank" href="https://2-paul-sanderson.pixels.com/">here</a>
   </div>
   <div id="gallery" class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center page-container">
-    <!-- TODO: load tiles using downscaled images to save bandwidth? -->
-    <!-- TODO: dynamically add watermarks? -->
-    <img v-for="photo in photos" :key="photo.url" class="flex-dynamic photo-tile" :onload="(event: any) => onPhotoLoad(event)" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.url" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
+    <img v-for="photo in photos" :key="photo.smallUrl" class="flex-dynamic photo-tile" :onload="(event: any) => event.target.style.opacity = '1'" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.smallUrl" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
     <img class="close-button" title="Close" alt="Close" @click="onCloseDialog" src="../assets/close.png"/>
@@ -22,7 +20,7 @@
         <img id="previousPhoto" class="previous-photo"/>
       </div>
       <img id="previousButton" class="previous-button" title="Previous" alt="Previous" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
-      <img id="currentPhoto" class="current-photo" :onload="setPhotoPosition" :alt="currentPhoto.name" :src="currentPhoto.url"/>
+      <img id="currentPhoto" class="current-photo" :alt="currentPhoto.name" :src="currentPhoto.largeUrl"/>
       <img id="nextButton" class="next-button" title="Next" alt="Next" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
       <div id="nextPhotoWrapper" class="next-photo-wrapper">
         <img id="nextPhoto" class="next-photo"/>
@@ -49,9 +47,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { listAll, getDownloadURL, StorageReference, ListResult, getMetadata, FullMetadata } from 'firebase/storage'
+import { listAll, getDownloadURL, StorageReference, ListResult, getMetadata, FullMetadata, FirebaseStorage, getStorage, ref } from 'firebase/storage'
 import { Photo } from '@/models/photo'
 import { Utilities } from '@/utilities/utilities'
+import { FirebaseApp, initializeApp } from 'firebase/app'
+import * as firebaseOptions from '../../firebaseOptions.json'
 // import { MetadataManager } from '@/utilities/metadataManager'
 
 export default defineComponent({
@@ -65,10 +65,13 @@ export default defineComponent({
       touchStartX: 0,
       showButtons: true,
       isFullscreen: false,
-      showToast: false
+      showToast: false,
+      storage: {} as FirebaseStorage
     }
   },
-  async mounted () {
+  mounted () {
+    const app: FirebaseApp = initializeApp(firebaseOptions)
+    this.storage = getStorage(app)
     const gallery: HTMLDivElement = document.getElementById('gallery') as HTMLDivElement
     if (this.$route.params.id) {
       this.fetchPhotoByName(this.$route.params.id as string, gallery)
@@ -87,49 +90,59 @@ export default defineComponent({
   },
   methods: {
     async fetchPhotoByName (name: string, gallery: HTMLDivElement) {
-      try {
-        const photoRef: StorageReference = Utilities.getStorageReference(`photography/${name}`)
-        const url: string = await getDownloadURL(photoRef)
-        const metadata: FullMetadata = await getMetadata(photoRef)
-        this.photos.push(new Photo(metadata.name, url, metadata.customMetadata))
-        this.onClickPhoto({ target: gallery.firstChild as HTMLElement } as unknown as MouseEvent, true)
-        this.photos.pop()
-      } catch (error) {}
+      const photoRef: StorageReference = ref(this.storage, `photography/${name}`)
+      const metadataResult: [FullMetadata, string] = await Promise.all([getMetadata(photoRef), getDownloadURL(photoRef)])
+      const metadata: FullMetadata = metadataResult[0]
+      const largeUrl: string = metadataResult[1]
+      this.photos.push(new Photo(metadata.name, '', largeUrl, metadata.customMetadata))
+      this.onClickPhoto({ target: gallery.firstChild as HTMLElement } as unknown as MouseEvent, true)
+      this.photos.pop()
       this.fetchAllPhotos()
     },
     async fetchAllPhotos () {
-      const photographyRef: StorageReference = Utilities.getStorageReference('photography')
-      const listResult: ListResult = await listAll(photographyRef)
-      for await (const item of listResult.items) {
-        const url: string = await getDownloadURL(item)
-        const metadata: FullMetadata = await getMetadata(item)
+      const photoRef: StorageReference = ref(this.storage, 'photography-sm')
+      const largePhotoRef: StorageReference = ref(this.storage, 'photography')
+      const listResult: [ListResult, ListResult] = await Promise.all([listAll(photoRef), listAll(largePhotoRef)])
+      const photoList: ListResult = listResult[0]
+      const largePhotoList: ListResult = listResult[1]
+      const metadataPromises: Promise<[FullMetadata, string, string]>[] = []
+      let i = 0
+      for (const item of photoList.items) {
         // MetadataManager.setMetadata(item)
-        this.photos.push(new Photo(metadata.name, url, metadata.customMetadata))
+        metadataPromises.push(Promise.all([getMetadata(item), getDownloadURL(item), getDownloadURL(largePhotoList.items.at(i++) as StorageReference)]))
+      }
+      const metadataResults: [FullMetadata, string, string][] = await Promise.all(metadataPromises)
+      for (const metadataResult of metadataResults) {
+        this.photos.push(new Photo(metadataResult[0].name, metadataResult[1], metadataResult[2], metadataResult[0].customMetadata))
       }
     },
-    async onClickCollapse (event: MouseEvent) {
+    onClickCollapse (event: MouseEvent) {
       const targetElement: HTMLElement = event.target as HTMLElement
       targetElement.nextElementSibling?.classList.toggle('active')
       targetElement.classList.toggle('active')
     },
-    onPhotoLoad (event: Event) {
-      const currentImage = event.target as HTMLImageElement
-      currentImage.style.opacity = '1'
+    loadLargePhoto (photoElement: HTMLImageElement, index: number, onload?: () => void) {
+      if (onload) {
+        photoElement.src = this.photos[index].largeUrl
+        photoElement.complete ? onload() : photoElement.onload = onload
+      }
+      this.currentPhoto = this.photos[index]
     },
     onClickPhoto (event: MouseEvent | KeyboardEvent, isParam = false) {
       const selectedImage: HTMLImageElement = event.target as HTMLImageElement
       this.currentIndex = isParam ? 0 : Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
-      this.currentPhoto = this.photos[this.currentIndex]
+      this.loadLargePhoto(document.getElementById('currentPhoto') as HTMLImageElement, this.currentIndex, this.showDialog)
+      return false
+    },
+    showDialog () {
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
       dialog.addEventListener('keyup', this.dialogKeyHandler)
       dialog.addEventListener('touchstart', this.touchStartHandler)
       dialog.addEventListener('touchend', this.touchEndHandler)
       dialog.addEventListener('close', this.onCloseDialog)
+      history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
       dialog.showModal()
-      if (!isParam) {
-        history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
-      }
-      return false
+      this.setPhotoPosition()
     },
     onCloseDialog () {
       this.currentPhoto = new Photo()
@@ -224,21 +237,18 @@ export default defineComponent({
     },
     turnPage (isPrevious: boolean) {
       const nextPhoto: HTMLImageElement = document.getElementById(isPrevious ? 'previousPhoto' : 'nextPhoto') as HTMLImageElement
-      nextPhoto.setAttribute('src', this.photos[isPrevious ? this.currentIndex - 1 : this.currentIndex + 1].url)
-      if (nextPhoto.complete) {
-        nextPhoto.onload = null
-        this.doTurnPage(isPrevious, nextPhoto)
-      } else {
-        nextPhoto.onload = () => this.doTurnPage(isPrevious, nextPhoto)
-      }
+      nextPhoto.setAttribute('src', this.photos[isPrevious ? this.currentIndex - 1 : this.currentIndex + 1].largeUrl)
+      nextPhoto.complete ? this.doTurnPage(isPrevious, nextPhoto) : nextPhoto.onload = () => this.doTurnPage(isPrevious, nextPhoto)
     },
     doTurnPage (isPrevious: boolean, nextPhoto: HTMLImageElement) {
+      nextPhoto.onload = null
       const nextPhotoWrapper: HTMLDivElement = document.getElementById(isPrevious ? 'previousPhotoWrapper' : 'nextPhotoWrapper') as HTMLDivElement
       const currentPhoto: HTMLImageElement = document.getElementById('currentPhoto') as HTMLImageElement
       const currentPhotoRect: DOMRect = currentPhoto.getBoundingClientRect()
       const slideTransitionTime = 500
       if (this.isFullscreen) {
-        this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
+        this.loadLargePhoto(nextPhoto, isPrevious ? --this.currentIndex : ++this.currentIndex, this.setPhotoPosition)
+        history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
         return
       }
       this.doSlideTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhotoRect, slideTransitionTime)
@@ -252,23 +262,15 @@ export default defineComponent({
           nextPhotoWrapper.style.top = currentPhotoRect.y + 'px'
           nextPhotoWrapper.style.width = currentPhotoRect.width + 'px'
           nextPhotoWrapper.style.height = currentPhotoRect.height + 'px'
-          this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
-          history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
+          this.loadLargePhoto(nextPhoto, isPrevious ? --this.currentIndex : ++this.currentIndex)
           requestAnimationFrame(() => {
-            if (currentPhoto.complete) {
-              nextPhoto.onload = null
-              this.doResizeTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhoto, currentPhotoRect)
-            } else {
-              currentPhoto.onload = () => {
-                this.doResizeTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhoto, currentPhotoRect)
-              }
-            }
+            this.doResizeTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhoto, currentPhotoRect)
           })
         } else {
-          this.currentPhoto = this.photos[isPrevious ? --this.currentIndex : ++this.currentIndex]
-          history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
+          this.loadLargePhoto(nextPhoto, isPrevious ? --this.currentIndex : ++this.currentIndex)
           this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
         }
+        history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
       }, slideTransitionTime)
     },
     doSlideTransition (isPrevious: boolean, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, currentPhotoRect: DOMRect, transitionTime: number) {
