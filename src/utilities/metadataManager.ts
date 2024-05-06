@@ -25,7 +25,6 @@ PNS_8995|2022-09-28 08:36:40|1/250s|f10.0|70.0mm|64ISO|A tempestuous blanket of 
 PNS_9042|2022-09-28 09:00:33|1/250s|f8.0|70.0mm|64ISO|A solitary path navigating a maze of sharp ridgetops in the Sierra Nevadas.|maze-of-ridges
 PNS_9089|2022-09-28 10:38:59|1/250s|f4.5|70.0mm|200ISO|A ferry departing into Puget Sound near Seattle.|puget-sound-ferry
 PNS_9100|2022-09-28 10:40:35|1/250s|f4.5|70.0mm|200ISO|A view of downtown Seattle and the foggy North Cascade mountains.|seattle-and-the-cascade-range
-PNS_9426|2022-10-05 01:25:16|90s|f5.0|1524.0mm|31ISO|Jupiter and its Galilean moons, created by stacking 12,000 photos taken with a large telescope over a 90 second period.|
 PNT_0281|2022-10-12 15:52:42|1/640s|f4.0|70.0mm|64ISO|An array of Fall colors paint a forested hillside in the Painted Hills area of Bozeman.|painted-hills
 PNU_0386|2023-04-15 19:10:08|1/800s|f4.0|54.0mm|2000ISO|Flames dancing in shapes create a Rorscach test out of a cozy backyard fire.|rorscach-flames
 PNU_0748|2023-04-27 19:20:59|1/100s|f2.8|200.0mm|64ISO|Late winter in the Spanish Peaks as seen from early spring in Bozeman.|spanish-peaks-sunset

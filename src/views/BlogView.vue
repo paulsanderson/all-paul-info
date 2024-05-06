@@ -4,6 +4,7 @@
     <h3 class="collapsible-header active" @click="(event) => onClickCollapse(event)">2024 Website Updates</h3>
     <div class="collapsible-content active">
       <ul>
+        <li>April 17&ensp;Optimize Firebase requests by parallelizing them</li>
         <li>April 10&ensp;Load lower resolution photo copies for tile view</li>
         <li>April 3 &ensp;Allow linking to specific photos using query parameters</li>
         <li>April 2 &ensp;Add store pages for gallery photos, add copy link button and toast</li>
@@ -31,7 +32,11 @@
     <div class="collapsible-content active">
       <ul>
         <li>Ability to search and sort photos</li>
+        <li>Search/sort photos by metadata (name, dateCreated, exposure, aperture, focalLength, iso, description, title)</li>
+        <li>Search/sort photos by type (street, wildlife, landscape, portrait, etc.)</li>
+        <li>Search/sort photos by hasStorePage</li>
         <li>Ability to save/like/comment on photos</li>
+        <li>Search/sort photos by rating/likes</li>
         <li>Create contact form</li>
       </ul>
     </div>
