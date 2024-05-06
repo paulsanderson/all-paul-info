@@ -106,10 +106,9 @@ export default defineComponent({
       const photoList: ListResult = listResult[0]
       const largePhotoList: ListResult = listResult[1]
       const metadataPromises: Promise<[FullMetadata, string, string]>[] = []
-      let i = 0
-      for (const item of photoList.items) {
+      for (let i = photoList.items.length - 1; i >= 0; i--) {
         // MetadataManager.setMetadata(item)
-        metadataPromises.push(Promise.all([getMetadata(item), getDownloadURL(item), getDownloadURL(largePhotoList.items.at(i++) as StorageReference)]))
+        metadataPromises.push(Promise.all([getMetadata(photoList.items.at(i) as StorageReference), getDownloadURL(photoList.items.at(i) as StorageReference), getDownloadURL(largePhotoList.items.at(i) as StorageReference)]))
       }
       const metadataResults: [FullMetadata, string, string][] = await Promise.all(metadataPromises)
       for (const metadataResult of metadataResults) {
@@ -121,18 +120,18 @@ export default defineComponent({
       targetElement.nextElementSibling?.classList.toggle('active')
       targetElement.classList.toggle('active')
     },
+    onClickPhoto (event: MouseEvent | KeyboardEvent, isParam = false) {
+      const selectedImage: HTMLImageElement = event.target as HTMLImageElement
+      this.currentIndex = isParam ? 0 : Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
+      this.loadLargePhoto(document.getElementById('currentPhoto') as HTMLImageElement, this.currentIndex, this.showDialog)
+      return false
+    },
     loadLargePhoto (photoElement: HTMLImageElement, index: number, onload?: () => void) {
       if (onload) {
         photoElement.src = this.photos[index].largeUrl
         photoElement.complete ? onload() : photoElement.onload = onload
       }
       this.currentPhoto = this.photos[index]
-    },
-    onClickPhoto (event: MouseEvent | KeyboardEvent, isParam = false) {
-      const selectedImage: HTMLImageElement = event.target as HTMLImageElement
-      this.currentIndex = isParam ? 0 : Array.from(selectedImage.parentNode?.children ?? []).indexOf(selectedImage)
-      this.loadLargePhoto(document.getElementById('currentPhoto') as HTMLImageElement, this.currentIndex, this.showDialog)
-      return false
     },
     showDialog () {
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
