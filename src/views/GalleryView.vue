@@ -10,18 +10,18 @@
     <img v-for="photo in photos" :key="photo.smallUrl" class="flex-dynamic photo-tile" :onload="(event: any) => event.target.style.opacity = '1'" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.smallUrl" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
-    <img class="close-button" title="Close" alt="Close" @click="onCloseDialog" src="../assets/close.png"/>
-    <img class="fullscreen-button" title="Fullscreen" alt="Fullscreen" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
-    <img class="copy-button" title="Copy Link" alt="Copy Link" @click="onCopyLink" src="../assets/copy.png"/>
+    <img class="button-base close-button" title="Close" alt="Close" @click="onClickCloseDialog" src="../assets/close.png"/>
+    <img class="button-base fullscreen-button" title="Fullscreen" alt="Fullscreen" @click="onClickFullscreen" src="../assets/fullscreen.png"/>
+    <img class="button-base copy-button" title="Copy Link" alt="Copy Link" @click="onClickCopyLink" src="../assets/copy.png"/>
     <div v-show="showToast" class="toast">Copied Link!</div>
     <div id="currentPhotoWrapper" class="current-photo-wrapper">
-      <img class="fullscreen-close-button" title="Close" alt="Close" @click="onCloseFullscreen" src="../assets/close.png"/>
+      <img class="button-base fullscreen-close-button" title="Close" alt="Close" @click="onClickCloseFullscreen" src="../assets/close.png"/>
       <div id="previousPhotoWrapper" class="previous-photo-wrapper">
         <img id="previousPhoto" class="previous-photo"/>
       </div>
-      <img id="previousButton" class="previous-button" title="Previous" alt="Previous" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
+      <img id="previousButton" class="button-base previous-button" title="Previous" alt="Previous" @click="onClickPrevious" v-show="currentIndex > 0 && showButtons" src="../assets/previous.png"/>
       <img id="currentPhoto" class="current-photo" :alt="currentPhoto.name" :src="currentPhoto.largeUrl"/>
-      <img id="nextButton" class="next-button" title="Next" alt="Next" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
+      <img id="nextButton" class="button-base next-button" title="Next" alt="Next" @click="onClickNext" v-show="currentIndex < photos.length - 1 && showButtons" src="../assets/next.png"/>
       <div id="nextPhotoWrapper" class="next-photo-wrapper">
         <img id="nextPhoto" class="next-photo"/>
       </div>
@@ -366,6 +366,11 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import "@/utilities/constants";
+.button-base {
+  position: absolute;
+  cursor: pointer;
+  transition: 0.15s ease-in-out;
+}
 .photo-tile {
   object-fit: cover;
   cursor: pointer;
@@ -468,11 +473,6 @@ export default defineComponent({
       margin: 0;
       text-transform: capitalize;
     }
-  }
-  .previous-button, .next-button, .close-button, .fullscreen-button, .fullscreen-close-button, .copy-button {
-    position: absolute;
-    cursor: pointer;
-    transition: 0.15s ease-in-out;
   }
   .previous-button, .next-button {
     transform: scale(0.5, 2);
