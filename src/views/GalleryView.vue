@@ -138,18 +138,18 @@ export default defineComponent({
       dialog.addEventListener('keyup', this.dialogKeyHandler)
       dialog.addEventListener('touchstart', this.touchStartHandler)
       dialog.addEventListener('touchend', this.touchEndHandler)
-      dialog.addEventListener('close', this.onCloseDialog)
+      dialog.addEventListener('close', this.onClickCloseDialog)
       history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
       dialog.showModal()
       this.setPhotoPosition()
     },
-    onCloseDialog () {
+    onClickCloseDialog () {
       this.currentPhoto = new Photo()
       const dialog: HTMLDialogElement = document.getElementById('dialog') as HTMLDialogElement
       dialog.removeEventListener('keyup', this.dialogKeyHandler)
       dialog.removeEventListener('touchstart', this.touchStartHandler)
       dialog.removeEventListener('touchend', this.touchEndHandler)
-      dialog.removeEventListener('close', this.onCloseDialog)
+      dialog.removeEventListener('close', this.onClickCloseDialog)
       dialog.close()
       history.pushState({}, '', '/gallery')
       return false
@@ -157,7 +157,7 @@ export default defineComponent({
     formatTitle (title: string): string {
       return title?.split('-').join(' ')
     },
-    async onCopyLink () {
+    async onClickCopyLink () {
       if (!navigator.clipboard) {
         throw new Error('Browser does not have clipboard support')
       }
@@ -168,7 +168,7 @@ export default defineComponent({
       }, 500)
       return false
     },
-    onCloseFullscreen () {
+    onClickCloseFullscreen () {
       document.exitFullscreen()
     },
     onClickFullscreen () {
