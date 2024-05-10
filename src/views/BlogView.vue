@@ -5,7 +5,8 @@
     <div class="collapsible-content active">
       <h4 class="left-header">May</h4>
       <ul>
-        <li>May 5 &ensp;Add search/sort UI to gallery header</li>
+        <li>May 10&ensp;Add search/sort/filter functionality</li>
+        <li>May 5 &ensp;Add search/sort/filter UI to gallery header</li>
       </ul>
       <h4 class="left-header">April</h4>
       <ul>
@@ -39,9 +40,6 @@
     <h3 class="left-header collapsible-header active" @click="(event) => onClickCollapse(event)">Upcoming Website Features</h3>
     <div class="collapsible-content active">
       <ul>
-        <li>Ability to search and sort photos</li>
-        <li>Search/sort photos by metadata (name, dateCreated, exposure, aperture, focalLength, iso, description, title)</li>
-        <li>Search/sort photos by type (street, wildlife, landscape, portrait, etc.)</li>
         <li>Search/sort photos by hasStorePage</li>
         <li>Ability to save/like/comment on photos</li>
         <li>Search/sort photos by rating/likes</li>
