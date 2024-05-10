@@ -1,10 +1,49 @@
 <template>
   <h1 id="galleryHeader" class="flex-static collapsible-header active" @click="(event) => onClickCollapse(event)">Gallery</h1>
-  <div class="collapsible-content active">
-    All photos are the property of Paul Sanderson, all rights reserved, all reuse of images without permission is illegal, etc. etc.
-    But more importantly, all photos are also available in higher quality - usually much higher - on purchase.
-    Any photo in the gallery or on instagram without a store page may have one requested.
-    If you prefer to browse the store gallery directly, you may do so <a target="_blank" href="https://2-paul-sanderson.pixels.com/">here</a>
+  <div class="gallery-header-content collapsible-content active">
+    <div class="flex-container flex-row">
+      <div class="flex-dynamic">
+        All photos are the property of Paul Sanderson, all rights reserved, all reuse of images without permission is illegal, etc. etc.
+        But more importantly, all photos are also available in higher quality - usually much higher - on purchase.
+        Any photo in the gallery or on instagram without a store page may have one requested.
+        If you prefer to browse the store gallery directly, you may do so <a target="_blank" href="https://2-paul-sanderson.pixels.com/">here</a>
+      </div>
+      <div class="flex-static search-wrapper">
+        <img id="searchButton" class="search-button" title="Search" alt="Search" @click="onClickSearch" src="../assets/search.png"/>
+        <div id="searchPopup" class="search-popup flex-container flex-row">
+          <input id="searchField" autocomplete="off" class="search-field flex-static" title="Search photos" type="search" placeholder="Search..." name="term" v-model="searchTerm" @input="onSearchFieldChanged">
+          <select id="searchType" class="search-select flex-static" @input="onSearchChanged">
+            <option>Type...</option>
+            <option>Name</option>
+            <option>Description</option>
+            <option>Title</option>
+            <option>Date</option>
+            <option>Exposure</option>
+            <option>Aperture</option>
+            <option>Focal Length</option>
+            <option>ISO</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex-static sort-wrapper">
+        <img id="sortButton" class="sort-button" title="Sort" alt="Sort" @click="onClickSort" src="../assets/sort.png"/>
+        <div id="sortPopup" class="flex-container flex-column sort-popup">
+          <div class="flex-static sort-item selected" @click="(event) => onSortSelected(event)">Newest First</div>
+          <div class="flex-static sort-item" @click="(event) => onSortSelected(event)">Oldest First</div>
+        </div>
+      </div>
+      <div class="flex-static filter-wrapper">
+        <img id="filterButton" class="filter-button" title="Filter" alt="Filter" @click="onClickFilter" src="../assets/filter.png"/>
+        <div id="filterPopup" class="flex-container flex-column filter-popup">
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Wildlife</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Landscape</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Portrait</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Street</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Astro</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Macro</div>
+        </div>
+      </div>
+    </div>
   </div>
   <div id="gallery" class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center page-container">
     <img v-for="photo in photos" v-show="photo.visible" :key="photo.smallUrl" class="flex-dynamic photo-tile" :onload="(event: any) => event.target.style.opacity = '1'" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.smallUrl" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
@@ -370,6 +409,122 @@ export default defineComponent({
   position: absolute;
   cursor: pointer;
   transition: 0.15s ease-in-out;
+}
+.gallery-header-content {
+  width: 95%;
+  padding-left: 2.5%;
+  padding-right: 2.5%;
+  .search-wrapper, .sort-wrapper, .filter-wrapper {
+    position: relative;
+    .search-button, .sort-button, .filter-button {
+      cursor: pointer;
+      transition: 0.15s ease-in-out;
+      border-radius: 5px;
+      transform: scale(0.75, 0.75);
+      &.active {
+        opacity: 1;
+        transform: scale(1, 1);
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      @media (hover: hover) {
+        opacity: 0.4;
+        &:hover {
+          opacity: 1;
+          transform: scale(1, 1);
+        }
+        &:active {
+          transform: scale(0.75, 0.75);
+          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 5px;
+        }
+      }
+    }
+    .search-popup, .sort-popup, .filter-popup {
+      position: absolute;
+      height: auto;
+      top: 40px;
+      right: 0;
+      z-index: 999;
+      border-radius: 5px;
+      display: none;
+      background-color: $popup-background-color;
+      &.active {
+        display: flex;
+      }
+    }
+    .search-popup {
+      .search-field {
+        height: 30px;
+        margin: 10px;
+        text-indent: 5px;
+        border-radius: 5px;
+        background-color: $header-footer-background-color;
+        color: $link-font-color;
+        &::placeholder {
+          color: $font-color;
+        }
+      }
+      .search-select {
+        width: 100px;
+        height: 30px;
+        margin: 10px 10px 10px 0;
+        border-radius: 5px;
+        background-color: $header-footer-background-color;
+        color: $font-color;
+      }
+    }
+    .sort-popup {
+      .sort-item {
+        position: relative;
+        background-color: $header-footer-background-color;
+        color: $font-color;
+        text-wrap: nowrap;
+        padding: 5px;
+        margin: 5px;
+        border-radius: 5px;
+        margin-left: 35px;
+        cursor: pointer;
+        &.selected:before {
+          cursor: auto;
+          position: absolute;
+          width: 30px;
+          height: 30px;
+          top: 0;
+          left: -32px;
+          border-radius: 3px;
+          content: '';
+          background: url('../assets/selected.png');
+          background-size: cover;
+        }
+      }
+    }
+    .filter-popup {
+      .filter-item {
+        position: relative;
+        background-color: $header-footer-background-color;
+        color: $font-color;
+        text-wrap: nowrap;
+        padding: 5px;
+        margin: 5px;
+        border-radius: 5px;
+        margin-left: 35px;
+        cursor: pointer;
+        &.selected:before {
+          cursor: auto;
+          position: absolute;
+          width: 30px;
+          height: 30px;
+          top: 0;
+          left: -32px;
+          border-radius: 3px;
+          content: '';
+          background: url('../assets/selected.png');
+          background-size: cover;
+        }
+      }
+    }
+  }
 }
 .photo-tile {
   object-fit: cover;
