@@ -95,6 +95,11 @@ import * as firebaseOptions from '../../firebaseOptions.json'
 
 export default defineComponent({
   name: 'GalleryView',
+  setup () {
+    return {
+      searchTerm: ''
+    }
+  },
   data () {
     return {
       photos: new Array<Photo>(),
@@ -232,6 +237,62 @@ export default defineComponent({
         searchButton.classList.remove('active')
         sortPopup.classList.remove('active')
         sortButton.classList.remove('active')
+      }
+    },
+    onSearchFieldChanged: Utilities.debounce(function (this: { onSearchChanged: () => void }) {
+      this.onSearchChanged()
+    }, 250),
+    async onSearchChanged () {
+      const searchType: HTMLSelectElement = document.getElementById('searchType') as HTMLSelectElement
+      const searchField: HTMLSelectElement = document.getElementById('searchField') as HTMLSelectElement
+      if (searchField.value && searchType.value !== 'Type...') {
+        this.hasSetSearch = true
+        const searchProperty: string = searchType.value.toLowerCase()
+        for (const photo of this.photos) {
+          photo.matchesSearch = (photo[searchProperty as keyof typeof photo] as string).toLowerCase().includes(searchField.value.toLowerCase())
+        }
+      } else {
+        this.hasSetSearch = false
+        for (const photo of this.photos) {
+          photo.matchesSearch = true
+        }
+      }
+    },
+    async onSortSelected (target: HTMLDivElement) {
+      const sortPopup: HTMLDivElement = document.getElementById('sortPopup') as HTMLDivElement
+      const oldSelection: HTMLDivElement = sortPopup.getElementsByClassName('selected').item(0) as HTMLDivElement
+      if (oldSelection !== target) {
+        this.hasSetSort = !this.hasSetSort
+        oldSelection.classList.toggle('selected')
+        target.classList.toggle('selected')
+        this.photos.reverse()
+      }
+    },
+    async onFilterSelected (target?: HTMLDivElement) {
+      const filterPopup: HTMLDivElement = document.getElementById('filterPopup') as HTMLDivElement
+      target?.classList.toggle('selected')
+
+      const filterStatuses: { wildlife: boolean, landscape: boolean, portrait: boolean, street: boolean, macro: boolean, astro: boolean } = {
+        wildlife: false,
+        landscape: false,
+        portrait: false,
+        street: false,
+        macro: false,
+        astro: false
+      }
+      for (const child of filterPopup.children) {
+        filterStatuses[child.textContent?.toLowerCase() as keyof typeof filterStatuses] = child.classList.contains('selected')
+      }
+      this.hasSetFilter = !(filterStatuses.wildlife && filterStatuses.landscape && filterStatuses.portrait && filterStatuses.street && filterStatuses.macro && filterStatuses.astro)
+      for (const photo of this.photos) {
+        const photoTypes: string[] = photo.type.split(',')
+        let matchesFilter = false
+        for (const photoType of photoTypes) {
+          if (filterStatuses[photoType as keyof typeof filterStatuses]) {
+            matchesFilter = true
+          }
+        }
+        photo.matchesFilter = matchesFilter
       }
     },
     formatTitle (title: string): string {
