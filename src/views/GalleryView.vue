@@ -7,7 +7,7 @@
     If you prefer to browse the store gallery directly, you may do so <a target="_blank" href="https://2-paul-sanderson.pixels.com/">here</a>
   </div>
   <div id="gallery" class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center page-container">
-    <img v-for="photo in photos" :key="photo.smallUrl" class="flex-dynamic photo-tile" :onload="(event: any) => event.target.style.opacity = '1'" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.smallUrl" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
+    <img v-for="photo in photos" v-show="photo.visible" :key="photo.smallUrl" class="flex-dynamic photo-tile" :onload="(event: any) => event.target.style.opacity = '1'" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.smallUrl" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
     <img class="button-base close-button" title="Close" alt="Close" @click="onClickCloseDialog" src="../assets/close.png"/>
@@ -31,7 +31,7 @@
       <div class="flex-static flex-container flex-column">
         <h4 class="flex-static photo-title">{{ formatTitle(currentPhoto.title) }}</h4>
         <div class="flex-static">{{ currentPhoto.description }}</div>
-        <div class="flex-static text-no-wrap"><u>Date</u>: {{ currentPhoto.dateCreated }}</div>
+        <div class="flex-static text-no-wrap"><u>Date</u>: {{ currentPhoto.date }}</div>
         <div class="flex-static text-no-wrap">{{ currentPhoto.exposure + ' &bull; ' +
         currentPhoto.aperture + ' &bull; ' +
         currentPhoto.focalLength + ' &bull; ' +
@@ -107,7 +107,7 @@ export default defineComponent({
       const largePhotoList: ListResult = listResult[1]
       const metadataPromises: Promise<[FullMetadata, string, string]>[] = []
       for (let i = photoList.items.length - 1; i >= 0; i--) {
-        // MetadataManager.setMetadata(item)
+        // MetadataManager.setMetadata(photoList.items.at(i) as StorageReference)
         metadataPromises.push(Promise.all([getMetadata(photoList.items.at(i) as StorageReference), getDownloadURL(photoList.items.at(i) as StorageReference), getDownloadURL(largePhotoList.items.at(i) as StorageReference)]))
       }
       const metadataResults: [FullMetadata, string, string][] = await Promise.all(metadataPromises)
