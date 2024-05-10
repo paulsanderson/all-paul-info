@@ -11,7 +11,8 @@ export class Photo {
   public description: string
   public title: string
   public type: string
-  public visible: boolean
+  public matchesFilter: boolean
+  public matchesSearch: boolean
 
   constructor (name = '', smallUrl = '', largeUrl = '', metadata: {[key: string]: string} = {}, aspectRatio = 0) {
     this.name = name
@@ -26,6 +27,7 @@ export class Photo {
     this.description = metadata.description
     this.title = metadata.title
     this.type = metadata.type
-    this.visible = true
+    this.matchesFilter = true
+    this.matchesSearch = true
   }
 }

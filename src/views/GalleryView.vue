@@ -10,6 +10,7 @@
       </div>
       <div class="flex-static search-wrapper">
         <img id="searchButton" class="search-button" title="Search" alt="Search" @click="onClickSearch" src="../assets/search.png"/>
+        <img id="resetSearchButton" class="reset-search-button" v-show="hasSetSearch" title="Search" alt="Search" @click="onClickResetSearch" src="../assets/reset.png"/>
         <div id="searchPopup" class="search-popup flex-container flex-row">
           <input id="searchField" autocomplete="off" class="search-field flex-static" title="Search photos" type="search" placeholder="Search..." name="term" v-model="searchTerm" @input="onSearchFieldChanged">
           <select id="searchType" class="search-select flex-static" @input="onSearchChanged">
@@ -27,26 +28,28 @@
       </div>
       <div class="flex-static sort-wrapper">
         <img id="sortButton" class="sort-button" title="Sort" alt="Sort" @click="onClickSort" src="../assets/sort.png"/>
+        <img id="resetSortButton" class="reset-sort-button" v-show="hasSetSort" title="Sort" alt="Sort" @click="onClickResetSort" src="../assets/reset.png"/>
         <div id="sortPopup" class="flex-container flex-column sort-popup">
-          <div class="flex-static sort-item selected" @click="(event) => onSortSelected(event)">Newest First</div>
-          <div class="flex-static sort-item" @click="(event) => onSortSelected(event)">Oldest First</div>
+          <div class="flex-static sort-item selected" @click="(event) => onSortSelected(event.target as HTMLDivElement)">Newest First</div>
+          <div class="flex-static sort-item" @click="(event) => onSortSelected(event.target as HTMLDivElement)">Oldest First</div>
         </div>
       </div>
       <div class="flex-static filter-wrapper">
         <img id="filterButton" class="filter-button" title="Filter" alt="Filter" @click="onClickFilter" src="../assets/filter.png"/>
+        <img id="resetFilterButton" class="reset-filter-button" v-show="hasSetFilter" title="Filter" alt="Filter" @click="onClickResetFilter" src="../assets/reset.png"/>
         <div id="filterPopup" class="flex-container flex-column filter-popup">
-          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Wildlife</div>
-          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Landscape</div>
-          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Portrait</div>
-          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Street</div>
-          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Astro</div>
-          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event)">Macro</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Wildlife</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Landscape</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Portrait</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Street</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Astro</div>
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Macro</div>
         </div>
       </div>
     </div>
   </div>
   <div id="gallery" class="flex-dynamic flex-container flex-row flex-wrap flex-sm-gap flex-justify-center page-container">
-    <img v-for="photo in photos" v-show="photo.visible" :key="photo.smallUrl" class="flex-dynamic photo-tile" :onload="(event: any) => event.target.style.opacity = '1'" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.smallUrl" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
+    <img v-for="photo in photos" v-show="photo.matchesSearch && photo.matchesFilter" :key="photo.smallUrl" class="flex-dynamic photo-tile" :onload="(event: any) => event.target.style.opacity = '1'" loading="lazy" tabindex="0" :alt="photo.name" :src="photo.smallUrl" @click="(event) => onClickPhoto(event)" @keyup.enter="(event) => onClickPhoto(event)"/>
   </div>
   <dialog id="dialog" class="photo-dialog">
     <img class="button-base close-button" title="Close" alt="Close" @click="onClickCloseDialog" src="../assets/close.png"/>
@@ -110,7 +113,10 @@ export default defineComponent({
       showButtons: true,
       isFullscreen: false,
       showToast: false,
-      storage: {} as FirebaseStorage
+      storage: {} as FirebaseStorage,
+      hasSetSearch: false,
+      hasSetSort: false,
+      hasSetFilter: false
     }
   },
   mounted () {
@@ -238,6 +244,26 @@ export default defineComponent({
         sortPopup.classList.remove('active')
         sortButton.classList.remove('active')
       }
+    },
+    onClickResetSearch () {
+      const searchType: HTMLSelectElement = document.getElementById('searchType') as HTMLSelectElement
+      searchType.value = 'Type...'
+      this.searchTerm = ''
+      this.onSearchFieldChanged()
+      this.hasSetSearch = false
+    },
+    onClickResetSort () {
+      const sortPopup: HTMLSelectElement = document.getElementById('sortPopup') as HTMLSelectElement
+      this.onSortSelected(sortPopup.children[0] as HTMLDivElement)
+      this.hasSetSort = false
+    },
+    onClickResetFilter () {
+      const filterPopup: HTMLSelectElement = document.getElementById('filterPopup') as HTMLSelectElement
+      for (const child of filterPopup.children) {
+        child.classList.add('selected')
+      }
+      this.onFilterSelected()
+      this.hasSetFilter = false
     },
     onSearchFieldChanged: Utilities.debounce(function (this: { onSearchChanged: () => void }) {
       this.onSearchChanged()
@@ -518,7 +544,7 @@ export default defineComponent({
   padding-right: 2.5%;
   .search-wrapper, .sort-wrapper, .filter-wrapper {
     position: relative;
-    .search-button, .sort-button, .filter-button {
+    .search-button, .sort-button, .filter-button, .reset-search-button, .reset-sort-button, .reset-filter-button {
       cursor: pointer;
       transition: 0.15s ease-in-out;
       border-radius: 5px;
@@ -548,7 +574,7 @@ export default defineComponent({
       top: 40px;
       right: 0;
       z-index: 999;
-      border-radius: 5px;
+      border-radius: 5px 0 5px 5px;
       display: none;
       background-color: $popup-background-color;
       &.active {
@@ -586,6 +612,7 @@ export default defineComponent({
         margin: 5px;
         border-radius: 5px;
         margin-left: 35px;
+        user-select: none;
         cursor: pointer;
         &.selected:before {
           cursor: auto;
@@ -611,6 +638,7 @@ export default defineComponent({
         margin: 5px;
         border-radius: 5px;
         margin-left: 35px;
+        user-select: none;
         cursor: pointer;
         &.selected:before {
           cursor: auto;

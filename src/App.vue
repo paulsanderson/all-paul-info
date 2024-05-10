@@ -148,6 +148,7 @@ html {
     .collapsible-header {
       cursor: pointer;
       transition: 0.5s;
+      user-select: none;
       &:not(.active) {
         color: $selected-font-color;
       }
