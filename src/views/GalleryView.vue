@@ -3,28 +3,8 @@
   <div class="gallery-header-content collapsible-content active">
     <div class="flex-container flex-row">
       <div class="flex-dynamic">
-        All photos are the property of Paul Sanderson, all rights reserved, all reuse of images without permission is illegal, etc. etc.
-        But more importantly, all photos are also available in higher quality - usually much higher - on purchase.
-        Any photo in the gallery or on instagram without a store page may have one requested.
-        If you prefer to browse the store gallery directly, you may do so <a target="_blank" href="https://2-paul-sanderson.pixels.com/">here</a>
-      </div>
-      <div class="flex-static search-wrapper">
-        <img id="searchButton" class="search-button" title="Search" alt="Search" @click="onClickSearch" src="../assets/search.png"/>
-        <img id="resetSearchButton" class="reset-search-button" v-show="hasSetSearch" title="Reset Search" alt="Reset Search" @click="onClickResetSearch" src="../assets/reset.png"/>
-        <div id="searchPopup" class="search-popup flex-container flex-row">
-          <input id="searchField" autocomplete="off" class="search-field flex-static" title="Search photos" type="search" placeholder="Search..." name="term" v-model="searchTerm" @input="onSearchFieldChanged">
-          <select id="searchType" class="search-select flex-static" @input="onSearchChanged">
-            <option>Type...</option>
-            <option>Name</option>
-            <option>Description</option>
-            <option>Title</option>
-            <option>Date</option>
-            <option>Exposure</option>
-            <option>Aperture</option>
-            <option>Focal Length</option>
-            <option>ISO</option>
-          </select>
-        </div>
+        All photos are the property of Paul Sanderson. Most photos are available for purchase in higher quality.
+        If you prefer to browse the store directly, you may do so <a target="_blank" href="https://2-paul-sanderson.pixels.com/">here</a>
       </div>
       <div class="flex-static sort-wrapper">
         <img id="sortButton" class="sort-button" title="Sort" alt="Sort" @click="onClickSort" src="../assets/sort.png"/>
@@ -44,6 +24,24 @@
           <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Street</div>
           <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Astro</div>
           <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Macro</div>
+        </div>
+      </div>
+      <div class="flex-static search-wrapper">
+        <img id="searchButton" class="search-button" title="Search" alt="Search" @click="onClickSearch" src="../assets/search.png"/>
+        <img id="resetSearchButton" class="reset-search-button" v-show="hasSetSearch" title="Reset Search" alt="Reset Search" @click="onClickResetSearch" src="../assets/reset.png"/>
+        <div id="searchPopup" class="search-popup flex-container flex-row">
+          <input id="searchField" autocomplete="off" class="search-field flex-static" title="Search photos" type="search" placeholder="Search..." name="term" v-model="searchTerm" @input="onSearchFieldChanged">
+          <select id="searchType" class="search-select flex-static" @input="onSearchChanged">
+            <option>Type...</option>
+            <option>Name</option>
+            <option>Description</option>
+            <option>Title</option>
+            <option>Date</option>
+            <option>Exposure</option>
+            <option>Aperture</option>
+            <option>Focal Length</option>
+            <option>ISO</option>
+          </select>
         </div>
       </div>
     </div>
