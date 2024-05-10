@@ -10,7 +10,7 @@
       </div>
       <div class="flex-static search-wrapper">
         <img id="searchButton" class="search-button" title="Search" alt="Search" @click="onClickSearch" src="../assets/search.png"/>
-        <img id="resetSearchButton" class="reset-search-button" v-show="hasSetSearch" title="Search" alt="Search" @click="onClickResetSearch" src="../assets/reset.png"/>
+        <img id="resetSearchButton" class="reset-search-button" v-show="hasSetSearch" title="Reset Search" alt="Reset Search" @click="onClickResetSearch" src="../assets/reset.png"/>
         <div id="searchPopup" class="search-popup flex-container flex-row">
           <input id="searchField" autocomplete="off" class="search-field flex-static" title="Search photos" type="search" placeholder="Search..." name="term" v-model="searchTerm" @input="onSearchFieldChanged">
           <select id="searchType" class="search-select flex-static" @input="onSearchChanged">
@@ -28,7 +28,7 @@
       </div>
       <div class="flex-static sort-wrapper">
         <img id="sortButton" class="sort-button" title="Sort" alt="Sort" @click="onClickSort" src="../assets/sort.png"/>
-        <img id="resetSortButton" class="reset-sort-button" v-show="hasSetSort" title="Sort" alt="Sort" @click="onClickResetSort" src="../assets/reset.png"/>
+        <img id="resetSortButton" class="reset-sort-button" v-show="hasSetSort" title="Reset Sort" alt="Reset Sort" @click="onClickResetSort" src="../assets/reset.png"/>
         <div id="sortPopup" class="flex-container flex-column sort-popup">
           <div class="flex-static sort-item selected" @click="(event) => onSortSelected(event.target as HTMLDivElement)">Newest First</div>
           <div class="flex-static sort-item" @click="(event) => onSortSelected(event.target as HTMLDivElement)">Oldest First</div>
@@ -36,7 +36,7 @@
       </div>
       <div class="flex-static filter-wrapper">
         <img id="filterButton" class="filter-button" title="Filter" alt="Filter" @click="onClickFilter" src="../assets/filter.png"/>
-        <img id="resetFilterButton" class="reset-filter-button" v-show="hasSetFilter" title="Filter" alt="Filter" @click="onClickResetFilter" src="../assets/reset.png"/>
+        <img id="resetFilterButton" class="reset-filter-button" v-show="hasSetFilter" title="Reset Filter" alt="Reset Filter" @click="onClickResetFilter" src="../assets/reset.png"/>
         <div id="filterPopup" class="flex-container flex-column filter-popup">
           <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Wildlife</div>
           <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Landscape</div>
@@ -132,9 +132,11 @@ export default defineComponent({
     this.onGalleryScroll()
     window.addEventListener('resize', this.onWindowResize)
     this.onWindowResize()
+    window.addEventListener('click', this.onGlobalClick)
   },
   beforeUnmount () {
     window.removeEventListener('resize', this.onWindowResize)
+    window.removeEventListener('click', this.onGlobalClick)
     const gallery: HTMLDivElement = (document.getElementById('gallery') as HTMLDivElement)
     gallery.removeEventListener('scroll', this.onGalleryScroll)
   },
@@ -220,29 +222,36 @@ export default defineComponent({
       const sortButton: HTMLImageElement = document.getElementById('sortButton') as HTMLImageElement
       const filterPopup: HTMLDivElement = document.getElementById('filterPopup') as HTMLDivElement
       const filterButton: HTMLImageElement = document.getElementById('filterButton') as HTMLImageElement
-      if (showPopup === 1) {
-        searchPopup.classList.toggle('active')
-        searchButton.classList.toggle('active')
-        sortPopup.classList.remove('active')
-        sortButton.classList.remove('active')
-        filterPopup.classList.remove('active')
-        filterButton.classList.remove('active')
+      if (showPopup === 0) {
+        searchPopup.classList.remove('popup-active')
+        searchButton.classList.remove('popup-active')
+        sortPopup.classList.remove('popup-active')
+        sortButton.classList.remove('popup-active')
+        filterPopup.classList.remove('popup-active')
+        filterButton.classList.remove('popup-active')
+      } else if (showPopup === 1) {
+        searchPopup.classList.toggle('popup-active')
+        searchButton.classList.toggle('popup-active')
+        sortPopup.classList.remove('popup-active')
+        sortButton.classList.remove('popup-active')
+        filterPopup.classList.remove('popup-active')
+        filterButton.classList.remove('popup-active')
         const searchField: HTMLInputElement = document.getElementById('searchField') as HTMLInputElement
         searchField.focus()
       } else if (showPopup === 2) {
-        sortPopup.classList.toggle('active')
-        sortButton.classList.toggle('active')
-        searchPopup.classList.remove('active')
-        searchButton.classList.remove('active')
-        filterPopup.classList.remove('active')
-        filterButton.classList.remove('active')
+        sortPopup.classList.toggle('popup-active')
+        sortButton.classList.toggle('popup-active')
+        searchPopup.classList.remove('popup-active')
+        searchButton.classList.remove('popup-active')
+        filterPopup.classList.remove('popup-active')
+        filterButton.classList.remove('popup-active')
       } else if (showPopup === 3) {
-        filterPopup.classList.toggle('active')
-        filterButton.classList.toggle('active')
-        searchPopup.classList.remove('active')
-        searchButton.classList.remove('active')
-        sortPopup.classList.remove('active')
-        sortButton.classList.remove('active')
+        filterPopup.classList.toggle('popup-active')
+        filterButton.classList.toggle('popup-active')
+        searchPopup.classList.remove('popup-active')
+        searchButton.classList.remove('popup-active')
+        sortPopup.classList.remove('popup-active')
+        sortButton.classList.remove('popup-active')
       }
     },
     onClickResetSearch () {
@@ -357,6 +366,12 @@ export default defineComponent({
         setTimeout(() => {
           currentPhotoWrapper.removeEventListener('fullscreenchange', this.onChangeFullscreen)
         }, 100)
+      }
+    },
+    onGlobalClick (event: MouseEvent) {
+      const popup: HTMLElement = (event.target as HTMLElement).closest('.popup-active') as HTMLElement
+      if (!popup) {
+        this.togglePopups(0)
       }
     },
     onWindowResize: Utilities.debounce(function (this: { viewportAspectRatio: number, setPhotoPosition: () => void }) {
@@ -549,7 +564,7 @@ export default defineComponent({
       transition: 0.15s ease-in-out;
       border-radius: 5px;
       transform: scale(0.75, 0.75);
-      &.active {
+      &.popup-active {
         opacity: 1;
         transform: scale(1, 1);
         border-bottom-left-radius: 0;
@@ -568,6 +583,11 @@ export default defineComponent({
         }
       }
     }
+    .reset-search-button, .reset-sort-button, .reset-filter-button {
+      position: absolute;
+      top: -40px;
+      left: 0;
+    }
     .search-popup, .sort-popup, .filter-popup {
       position: absolute;
       height: auto;
@@ -577,7 +597,7 @@ export default defineComponent({
       border-radius: 5px 0 5px 5px;
       display: none;
       background-color: $popup-background-color;
-      &.active {
+      &.popup-active {
         display: flex;
       }
     }
