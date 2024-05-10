@@ -74,7 +74,7 @@
         <div class="flex-static text-no-wrap"><u>Date</u>: {{ currentPhoto.date }}</div>
         <div class="flex-static text-no-wrap">{{ currentPhoto.exposure + ' &bull; ' +
         currentPhoto.aperture + ' &bull; ' +
-        currentPhoto.focalLength + ' &bull; ' +
+        currentPhoto.focallength + ' &bull; ' +
         currentPhoto.iso }}</div>
         <div v-show="currentPhoto.title" class="flex-static text-no-wrap">
           <a class="shop-link" target="_blank" :href="'https://fineartamerica.com/featured/' + currentPhoto.title + '-paul-sanderson.html'">Shop Products</a>
@@ -280,7 +280,7 @@ export default defineComponent({
       const searchField: HTMLSelectElement = document.getElementById('searchField') as HTMLSelectElement
       if (searchField.value && searchType.value !== 'Type...') {
         this.hasSetSearch = true
-        const searchProperty: string = searchType.value.toLowerCase()
+        const searchProperty: string = searchType.value.toLowerCase().replace(' ', '')
         for (const photo of this.photos) {
           photo.matchesSearch = (photo[searchProperty as keyof typeof photo] as string).toLowerCase().includes(searchField.value.toLowerCase())
         }

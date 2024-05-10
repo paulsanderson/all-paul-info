@@ -6,7 +6,7 @@ export class Photo {
   public date: string
   public exposure: string
   public aperture: string
-  public focalLength: string
+  public focallength: string
   public iso: string
   public description: string
   public title: string
@@ -22,7 +22,7 @@ export class Photo {
     this.date = metadata.date
     this.exposure = metadata.exposure
     this.aperture = metadata.aperture
-    this.focalLength = metadata.focalLength
+    this.focallength = metadata.focalLength
     this.iso = metadata.iso
     this.description = metadata.description
     this.title = metadata.title
