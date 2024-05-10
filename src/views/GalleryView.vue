@@ -193,6 +193,47 @@ export default defineComponent({
       history.pushState({}, '', '/gallery')
       return false
     },
+    onClickSearch () {
+      this.togglePopups(1)
+    },
+    onClickSort () {
+      this.togglePopups(2)
+    },
+    onClickFilter () {
+      this.togglePopups(3)
+    },
+    togglePopups (showPopup: number) {
+      const searchPopup: HTMLDivElement = document.getElementById('searchPopup') as HTMLDivElement
+      const searchButton: HTMLImageElement = document.getElementById('searchButton') as HTMLImageElement
+      const sortPopup: HTMLDivElement = document.getElementById('sortPopup') as HTMLDivElement
+      const sortButton: HTMLImageElement = document.getElementById('sortButton') as HTMLImageElement
+      const filterPopup: HTMLDivElement = document.getElementById('filterPopup') as HTMLDivElement
+      const filterButton: HTMLImageElement = document.getElementById('filterButton') as HTMLImageElement
+      if (showPopup === 1) {
+        searchPopup.classList.toggle('active')
+        searchButton.classList.toggle('active')
+        sortPopup.classList.remove('active')
+        sortButton.classList.remove('active')
+        filterPopup.classList.remove('active')
+        filterButton.classList.remove('active')
+        const searchField: HTMLInputElement = document.getElementById('searchField') as HTMLInputElement
+        searchField.focus()
+      } else if (showPopup === 2) {
+        sortPopup.classList.toggle('active')
+        sortButton.classList.toggle('active')
+        searchPopup.classList.remove('active')
+        searchButton.classList.remove('active')
+        filterPopup.classList.remove('active')
+        filterButton.classList.remove('active')
+      } else if (showPopup === 3) {
+        filterPopup.classList.toggle('active')
+        filterButton.classList.toggle('active')
+        searchPopup.classList.remove('active')
+        searchButton.classList.remove('active')
+        sortPopup.classList.remove('active')
+        sortButton.classList.remove('active')
+      }
+    },
     formatTitle (title: string): string {
       return title?.split('-').join(' ')
     },
