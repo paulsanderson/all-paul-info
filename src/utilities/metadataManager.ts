@@ -1,7 +1,6 @@
 import { StorageReference, SettableMetadata, updateMetadata } from 'firebase/storage'
 
-const metadataBlob = `DSC_0837|landscape,astro|2023-11-18 02:40:05|20s|f4.0|58.0mm|8000ISO|When doing astrophotography and a passing car brings unwelcome light, it may as well be captured. Bob Ross would refer to this tree as a Happy Little Accident.|happy-little-accident
-PNS_0109|landscape|2022-08-03 20:27:27|1/800s|f7.1|70.0mm|640ISO|A colorful Fall sunset reflecting off Cattail Lake.|cattail-ripples
+const metadataBlob = `PNS_0109|landscape|2022-08-03 20:27:27|1/800s|f7.1|70.0mm|640ISO|A colorful Fall sunset reflecting off Cattail Lake.|cattail-ripples
 PNS_0146|wildlife,landscape|2022-08-03 20:38:02|1/40s|f4.0|70.0mm|31ISO|A colorful Fall sunset reflecting off Cattail Lake as a lone duckling leaves its wake rippling in the calm water.|duckling-sunset
 PNS_0185|landscape|2022-08-03 20:48:41|1/125s|f4.0|70.0mm|100ISO|A warm Fall sunset reflecting off Cattail Lake.|cattail-on-fire
 PNS_0192|wildlife,landscape|2022-08-03 20:52:18|1/40s|f4.0|70.0mm|31ISO|A beautiful Fall sunset creates a rich gradient of colors reflecting off Cattail Lake while a handful of ducks call out to others passing overhead.|cattail-ducks
@@ -50,7 +49,6 @@ PNU_7277|wildlife,macro|2023-09-07 10:37:53|1/8000s|f5.6|400.0mm|1100ISO|A bumbl
 PNU_7369|wildlife|2023-09-08 18:07:17|1/5000s|f5.6|400.0mm|2200ISO|A Canadian goose drying off after landing. The setting sun adds a nice gradient to its feathers.|goose-flapping
 PNU_7397|wildlife|2023-09-08 18:17:02|1/5000s|f5.6|400.0mm|2000ISO|A Canadian goose touching down, feet extended and wings outstretched.|goose-landing
 PNU_7513|wildlife,landscape|2023-09-10 18:41:58|1/1000s|f5.6|140.0mm|160ISO|A flock of birds mid-flight after feasting in a Fall field.|feast-for-a-flock
-PNU_8095|wildlife|2023-09-23 18:39:46|1/200s|f8.0|400.0mm|280ISO|An oily muskrat and its rippling wake.|muskrat-ripples
 PNU_8168|landscape|2023-09-24 06:59:49|1/60s|f4.0|24.0mm|1000ISO|A stunning sunrise over the rolling hills carved out at the headwaters of the Missouri River.|sunrise-streaks
 PNU_8174|landscape|2023-09-24 07:04:04|1/60s|f4.0|24.0mm|125ISO|A stunning sunrise over the headwaters of the Missouri River. The clouds rolled out as the fog rolled in and the sun rose.|missouri-river-sunrise
 PNU_8211|landscape|2023-09-24 07:29:32|1/60s|f22.0|86.0mm|64ISO|A foggy Fall morning at the headwaters of the Missouri River.|missouri-river-mist
@@ -66,17 +64,53 @@ PNU_9520|wildlife|2023-10-22 16:17:33|1/1250s|f5.6|400.0mm|800ISO|A curious, you
 PNU_9626|landscape|2023-10-22 18:20:15|1/200s|f4.0|24.0mm|2800ISO|The best dog enjoying a fading, enchanting view of Fairy Lake in the Bridger mountains as storms roll in.|enchanted-by-fairy-lake
 PNU_9657|landscape|2023-10-22 18:25:47|1/200s|f4.0|24.5mm|5000ISO|The stillness of the rope swing is reflected in the stillness of Fairy Lake and the calm yet roiling clouds.|fairy-lake-swing
 PNU_9693|wildlife|2023-10-26 15:05:52|1/2000s|f5.6|200.0mm|180ISO|A pair of magpies dueling over a dog's bone.|dog-bone-duel
+PNV_0351|landscape,astro|2023-11-18 02:40:05|20s|f4.0|58.0mm|8000ISO|When doing astrophotography and a passing car brings unwelcome light, it may as well be captured. Bob Ross would refer to this tree as a Happy Little Accident.|happy-little-accident
 PNV_0352|astro|2023-11-18 03:17:40|1/2s|f5.0|1524.0mm|400ISO|The Orion nebula sparkling in natural hues of blue and pink.|orion-nebula
 PNV_1717|wildlife|2023-12-03 09:59:54|1/1000s|f5.6|400.0mm|560ISO|A pair of curious northern river otters at the headwaters of the Missouri River, one shaking itself dry.|curious-otters
 PNV_2543|landscape|2023-12-16 08:42:49|1/60s|f4.0|24.0mm|450ISO|A vibrant winter sunrise at the headwaters of the Missouri River.|missouri-river-winter-sunrise
 PNV_2563|landscape|2023-12-16 08:51:54|1/100s|f4.0|24.0mm|250ISO|A stunning winter sunrise at the headwaters of the Missouri River is contrasted by a dark, solitary tree.|missouri-river-tree-sunrise
 PNV_2877|wildlife|2023-12-16 11:16:42|1/2000s|f5.6|400.0mm|320ISO|A bald eagle flying low over the Missouri River deep in winter.|bald-eagle-flying-low-over-the-missouri-river
 PNV_3658|landscape|2023-12-24 09:38:23|1/400s|f5.6|140.0mm|64ISO|A thick morning fog blots out the sun deep in winter at the frosty headwaters of the Missouri River.|missouri-river-frost
+PNV_3687|landscape|2023-12-23 10:19:15|1/320s|f13|140.0mm|64ISO|A frosty Missouri River meanders through the frost-covered trees in front of a dense bank of fog.|missouri-river-fog
 PNV_3971|landscape|2023-12-31 10:42:02|1/2s|f22.0|34.5mm|64ISO|The frigid rapids of the Madison River in winter flowing over a slippery mid-river boulder.|madison-river-rapids
+PNV_4511|wildlife|2024-01-04 11:27:54|1/1250s|f5.6|400.0mm|1600ISO|An Alaskan Brown Bear named Max fogs up the air with his breath, exerted from playing.|playful-brown-bear
 PNV_4584|wildlife|2024-01-04 11:46:11|1/1250s|f2.8|140.0mm|200ISO|A four-year-old, 1100 pound Alaskan Brown Bear named Max bearing a gentle expression at a rescue center in Montana.|brown-bear-smile
 PNV_6119|wildlife|2024-02-10 11:52:06|1/2000s|f8.0|400.0mm|450ISO|A mature bald eagle majestically overlooks the Madison River from its snowy perch.|majestic-bald-eagle
+PNV_7075|wildlife|2024-03-19 19:25:10|1/1000s|f5.6|400.0mm|2200ISO|A Black-capped chickadee perches on a pine tree, taking a break between collecting its sporophylls for an early Spring meal.|chickadee-resting
+PNV_7549|wildlife,landscape|2024-03-21 19:32:05|1/125s|f5.6|400.0mm|640ISO|A heron stands in the calm, partly-frozen lake amid a gloomy dusk next to a small bridge.|stoic-heron
+PNV_7579|landscape|2024-03-23 09:47:26|1/640s|f9.0|400.0mm|64ISO|Rolling clouds cascade over the northern Gallatin mountains as twilight sets in.|rolling-clouds
+PNV_7842|wildlife|2024-03-27 17:49:21|1/5000s|f5.6|400.0mm|2500ISO|An oily muskrat and its rippling wake reflecting in the golden sunlight.|muskrat-ripples
+PNV_7914|wildlife|2024-03-27 18:04:42|1/5000s|f5.6|400.0mm|1400ISO|Two Canadian geese taking flight across the lake, kicking up a spray of water.|geese-taking-flight
 PNV_7984|wildlife|2024-03-29 07:19:30|1/200s|f5.6|390.0mm|900ISO|A pair of American White Pelicans wake and stretch while the rest of their flock still sleeps. Migrating to their breeding grounds, the adult males have grown Nuptial Tubercles on their beaks to impress potential mates.|pelican-sunrise
-PNW_0025|wildlife|2024-04-15 10:25:44|1/250s|f6.3|400.0mm|64ISO|A juvenile bald eagle stares intensely, looking grumpy in the Spring rain.|going-bald`
+PNV_8099|wildlife|2024-03-29 07:25:08|1/80s|f5.6|400.0mm|400ISO|A beaver honing its pile of mud in Sisyphean hopes of one day damming the Missouri River.|beaver-damming
+PNV_8357|wildlife|2024-03-29 08:17:05|1/500s|f5.6|400.0mm|220ISO|A moose carefully considers how to cross the Missouri River to follow its mother upstream.|moose-riverbank
+PNV_8379|wildlife|2024-03-29 08:18:05|1/500s|f5.6|400.0mm|220ISO|A young moose fording across the Missouri River to follow its mother upstream.|moose-crossing
+PNV_8492|wildlife,landscape|2024-03-29 08:44:37|1/500s|f5.6|400.0mm|90ISO|An American white pelican flies into the fog to find its pack.|pelican-foggy-flight
+PNV_8494|wildlife,landscape|2024-03-29 08:44:40|1/500s|f5.6|400.0mm|64ISO|A pair of American white pelicans follow river, and thus the fog, to their next landing.|pelican-flight
+PNV_8751|wildlife|2024-03-29 09:36:03|1/2000s|f5.6|400.0mm|720ISO|A young moose enjoys a Spring breakfast of marshy twigs.|moose-marsh
+PNV_8840|wildlife|2024-03-29 09:40:16|1/800s|f5.6|400.0mm|280ISO|A young, curious moose pauses eating to inspect its photographer.|curious-moose
+PNV_8854|wildlife|2024-03-29 09:40:30|1/800s|f5.6|400.0mm|250ISO|A mother moose peeks through the branches to inspect its hidden photographer.|moose-inspection
+PNV_8928|wildlife|2024-03-29 09:44:31|1/800s|f5.6|280.0mm|360ISO|A moose and its young child share a sweet moment amid their morning snack.|moose-moment
+PNV_8943|wildlife|2024-03-29 09:44:48|1/800s|f5.6|400.0mm|250ISO|A moose foraging for food along the banks of the Missouri River.|missouri-moose
+PNV_9367|astro|2024-04-08 12:48:31|1/1600s|f5.0|1524.0mm|64ISO|A partial solar eclipse featuring a large sunspot.|sunspot-eclipse
+PNV_9948|wildlife|2024-04-15 10:03:19|1/500s|f5.6|400.0mm|450SIO|A dark horse with a light brown mane against the rolling hills eroded by the Madison River.|dark-horse
+PNV_9950|wildlife|2024-04-15 10:03:28|1/500s|f5.6|400.0mm|450ISO|A curious horse with a dark mane and its ears pricked up.|curious-horse
+PNV_9956|wildlife|2024-04-15 10:04:11|1/500s|f5.6|210.0mm|450ISO|A chestnut-coated horse stands behind a fence in its sweeping field. Perched on the fence is a particularly territorial blackbird.|horse-and-blackbird
+PNV_9978|wildlife|2024-04-15 10:10:22|1/1000s|f5.6|400.0mm|1250ISO|A dark horse with a white mane stands behind alongside its fence, calmly chewing a strand of grass.|calm-horse
+PNW_0025|wildlife|2024-04-15 10:25:44|1/250s|f6.3|400.0mm|64ISO|A juvenile bald eagle stares intensely, looking grumpy in the Spring rain.|going-bald
+PNW_0353|wildlife|2024-04-15 12:25:24|1/2000s|f5.6|140.0mm|125ISO|An osprey carrying a claw-full of grass back to its nest and its awaiting partner.|osprey-nesting
+PNW_1033|wildlife|2024-05-03 19:33:12|1/1000s|f5.6|400.0mm|140ISO|A yellow-rumped warbler perches on a thin branch, trying to show off its cool hair in the fading sunlight.|yellow-warbler
+PNW_1098|wildlife|2024-05-03 19:56:06|1/2000s|f5.6|270.0mm|360ISO|A black-necked grebe proudly clutching its modest catch in its beak.|proud-grebe
+PNW_1125|wildlife|2024-05-03 19:56:14|1/2000s|f5.6|400.0mm|360ISO|A black-necked grebe struggling to haul in its modest catch, creating a splash.|hungry-grebe
+PNW_1407|astro|2024-05-11 02:05:51|3s|f4.0|24.0mm|800ISO|The Aurora borealis dances across the night sky, illuminating a lone tree as a car passes by.|northern-lights-car
+PNW_1480|astro|2024-05-11 02:27:06|2s|f4.0|25.5mm|2000ISO|The mesmerizing Northern Lights ripple across the night sky in shades of green and violet. A lone tree stands out against the twilight.|northern-lights-tree
+PNW_1496|astro|2024-05-11 02:30:28|2s|f4.0|25.5mm|2000ISO|A streak of ethereal purple and pink aurora cuts across the night sky above a dark horizon.|ethereal-aurora
+PNW_1510|astro|2024-05-11 02:36:08|2s|f4.0|24.0mm|2000ISO|A vivid green, pink, and purple aurora dances sky above an old structure at the Missouri River Headwaters.|aurora-headwaters
+PNW_1600|astro|2024-05-11 02:54:05|2s|f4.0|24.0mm|2000ISO|A vivid green and purple hue ripples across the night sky as the aurora descends from above.|falling-aurora
+PNW_1641|wildlife|2024-05-13 06:08:50|1/100s|f5.6|400.0mm|450ISO|A yellow-bellied marmot defiantly stands its ground, barking, above its burrow on a rocky cliff atop the Missouri River.|fearless-marmot
+PNW_3375|landscape|2024-05-26 14:15:27|1/100s|f4.0|24.0mm|100ISO|Moss-covered trees and rocks cling to the steep slopes above Hyalite Creek, barely allowing sunlight to filter through.|steep-and-mossy
+PNW_3552|wildlife|2024-05-27 19:20:33|1/4000s|f5.6|400.0mm|560ISO|A yellow-headed blackbird leaps to flight amid the cattails, its wings leaving an artifact in less than 1/4000th of a second.|blackbird-blooper
+`
 
 type MetadataObject = {
   name: string
