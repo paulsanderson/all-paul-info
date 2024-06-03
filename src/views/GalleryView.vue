@@ -18,6 +18,7 @@
         <img id="filterButton" class="filter-button" title="Filter" alt="Filter" @click="onClickFilter" src="../assets/filter.png"/>
         <img id="resetFilterButton" class="reset-filter-button" v-show="hasSetFilter" title="Reset Filter" alt="Reset Filter" @click="onClickResetFilter" src="../assets/reset.png"/>
         <div id="filterPopup" class="flex-container flex-column filter-popup">
+          <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">All</div>
           <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Wildlife</div>
           <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Landscape</div>
           <div class="flex-static filter-item selected" @click="(event) => onFilterSelected(event.target as HTMLDivElement)">Portrait</div>
@@ -157,6 +158,7 @@ export default defineComponent({
       const largePhotoList: ListResult = listResult[1]
       const metadataPromises: Promise<[FullMetadata, string, string]>[] = []
       for (let i = photoList.items.length - 1; i >= 0; i--) {
+        if (i < photoList.items.length - 5) break
         // MetadataManager.setMetadata(photoList.items.at(i) as StorageReference)
         metadataPromises.push(Promise.all([getMetadata(photoList.items.at(i) as StorageReference), getDownloadURL(photoList.items.at(i) as StorageReference), getDownloadURL(largePhotoList.items.at(i) as StorageReference)]))
       }
@@ -304,8 +306,20 @@ export default defineComponent({
     async onFilterSelected (target?: HTMLDivElement) {
       const filterPopup: HTMLDivElement = document.getElementById('filterPopup') as HTMLDivElement
       target?.classList.toggle('selected')
+      if (target?.textContent?.toLowerCase() === 'all') {
+        if (target.classList.contains('selected')) {
+          for (const child of filterPopup.children) {
+            child.classList.add('selected')
+          }
+        } else {
+          for (const child of filterPopup.children) {
+            child.classList.remove('selected')
+          }
+        }
+      }
 
-      const filterStatuses: { wildlife: boolean, landscape: boolean, portrait: boolean, street: boolean, macro: boolean, astro: boolean } = {
+      const filterStatuses: { all: boolean, wildlife: boolean, landscape: boolean, portrait: boolean, street: boolean, macro: boolean, astro: boolean } = {
+        all: false,
         wildlife: false,
         landscape: false,
         portrait: false,
@@ -316,13 +330,14 @@ export default defineComponent({
       for (const child of filterPopup.children) {
         filterStatuses[child.textContent?.toLowerCase() as keyof typeof filterStatuses] = child.classList.contains('selected')
       }
-      this.hasSetFilter = !(filterStatuses.wildlife && filterStatuses.landscape && filterStatuses.portrait && filterStatuses.street && filterStatuses.macro && filterStatuses.astro)
+      this.hasSetFilter = !(filterStatuses.all && filterStatuses.wildlife && filterStatuses.landscape && filterStatuses.portrait && filterStatuses.street && filterStatuses.macro && filterStatuses.astro)
       for (const photo of this.photos) {
         const photoTypes: string[] = photo.type.split(',')
         let matchesFilter = false
         for (const photoType of photoTypes) {
           if (filterStatuses[photoType as keyof typeof filterStatuses]) {
             matchesFilter = true
+            break
           }
         }
         photo.matchesFilter = matchesFilter
@@ -637,7 +652,7 @@ export default defineComponent({
           position: absolute;
           width: 30px;
           height: 30px;
-          top: 0;
+          top: -1px;
           left: -32px;
           border-radius: 3px;
           content: '';
@@ -663,7 +678,7 @@ export default defineComponent({
           position: absolute;
           width: 30px;
           height: 30px;
-          top: 0;
+          top: -1px;
           left: -32px;
           border-radius: 3px;
           content: '';
