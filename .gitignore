@@ -6,7 +6,6 @@ node_modules
 firebase.json
 firebaseOptions.json
 .npmrc
-/public/PaulSandersonResume.pdf
 
 
 /tests/e2e/logs/
