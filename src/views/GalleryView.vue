@@ -31,18 +31,22 @@
         <img id="searchButton" class="search-button" title="Search" alt="Search" @click="onClickSearch" src="../assets/search.png"/>
         <img id="resetSearchButton" class="reset-search-button" v-show="hasSetSearch" title="Reset Search" alt="Reset Search" @click="onClickResetSearch" src="../assets/reset.png"/>
         <div id="searchPopup" class="search-popup flex-container flex-row">
-          <input id="searchField" autocomplete="off" class="search-field flex-static" title="Search photos" type="search" placeholder="Search..." name="term" v-model="searchTerm" @input="onSearchFieldChanged">
-          <select id="searchType" class="search-select flex-static" @input="onSearchChanged">
-            <option>Type...</option>
-            <option>Name</option>
-            <option>Description</option>
-            <option>Title</option>
-            <option>Date</option>
-            <option>Exposure</option>
-            <option>Aperture</option>
-            <option>Focal Length</option>
-            <option>ISO</option>
-          </select>
+          <button id="searchType" class="search-type flex-static" @click="onClickSearchType">Type...</button>
+          <div id="searchTypePopup" class="flex-container flex-column search-type-popup">
+            <div class="flex-static search-type-item" @click="(event) => onSearchTypeSelected(event.target as HTMLDivElement)">Description</div>
+            <div class="flex-static search-type-item" @click="(event) => onSearchTypeSelected(event.target as HTMLDivElement)">Date</div>
+            <div class="flex-static search-type-item" @click="(event) => onSearchTypeSelected(event.target as HTMLDivElement)">Exposure</div>
+            <div class="flex-static search-type-item" @click="(event) => onSearchTypeSelected(event.target as HTMLDivElement)">Aperture</div>
+            <div class="flex-static search-type-item" @click="(event) => onSearchTypeSelected(event.target as HTMLDivElement)">Focal Length</div>
+          </div>
+          <input id="searchField" autocomplete="off" disabled="true" class="search-field flex-static search-disabled" title="Search photos" type="search" placeholder="Search..." name="term" v-model="searchTerm" @input="onSearchFieldChanged">
+          <button id="searchRange" class="search-range flex-static" @click="onClickSearchRange">Range...</button>
+          <div id="searchRangePopup" class="flex-container flex-column search-range-popup">
+            <div class="flex-static search-range-item" @click="(event) => onSearchRangeSelected(event.target as HTMLDivElement)">+/- 5%</div>
+            <div class="flex-static search-range-item" @click="(event) => onSearchRangeSelected(event.target as HTMLDivElement)">+/- 10%</div>
+            <div class="flex-static search-range-item" @click="(event) => onSearchRangeSelected(event.target as HTMLDivElement)">+/- 25%</div>
+            <div class="flex-static search-range-item" @click="(event) => onSearchRangeSelected(event.target as HTMLDivElement)">+/- 50%</div>
+          </div>
         </div>
       </div>
     </div>
@@ -218,6 +222,7 @@ export default defineComponent({
     togglePopups (showPopup: number) {
       const searchPopup: HTMLDivElement = document.getElementById('searchPopup') as HTMLDivElement
       const searchButton: HTMLImageElement = document.getElementById('searchButton') as HTMLImageElement
+      const searchTypePopup: HTMLDivElement = document.getElementById('searchTypePopup') as HTMLImageElement
       const sortPopup: HTMLDivElement = document.getElementById('sortPopup') as HTMLDivElement
       const sortButton: HTMLImageElement = document.getElementById('sortButton') as HTMLImageElement
       const filterPopup: HTMLDivElement = document.getElementById('filterPopup') as HTMLDivElement
@@ -225,6 +230,7 @@ export default defineComponent({
       if (showPopup === 0) {
         searchPopup.classList.remove('popup-active')
         searchButton.classList.remove('popup-active')
+        searchTypePopup.classList.remove('popup-active')
         sortPopup.classList.remove('popup-active')
         sortButton.classList.remove('popup-active')
         filterPopup.classList.remove('popup-active')
@@ -236,13 +242,12 @@ export default defineComponent({
         sortButton.classList.remove('popup-active')
         filterPopup.classList.remove('popup-active')
         filterButton.classList.remove('popup-active')
-        const searchField: HTMLInputElement = document.getElementById('searchField') as HTMLInputElement
-        searchField.focus()
       } else if (showPopup === 2) {
         sortPopup.classList.toggle('popup-active')
         sortButton.classList.toggle('popup-active')
         searchPopup.classList.remove('popup-active')
         searchButton.classList.remove('popup-active')
+        searchTypePopup.classList.remove('popup-active')
         filterPopup.classList.remove('popup-active')
         filterButton.classList.remove('popup-active')
       } else if (showPopup === 3) {
@@ -250,13 +255,14 @@ export default defineComponent({
         filterButton.classList.toggle('popup-active')
         searchPopup.classList.remove('popup-active')
         searchButton.classList.remove('popup-active')
+        searchTypePopup.classList.remove('popup-active')
         sortPopup.classList.remove('popup-active')
         sortButton.classList.remove('popup-active')
       }
     },
     onClickResetSearch () {
       const searchType: HTMLSelectElement = document.getElementById('searchType') as HTMLSelectElement
-      searchType.value = 'Type...'
+      searchType.textContent = 'Type...'
       this.searchTerm = ''
       this.onSearchFieldChanged()
       this.hasSetSearch = false
@@ -277,23 +283,53 @@ export default defineComponent({
     onSearchFieldChanged: Utilities.debounce(function (this: { onSearchChanged: () => void }) {
       this.onSearchChanged()
     }, 250),
-    async onSearchChanged () {
-      const searchType: HTMLSelectElement = document.getElementById('searchType') as HTMLSelectElement
+    onSearchChanged () {
+      const searchType: HTMLButtonElement = document.getElementById('searchType') as HTMLButtonElement
       const searchField: HTMLSelectElement = document.getElementById('searchField') as HTMLSelectElement
-      if (searchField.value && searchType.value !== 'Type...') {
-        this.hasSetSearch = true
-        const searchProperty: string = searchType.value.toLowerCase().replace(' ', '')
+      const searchValue: string = searchField.value.toLowerCase()
+      if (searchType.textContent !== 'Type...' && searchValue) {
+        const searchProperty: string = searchType.textContent?.toLowerCase().replace(' ', '') as string
         for (const photo of this.photos) {
-          photo.matchesSearch = (photo[searchProperty as keyof typeof photo] as string).toLowerCase().includes(searchField.value.toLowerCase())
+          photo.matchesSearch = (photo[searchProperty as keyof typeof photo] as string).toLowerCase().includes(searchValue)
         }
       } else {
-        this.hasSetSearch = false
         for (const photo of this.photos) {
           photo.matchesSearch = true
         }
       }
     },
-    async onSortSelected (target: HTMLDivElement) {
+    onClickSearchType () {
+      const searchTypePopup: HTMLDivElement = document.getElementById('searchTypePopup') as HTMLDivElement
+      searchTypePopup.classList.toggle('popup-active')
+    },
+    onSearchTypeSelected (target: HTMLDivElement) {
+      const searchType: HTMLButtonElement = document.getElementById('searchType') as HTMLButtonElement
+      const searchTypePopup: HTMLDivElement = document.getElementById('searchTypePopup') as HTMLDivElement
+      const searchField: HTMLInputElement = document.getElementById('searchField') as HTMLInputElement
+      searchType.textContent = target.textContent
+      this.hasSetSearch = true
+      searchField.disabled = false
+      switch (target.textContent) {
+        case 'Description':
+          searchField.placeholder = target.textContent + '...'
+          break
+        case 'Date':
+          searchField.placeholder = 'YYYY-MM-DD HH:MM:SS...'
+          break
+        case 'Exposure':
+          searchField.placeholder = '1/1234s or 12s...'
+          break
+        case 'Aperture':
+          searchField.placeholder = 'f2.8...'
+          break
+        case 'Focal Length':
+          searchField.placeholder = '180.0mm...'
+          break
+      }
+      searchField.focus()
+      searchTypePopup.classList.toggle('popup-active')
+    },
+    onSortSelected (target: HTMLDivElement) {
       const sortPopup: HTMLDivElement = document.getElementById('sortPopup') as HTMLDivElement
       const oldSelection: HTMLDivElement = sortPopup.getElementsByClassName('selected').item(0) as HTMLDivElement
       if (oldSelection !== target) {
@@ -303,7 +339,7 @@ export default defineComponent({
         this.photos.reverse()
       }
     },
-    async onFilterSelected (target?: HTMLDivElement) {
+    onFilterSelected (target?: HTMLDivElement) {
       const filterPopup: HTMLDivElement = document.getElementById('filterPopup') as HTMLDivElement
       target?.classList.toggle('selected')
       if (target?.textContent?.toLowerCase() === 'all') {
@@ -601,7 +637,7 @@ export default defineComponent({
       top: -40px;
       left: 0;
     }
-    .search-popup, .sort-popup, .filter-popup {
+    .search-popup, .sort-popup, .filter-popup, .search-type-popup, .search-range-popup {
       position: absolute;
       height: auto;
       top: 40px;
@@ -615,62 +651,50 @@ export default defineComponent({
       }
     }
     .search-popup {
+      .search-type, .search-range {
+        height: 30px;
+        border-radius: 5px;
+        margin: 10px;
+        position: relative;
+        background-color: $header-footer-background-color;
+        color: $font-color;
+        white-space: nowrap;
+      }
+      .search-type-popup {
+        left: 0;
+        right: auto;
+        .search-type-item {
+          margin: 5px;
+        }
+      }
+      .search-range-popup {
+        //
+      }
       .search-field {
         height: 30px;
         margin: 10px;
         text-indent: 5px;
         border-radius: 5px;
+        margin: 10px 10px 10px 0;
         background-color: $header-footer-background-color;
         color: $link-font-color;
         &::placeholder {
           color: $font-color;
         }
-      }
-      .search-select {
-        width: 100px;
-        height: 30px;
-        margin: 10px 10px 10px 0;
-        border-radius: 5px;
-        background-color: $header-footer-background-color;
-        color: $font-color;
-      }
-    }
-    .sort-popup {
-      .sort-item {
-        position: relative;
-        background-color: $header-footer-background-color;
-        color: $font-color;
-        text-wrap: nowrap;
-        padding: 5px;
-        margin: 5px;
-        border-radius: 5px;
-        margin-left: 35px;
-        user-select: none;
-        cursor: pointer;
-        &.selected:before {
-          cursor: auto;
-          position: absolute;
-          width: 30px;
-          height: 30px;
-          top: -1px;
-          left: -32px;
-          border-radius: 3px;
-          content: '';
-          background: url('../assets/selected.png');
-          background-size: cover;
+        &.search-disabled {
+          //
         }
       }
     }
-    .filter-popup {
-      .filter-item {
+    .sort-popup, .filter-popup, .search-type-popup, .search-range-popup {
+      .sort-item, .filter-item, .search-type-item, .search-range-item {
         position: relative;
         background-color: $header-footer-background-color;
         color: $font-color;
         text-wrap: nowrap;
         padding: 5px;
-        margin: 5px;
+        margin: 5px 5px 5px 35px;
         border-radius: 5px;
-        margin-left: 35px;
         user-select: none;
         cursor: pointer;
         &.selected:before {
