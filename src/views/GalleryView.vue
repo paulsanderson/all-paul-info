@@ -158,7 +158,7 @@ export default defineComponent({
       const largePhotoList: ListResult = listResult[1]
       const metadataPromises: Promise<[FullMetadata, string, string]>[] = []
       for (let i = photoList.items.length - 1; i >= 0; i--) {
-        if (i < photoList.items.length - 5) break
+        // if (i < photoList.items.length - 5) break
         // MetadataManager.setMetadata(photoList.items.at(i) as StorageReference)
         metadataPromises.push(Promise.all([getMetadata(photoList.items.at(i) as StorageReference), getDownloadURL(photoList.items.at(i) as StorageReference), getDownloadURL(largePhotoList.items.at(i) as StorageReference)]))
       }
