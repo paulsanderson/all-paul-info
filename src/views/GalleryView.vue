@@ -93,6 +93,7 @@ import { Photo } from '@/models/photo'
 import { Utilities } from '@/utilities/utilities'
 import { FirebaseApp, initializeApp } from 'firebase/app'
 import * as firebaseOptions from '../../firebaseOptions.json'
+import router from '@/router'
 // import { MetadataManager } from '@/utilities/metadataManager'
 
 export default defineComponent({
@@ -191,7 +192,7 @@ export default defineComponent({
       dialog.addEventListener('touchstart', this.touchStartHandler)
       dialog.addEventListener('touchend', this.touchEndHandler)
       dialog.addEventListener('close', this.onClickCloseDialog)
-      history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
+      router.push(`/gallery/${this.currentPhoto.name}`)
       dialog.showModal()
       this.setPhotoPosition()
     },
@@ -203,7 +204,7 @@ export default defineComponent({
       dialog.removeEventListener('touchend', this.touchEndHandler)
       dialog.removeEventListener('close', this.onClickCloseDialog)
       dialog.close()
-      history.pushState({}, '', '/gallery')
+      router.push('/gallery')
       return false
     },
     onClickSearch () {
@@ -442,7 +443,7 @@ export default defineComponent({
       const slideTransitionTime = 500
       if (this.isFullscreen) {
         this.loadLargePhoto(nextPhoto, isPrevious ? --this.currentIndex : ++this.currentIndex, this.setPhotoPosition)
-        history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
+        router.push(`/gallery/${this.currentPhoto.name}`)
         return
       }
       this.doSlideTransition(isPrevious, nextPhoto, nextPhotoWrapper, currentPhotoRect, slideTransitionTime)
@@ -459,7 +460,7 @@ export default defineComponent({
           this.loadLargePhoto(nextPhoto, isPrevious ? --this.currentIndex : ++this.currentIndex)
           this.resetTransitions(currentPhoto, nextPhoto, nextPhotoWrapper, isPrevious)
         }
-        history.pushState({}, '', `/gallery/${this.currentPhoto.name}`)
+        router.push(`/gallery/${this.currentPhoto.name}`)
       }, slideTransitionTime)
     },
     doSlideTransition (isPrevious: boolean, nextPhoto: HTMLImageElement, nextPhotoWrapper: HTMLDivElement, currentPhotoRect: DOMRect, transitionTime: number) {
